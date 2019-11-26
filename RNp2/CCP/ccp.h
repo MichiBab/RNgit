@@ -24,4 +24,14 @@ extern struct ccp_contact contactlist[46];
 
 int put_string_in_sender_receiver(char* array, char* input);
 
+#define REQUEST_TO_OPEN_CONNECTION 0b00010000
+#define ACKNOWLEDGE_OPENING_CONNECTION 0b00010001
+#define PEER_DISCONNECTED 0b00001000
+#define SEND_A_MESSAGE 0b00000100
+#define ACKNOWLEDGE_RECEIVING_MESSAGE 0b00000101
+#define REQUEST_IF_PEER_IS_ALIVE 0b00000010
+#define ACKNOWLEDGE_PEER_IS_DEAD 0b00000011
+
+
+
 #endif
