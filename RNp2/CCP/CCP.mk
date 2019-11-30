@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=michi
-Date                   :=26/11/19
+Date                   :=01/12/19
 CodeLitePath           :=/home/michi/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/testingLocal.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) 
+Objects0=../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) 
 
 
 
@@ -114,14 +114,6 @@ PreBuild:
 
 ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix): client.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix) client.c
-
-../build-$(ConfigurationName)/CCP/testingLocal.c$(ObjectSuffix): testingLocal.c ../build-$(ConfigurationName)/CCP/testingLocal.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/testingLocal.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/testingLocal.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/testingLocal.c$(DependSuffix): testingLocal.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/testingLocal.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/testingLocal.c$(DependSuffix) -MM testingLocal.c
-
-../build-$(ConfigurationName)/CCP/testingLocal.c$(PreprocessSuffix): testingLocal.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/testingLocal.c$(PreprocessSuffix) testingLocal.c
 
 ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)

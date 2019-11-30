@@ -8,8 +8,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="testingLocal.h"/>
-    <File Name="testingLocal.c"/>
     <File Name="server.h"/>
     <File Name="server.c"/>
     <File Name="generic.h"/>

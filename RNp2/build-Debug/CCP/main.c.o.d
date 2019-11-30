@@ -1,10 +1,7 @@
-../build-Debug/CCP/main.c.o: main.c server.h client.h generic.h \
- testingLocal.h
+../build-Debug/CCP/main.c.o: main.c server.h client.h generic.h
 
 server.h:
 
 client.h:
 
 generic.h:
-
-testingLocal.h:

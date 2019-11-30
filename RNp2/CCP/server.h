@@ -9,5 +9,5 @@
 #include <sys/types.h> 
 #include <arpa/inet.h>
 int init_server();
-
+int close_server();
 #endif

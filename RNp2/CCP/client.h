@@ -7,7 +7,8 @@
 #include <sys/socket.h> 
 
 int init_client();
-int connect_to_server(char* inetAddress);
+int connect_to_server(char* inetAddress, int portnumber);
 int testing_sendMessage(char* message);
 int close_client();
+int client_routine(char* ip, char* message, int portnumber);
 #endif
