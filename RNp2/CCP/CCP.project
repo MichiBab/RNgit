@@ -8,6 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="IPtoInt"/>
     <File Name="ticketloop.h"/>
     <File Name="ticketloop.c"/>
     <File Name="server.h"/>

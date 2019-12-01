@@ -40,6 +40,15 @@ void* clientSendHello(void* arg){
     }
 
 static int testingstuff(){
+    
+    struct in_addr addr;
+    inet_pton(AF_INET, "127.0.0.1", &addr);
+    printf("%d\n", addr.s_addr);
+    
+    char buf[16];
+    inet_ntop(AF_INET, &addr, buf, 16);
+    printf("%s\n", buf);
+    
     struct ccp_contact con;
     put_string_in_sender_receiver(con.contactalias, "testcontact");
     con.contactIPv4[0] = "1";
@@ -50,6 +59,9 @@ static int testingstuff(){
     con.contactPort[1] = "8";
     contactlist[0] = con;
     contactlist[1] = con;
+    
+    
+    
     return 0;
     }
 

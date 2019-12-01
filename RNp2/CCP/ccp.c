@@ -1,7 +1,7 @@
 #include "ccp.h"
 #include <stdio.h>
 #include <string.h>
-
+#include <arpa/inet.h>
 
 /*struct ccp{
     char versionnum;
@@ -27,11 +27,10 @@ int put_string_in_sender_receiver(char* array, char* input){
     int buffersize;
     strlen(input)<=17 ? buffersize = strlen(input) : 17;
     snprintf(array,17,input);
+    return 0;
     }
 
-int print_my_contactlist(){
 
-    }
 
 int set_ccp_hello(struct ccp* hellopack, char* receivername){
     hellopack->versionnum = 1;
@@ -64,9 +63,34 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack){
     }
 
 
+int print_my_contactlist(){
+    
+    return 0;
+    }
+
 int setusername(char* username){
     strncpy(our_username, username, 16);
     printf("our username is : %s\n",our_username);
     return 0;
     }
     
+int print_contact(struct ccp_contact con){
+    printf("Alias: %s",con.contactalias);
+    printf_ipv4(con.contactIPv4);
+    
+    }
+    
+int printf_ipv4(char arr[4]){
+    int ip_as_integer = ( (arr[3] << 24 ) | (arr[2] << 16 ) | ( arr[1] << 8 ) | arr[0] );
+    char buf[16];
+    inet_ntop(AF_INET, &ip_as_integer, buf, 16);
+    printf("IPv4 Address: %s\n", buf);
+    
+    return 0;
+    }
+
+int printf_port(char arr[2]){
+    short port_as_integer = (  ( arr[1] << 8 ) | arr[0] );
+    printf("Port: %d",port_as_integer);
+    return 0;
+    }

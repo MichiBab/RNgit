@@ -81,7 +81,7 @@ static int listenSocket(){
 static int readFromSocket(int socket){
     bzero(buffer, maxcharactersize);
     msgSize_in_bytes = read(socket, buffer, maxcharactersize);
-    printf("msginbytes: %d",msgSize_in_bytes);
+    printf("msginbytes: %d\n",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
         printf("ERROR reading from socket");
         exit(1);
@@ -89,7 +89,18 @@ static int readFromSocket(int socket){
     else if(msgSize_in_bytes == 0){
         return 1;//for closing
         }
-    printf("server received %d bytes: %s\n", msgSize_in_bytes, buffer);
+    //printf("server received %d bytes: %s\n", msgSize_in_bytes, buffer);
+    //--- todo TESTING
+    //buffer
+    
+    struct ccp ccp_tmp;
+    *buffer = (char*) &ccp_tmp;
+    struct ccp *ccp_data;
+    ccp_data = (struct ccp*) buffer;
+    
+    printf("received data. now printing it\n");
+    printf("sender alias: %s\n",ccp_data->senderAlias);
+    printf("receiver alias: %s\n",ccp_data->receiverAlias);
     return 0;
     }
 
