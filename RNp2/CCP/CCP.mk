@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) 
+Objects0=../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) 
 
 
 
@@ -91,14 +91,6 @@ PreBuild:
 ##
 ## Objects
 ##
-../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix): main.c ../build-$(ConfigurationName)/CCP/main.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/main.c$(DependSuffix): main.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/main.c$(DependSuffix) -MM main.c
-
-../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix): main.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix) main.c
-
 ../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix): ccp.c ../build-$(ConfigurationName)/CCP/ccp.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp.c$(ObjectSuffix) $(IncludePath)
 ../build-$(ConfigurationName)/CCP/ccp.c$(DependSuffix): ccp.c
@@ -107,14 +99,6 @@ PreBuild:
 ../build-$(ConfigurationName)/CCP/ccp.c$(PreprocessSuffix): ccp.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp.c$(PreprocessSuffix) ccp.c
 
-../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/server.c$(DependSuffix): server.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/server.c$(DependSuffix) -MM server.c
-
-../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix): server.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix) server.c
-
 ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix): client.c ../build-$(ConfigurationName)/CCP/client.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/client.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/client.c$(ObjectSuffix) $(IncludePath)
 ../build-$(ConfigurationName)/CCP/client.c$(DependSuffix): client.c
@@ -122,6 +106,30 @@ PreBuild:
 
 ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix): client.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix) client.c
+
+../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix): main.c ../build-$(ConfigurationName)/CCP/main.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/main.c$(DependSuffix): main.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/main.c$(DependSuffix) -MM main.c
+
+../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix): main.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix) main.c
+
+../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix): ticketloop.c ../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ticketloop.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ticketloop.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix): ticketloop.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix) -MM ticketloop.c
+
+../build-$(ConfigurationName)/CCP/ticketloop.c$(PreprocessSuffix): ticketloop.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ticketloop.c$(PreprocessSuffix) ticketloop.c
+
+../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/server.c$(DependSuffix): server.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/server.c$(DependSuffix) -MM server.c
+
+../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix): server.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix) server.c
 
 
 -include ../build-$(ConfigurationName)/CCP//*$(DependSuffix)

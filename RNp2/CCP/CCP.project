@@ -8,6 +8,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ticketloop.h"/>
+    <File Name="ticketloop.c"/>
     <File Name="zwischenspeicher"/>
     <File Name="server.h"/>
     <File Name="server.c"/>

@@ -10,5 +10,7 @@ int init_client();
 int connect_to_server(char* inetAddress, int portnumber);
 int close_client();
 int client_routine(char* ip, char* message, int portnumber);
-
+int lock();
+int unlock();
+int changeMessage(char* msg);
 #endif

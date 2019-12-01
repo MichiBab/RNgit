@@ -25,12 +25,18 @@ void* clientArgInit(void* arg){
     return 0;
     }
 
+void* clientArgInitChatMode(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    client_routine_chatmode(*data);
+    return 0;
+    }
+
 
 int main(int argc, char **argv)
 {
     int exitbool = 1;//abbruch der while schleife
     
-    printf("s for create server, c for init a clien, cc for close client, h for help, q for exit\n");
+    printf("s for create server, c for init a clien, cm for chat mode, cc for close client, h for help, q for exit\n");
 
     while(exitbool){
         bzero(buffer,buffersize);
@@ -63,6 +69,41 @@ int main(int argc, char **argv)
             fgets(paket.ccppackage.message,buffersize+1,stdin);
             pthread_create(&clientthread,NULL,clientArgInit,(struct datapack*)&paket);
 
+            }
+            
+        if(strcmp(buffer,"cm\n") == 0){
+            struct datapack paket;
+ 
+            bzero(ipbuffer,buffersize);
+            printf("geben sie eine ip addresse fuer den clienten ein\n");
+            fgets(ipbuffer,buffersize+1,stdin);
+            paket.address = ipbuffer;
+            
+            printf("geben sie den port ein\n");
+            int x;
+            scanf("%d", &x);
+            paket.portnumber = x;
+            while ((getchar()) != '\n'); //clear space
+            
+            int firstlock = 1;
+            lock();
+            pthread_create(&clientthread,NULL,clientArgInitChatMode,(struct datapack*)&paket);
+            printf("Write message for the client to send, exit to exit\n");
+            while(strcmp(msgbuffer,"exit\n") != 0){
+                if(firstlock == 1){
+                    firstlock = 0;
+                    }
+                else{
+                    lock();
+                    }
+                    
+                fgets(msgbuffer,buffersize+1,stdin);
+                changeMessage(msgbuffer);
+                unlock();
+                }
+            close_client();
+            
+            
             }
             
         if(strcmp(buffer,"q\n") == 0){

@@ -1,10 +1,4 @@
-/*typedef struct ticket_lock {
-    pthread_cond_t cond;
-    pthread_mutex_t mutex;
-    unsigned long queue_head, queue_tail;
-} ticket_lock_t;
-
-#define TICKET_LOCK_INITIALIZER { PTHREAD_COND_INITIALIZER, PTHREAD_MUTEX_INITIALIZER }
+#include "ticketloop.h"
 
 void ticket_lock(ticket_lock_t *ticket)
 {
@@ -26,14 +20,3 @@ void ticket_unlock(ticket_lock_t *ticket)
     pthread_cond_broadcast(&ticket->cond);
     pthread_mutex_unlock(&ticket->mutex);
 }
-
-ticket_lock_t chatmutex;
-
-int lock(){
-    ticket_lock(&chatmutex);
-    }
-    
-int unlock(){
-    ticket_unlock(&chatmutex);
-    }*/
-    

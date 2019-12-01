@@ -33,6 +33,8 @@ struct ccp_contact{
 
 extern struct ccp_contact contactlist[46];
 
+int client_routine_chatmode(struct datapack mypack);//defined in client
+
 int put_string_in_sender_receiver(char* array, char* input);
 
 #define REQUEST_TO_OPEN_CONNECTION 0b00010000
