@@ -16,6 +16,8 @@ int msgSize_in_bytes; /* message byte size */
 int client_socket[MAXCLIENTS];
 int max_sd, activity, sd, new_socket;
 fd_set readfds; 
+int valread;
+int addrlen = sizeof(serveraddr);
 //--
 
 int close_server(){
@@ -99,35 +101,7 @@ static int init_clientfds(){
     }
 
 
-
-int init_server() {
-    
-    init_clientfds();
-    
-    create_socket();
-
-    setIPandPort();
-  
-    bindSocket();
-
-    listenSocket();
-
-    /* 
-    * main loop: wait for a connection request, read input line, 
-    * then close connection.
-    */
-    int valread;
-    int addrlen = sizeof(serveraddr);
-    while (1) {
-      
-    //clear the socket set
-    FD_ZERO(&readfds);
-      
-    //add master socket to set  
-    FD_SET(parentfd, &readfds);
-    max_sd = parentfd;
-      
-      
+static int addchilds(){
     //add child sockets to set  
     for (int i = 0 ; i < MAXCLIENTS ; i++){
         //socket descriptor
@@ -144,14 +118,10 @@ int init_server() {
             max_sd = sd;
             }
         }
-          
-    //wait for an activity on one of the sockets , timeout is NULL ,  
-    //so wait indefinitely
-    activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
-    if ((activity < 0) && (errno!=EINTR)){
-        printf("select error \n");
-        }
-        
+    return 0;
+    }
+    
+static int acceptConnections(){
     //If something happened on the master socket ,  
     //then its an incoming connection     
     if (FD_ISSET(parentfd, &readfds)){
@@ -170,7 +140,10 @@ int init_server() {
                 }
             }
         }
-        
+    return 0;
+    }
+    
+static int getMessages(){
     //GET MESSAGES
     //printf("server tries to read messages now\n");
     for (int i = 0; i < MAXCLIENTS; i++){
@@ -187,5 +160,45 @@ int init_server() {
             }
         }
     
+    }
+
+int init_server() {
+    
+    init_clientfds();
+    
+    create_socket();
+
+    setIPandPort();
+  
+    bindSocket();
+
+    listenSocket();
+
+    /* 
+    * main loop: wait for a connection request, read input line, 
+    * then close connection.
+    */
+    
+    while (1) {
+      
+        //clear the socket set
+        FD_ZERO(&readfds);
+      
+        //add master socket to set  
+        FD_SET(parentfd, &readfds);
+        max_sd = parentfd;
+      
+        addchilds();
+          
+        //wait for an activity on one of the sockets , timeout is NULL ,  
+        //so wait indefinitely
+        activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
+        if ((activity < 0) && (errno!=EINTR)){
+            printf("select error \n");
+            }
+            
+        acceptConnections();
+        
+        getMessages();
     }
 }

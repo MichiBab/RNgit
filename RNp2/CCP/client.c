@@ -5,11 +5,6 @@
 
 int socketfd;
 struct sockaddr_in serveraddress; 
-char* clientmessage;
-
-int changeMessage(char* msg){
-    clientmessage = msg;
-    }
 
 //fair mutex lock. priorities wont matter.
 ticket_lock_t chatmutex;
@@ -21,33 +16,13 @@ int lock(){
 int unlock(){
     ticket_unlock(&chatmutex);
     }
-    
 
-int client_routine(char* ip, char* message, int portnumber){
+int cr_connection_establishment(struct datapack package){
+    struct ccp ccp_data = package.ccppackage;
     init_client();
-    //printf("fertig mit client init\n");
-    connect_to_server(ip, portnumber);
-    //printf("fertig mit connect to server\n");
-    //testing send message
+    connect_to_server(package.address, package.portnumber);
+    write(socketfd, ccp_data, sizeof(ccp_data));
     
-    write(socketfd, message, maxcharactersize); 
-    sleep(1);
-    write(socketfd, message, maxcharactersize); 
-    printf("client has send the message\n");
-    
-    return 0;
-    }
-
-int client_routine_chatmode(struct datapack mypack){
-    init_client();
-    connect_to_server(mypack.address, mypack.portnumber);
-    while(1){
-        lock();
-        write(socketfd, clientmessage, maxcharactersize); 
-        unlock();
-        }
-    
-    return 0;
     }
 
 static int createSocket(){
@@ -103,5 +78,41 @@ int connect_to_server(char* inetAddress, int portnumber){
     
 int close_client(){
     close(socketfd);
+    return 0;
+    }
+    
+    
+
+//waren nur zum testen da-------------------------------------------------------------------------------------------------
+char* clientmessage;
+
+int changeMessage(char* msg){
+    clientmessage = msg;
+    }
+
+int client_routine(char* ip, char* message, int portnumber){
+    init_client();
+    //printf("fertig mit client init\n");
+    connect_to_server(ip, portnumber);
+    //printf("fertig mit connect to server\n");
+    //testing send message
+    
+    write(socketfd, message, maxcharactersize); 
+    sleep(1);
+    write(socketfd, message, maxcharactersize); 
+    printf("client has send the message\n");
+    
+    return 0;
+    }
+
+int client_routine_chatmode(struct datapack mypack){
+    init_client();
+    connect_to_server(mypack.address, mypack.portnumber);
+    while(1){
+        lock();
+        write(socketfd, clientmessage, maxcharactersize); 
+        unlock();
+        }
+    
     return 0;
     }

@@ -13,4 +13,5 @@ int client_routine(char* ip, char* message, int portnumber);
 int lock();
 int unlock();
 int changeMessage(char* msg);
+
 #endif
