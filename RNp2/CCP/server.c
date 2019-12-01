@@ -1,20 +1,22 @@
 #include "server.h"
 #include "generic.h"
 #include "ccp.h"
-
+#include <errno.h> 
 
 int parentfd; 
 int clientfd; 
 
 struct sockaddr_in serveraddr; 
-struct sockaddr_in clientaddr;
-
-struct hostent *hostp; /* client host info */
+//struct sockaddr_in clientaddr;
 
 char buffer[maxcharactersize]; /* message buffer */
 int msgSize_in_bytes; /* message byte size */
 
-
+//--select test
+int client_socket[MAXCLIENTS];
+int max_sd, activity, sd, new_socket;
+fd_set readfds; 
+//--
 
 int close_server(){
     close(parentfd);
@@ -32,6 +34,16 @@ static int create_socket(){
     * build the server's Internet address
     */
     bzero((char *) &serveraddr, sizeof(serveraddr));
+    
+    //set master socket to allow multiple connections ,  
+    //this is just a good habit, it will work without this  
+    int opt = 1;
+    if( setsockopt(parentfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 ) {   
+        printf("setsockopt");   
+        exit(1);   
+    }
+    
+    
     return 0;
     }
     
@@ -64,19 +76,33 @@ static int listenSocket(){
     return 0;
     }
 
-static int readFromSocket(){
+static int readFromSocket(int socket){
     bzero(buffer, maxcharactersize);
-    msgSize_in_bytes = read(clientfd, buffer, maxcharactersize);
+    msgSize_in_bytes = read(socket, buffer, maxcharactersize);
     if (msgSize_in_bytes < 0) {
         printf("ERROR reading from socket");
         exit(1);
     }
+    else if(msgSize_in_bytes == 0){
+        return 1;//for closing
+        }
     printf("server received %d bytes: %s\n", msgSize_in_bytes, buffer);
     return 0;
     }
 
+//initialise all client_socket[] to 0 so not checked  
+static int init_clientfds(){
+    for (int i = 0; i < MAXCLIENTS; i++){   
+        client_socket[i] = 0;   
+        }   
+    return 0;
+    }
+
+
+
 int init_server() {
     
+    init_clientfds();
     
     create_socket();
 
@@ -86,21 +112,80 @@ int init_server() {
 
     listenSocket();
 
-  /* 
-   * main loop: wait for a connection request, read input line, 
-   * then close connection.
-   */
-  int clientlen = sizeof(clientaddr);
-  while (1) {
-
-    clientfd = accept(parentfd, (struct sockaddr *) &clientaddr, &clientlen);
-    if (clientfd < 0) {
-        printf("ERROR accepting a client");
-        exit(1);
-    }
+    /* 
+    * main loop: wait for a connection request, read input line, 
+    * then close connection.
+    */
+    int valread;
+    int addrlen = sizeof(serveraddr);
+    while (1) {
+      
+    //clear the socket set
+    FD_ZERO(&readfds);
+      
+    //add master socket to set  
+    FD_SET(parentfd, &readfds);
+    max_sd = parentfd;
+      
+      
+    //add child sockets to set  
+    for (int i = 0 ; i < MAXCLIENTS ; i++){
+        //socket descriptor
+        sd = client_socket[i];
+          
+        //if valid socket descriptor then add to read list
+        if(sd > 0){
+            FD_SET( sd , &readfds);
+            }
+          
+          
+        //if valid socket descriptor then add to read list
+        if(sd > 0){
+            max_sd = sd;
+            }
+        }
+          
+    //wait for an activity on one of the sockets , timeout is NULL ,  
+    //so wait indefinitely
+    activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
+    if ((activity < 0) && (errno!=EINTR)){
+        printf("select error \n");
+        }
+        
+    //If something happened on the master socket ,  
+    //then its an incoming connection     
+    if (FD_ISSET(parentfd, &readfds)){
+        new_socket = accept(parentfd, (struct sockaddr *)&serveraddr, (socklen_t*)&addrlen);
+        if (new_socket < 0){
+            printf("error accept\n");
+            exit(1);
+            }
+        //add new socket to array of sockets  
+        for (int i = 0; i < MAXCLIENTS; i++){   
+            //if position is empty  
+            if( client_socket[i] == 0 ) {   
+                client_socket[i] = new_socket;   
+                printf("Adding to list of sockets as %d\n" , i);   
+                break;   
+                }
+            }
+        }
+        
+    //GET MESSAGES
+    //printf("server tries to read messages now\n");
+    for (int i = 0; i < MAXCLIENTS; i++){
+        sd = client_socket[i];    
+        
+        //if there is a valid socket
+        if (FD_ISSET( sd , &readfds)){
+           //printf("server got a valid socket\n");
+                if(readFromSocket(client_socket[i])){
+                    printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
+                    close( sd );
+                    client_socket[i] = 0;
+                }
+            }
+        }
     
-    readFromSocket();
-
-    close(clientfd);
-  }
+    }
 }

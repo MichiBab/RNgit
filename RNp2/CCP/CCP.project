@@ -8,6 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="zwischenspeicher"/>
     <File Name="server.h"/>
     <File Name="server.c"/>
     <File Name="generic.h"/>

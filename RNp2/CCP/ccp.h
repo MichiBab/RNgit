@@ -1,6 +1,7 @@
 #ifndef ccp_h
 #define ccp_h
 #define maxcontacts 46 //what can fit in message block
+
 #pragma pack(push, 1) // exact fit - no padding
 struct ccp{
     char versionnum;
@@ -9,6 +10,16 @@ struct ccp{
     char senderAlias[16];
     char receiverAlias[16];
     char message[1024];
+    };
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct datapack{
+    
+    char* address;
+    struct ccp ccppackage;
+    int portnumber;
+    
     };
 #pragma pack(pop)
 

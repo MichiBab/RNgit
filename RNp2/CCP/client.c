@@ -1,22 +1,27 @@
 #include "client.h"
 #include "generic.h"
 #include "ccp.h"
+#include <pthread.h>
+#include <semaphore.h>
 
 int socketfd;
-int connectionfd;
 struct sockaddr_in serveraddress; 
 
+
 int client_routine(char* ip, char* message, int portnumber){
-    printf("uebergebene ip:%s\n",ip);
-    printf("uebergebene message:%s\n",message);
-    printf("uebergebene portnum:%d\n",portnumber);
     init_client();
+    printf("fertig mit client init\n");
     connect_to_server(ip, portnumber);
-    testing_sendMessage(message);
-    close_client();
-    printf("client has send the message and closed itself\n");
+    printf("fertig mit connect to server\n");
+    //testing send message
+    
+    write(socketfd, message, maxcharactersize); 
+
+    printf("client has send the message\n");
+    
     return 0;
     }
+    
 
 static int createSocket(){
     //AF_INET = Address familiy, here IPF4; SOCK STREAM Means TCP connection
@@ -68,9 +73,6 @@ int connect_to_server(char* inetAddress, int portnumber){
     return 0;
     }
     
-int testing_sendMessage(char* message){
-    write(socketfd, message, maxcharactersize); 
-    }
     
 int close_client(){
     close(socketfd);

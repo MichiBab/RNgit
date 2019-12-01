@@ -3,8 +3,9 @@
 #include "client.h"
 #include "generic.h"
 #include <pthread.h>
+#include "ccp.h"
 
-#define buffersize 16
+#define buffersize 1024
 char buffer[buffersize];
 char portbuffer[buffersize];
 char ipbuffer[buffersize];
@@ -12,26 +13,7 @@ char msgbuffer[buffersize];
 pthread_t serverthread;
 pthread_t clientthread;
 
-#pragma pack(push, 1) // exact fit - no padding
-struct ccp{
-    char versionnum;
-    char typeFlags;
-    char reserved[2];
-    char senderAlias[16];
-    char receiverAlias[16];
-    char message[1024];
-    };
-#pragma pack(pop)
 
-#pragma pack(push, 1)
-struct datapack{
-    
-    char* address;
-    struct ccp ccppackage;
-    int portnumber;
-    
-    };
-#pragma pack(pop)
 
 
 /**
@@ -44,13 +26,11 @@ void* clientArgInit(void* arg){
     }
 
 
-
-
 int main(int argc, char **argv)
 {
     int exitbool = 1;//abbruch der while schleife
     
-    printf("s for create server, c for client, h for help, q for exit\n");
+    printf("s for create server, c for init a clien, cc for close client, h for help, q for exit\n");
 
     while(exitbool){
         bzero(buffer,buffersize);
@@ -58,6 +38,10 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"s\n") == 0){
             pthread_create(&serverthread,NULL,init_server,NULL);
+            }
+        
+        if(strcmp(buffer,"cc\n") == 0){
+            close_client();
             }
         
         if(strcmp(buffer,"c\n") == 0){
@@ -77,15 +61,16 @@ int main(int argc, char **argv)
             bzero(paket.ccppackage.message,buffersize);
             printf("geben sie eine nachricht an die versendet werden soll\n");
             fgets(paket.ccppackage.message,buffersize+1,stdin);
+            pthread_create(&clientthread,NULL,clientArgInit,(struct datapack*)&paket);
 
-            pthread_create(&serverthread,NULL,clientArgInit,(struct datapack*)&paket);
             }
+            
         if(strcmp(buffer,"q\n") == 0){
             exitbool = 0;
             }
         
         if(strcmp(buffer,"h\n") == 0){
-            printf("s for create server, c for client, h for help, q for exit\n");
+            printf("s for create server, c for init a client, cm for init client with chat mode,\n cc for close client, h for help, q for exit\n");
             }
         
         }
