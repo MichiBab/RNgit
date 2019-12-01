@@ -10,4 +10,7 @@
 #include <arpa/inet.h>
 int init_server();
 int close_server();
+int get_my_ip(char* input);
+extern char* serverip_address;
+int set_serverip_address(char* msg);
 #endif

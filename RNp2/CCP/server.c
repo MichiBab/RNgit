@@ -6,6 +6,8 @@
 int parentfd; 
 int clientfd; 
 
+char* serverip_address;
+
 struct sockaddr_in serveraddr; 
 //struct sockaddr_in clientaddr;
 
@@ -24,6 +26,11 @@ int close_server(){
     close(parentfd);
     }
 
+int set_serverip_address(char* msg){
+    serverip_address = (char*) malloc(sizeof(char)*16);
+    strncpy(serverip_address, msg, 16);
+    return 0;
+    }
 
 static int create_socket(){
     parentfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,6 +53,11 @@ static int create_socket(){
     }
     
     
+    return 0;
+    }
+    
+int get_my_ip(char* input){
+    inet_ntop(AF_INET, &(serveraddr.sin_addr), input, INET_ADDRSTRLEN);
     return 0;
     }
     
@@ -89,10 +101,8 @@ static int readFromSocket(int socket){
     else if(msgSize_in_bytes == 0){
         return 1;//for closing
         }
-    //printf("server received %d bytes: %s\n", msgSize_in_bytes, buffer);
-    //--- todo TESTING
-    //buffer
     
+    //casting 
     struct ccp ccp_tmp;
     *buffer = (char*) &ccp_tmp;
     struct ccp *ccp_data;

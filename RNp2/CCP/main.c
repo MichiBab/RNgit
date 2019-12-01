@@ -45,6 +45,7 @@ static int testingstuff(){
     inet_pton(AF_INET, "127.0.0.1", &addr);
     printf("%d\n", addr.s_addr);
     
+    
     char buf[16];
     inet_ntop(AF_INET, &addr, buf, 16);
     printf("%s\n", buf);
@@ -67,7 +68,7 @@ static int testingstuff(){
 
 int main(int argc, char **argv)
 {
-    testingstuff();
+    
 
     int exitbool = 1;//abbruch der while schleife
     
@@ -76,6 +77,11 @@ int main(int argc, char **argv)
     fgets(usernamebuffer,16+1,stdin);
     setusername(usernamebuffer);
     
+    printf("enter your socket server ip address\n");
+    bzero(ipbuffer,16);
+    fgets(ipbuffer,16+1,stdin);
+    set_serverip_address(ipbuffer);
+    bzero(ipbuffer,16);
     
     printf("s for create server, c for init a client, cm for chat mode, \ncc for close client, h for help, q for exit, p for print contacts\nch for hello\n");
 
@@ -89,6 +95,8 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"s\n") == 0){
             pthread_create(&serverthread,NULL,init_server,NULL);
+            sleep(2);
+            create_our_contact();
             }
         
         if(strcmp(buffer,"ch\n") == 0){

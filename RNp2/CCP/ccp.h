@@ -31,13 +31,6 @@ struct ccp_contact{
     };
 #pragma pack(pop)
 
-extern struct ccp_contact contactlist[maxcontacts];
-extern char our_username[16];
-int client_routine_chatmode(struct datapack mypack);//defined in client
-int cr_connection_establishment(struct datapack package); //defined in client
-int set_ccp_hello(struct ccp* hellopack, char* receivername);
-int put_contact_list_in_message_of_ccp(struct ccp* pack);
-int put_string_in_sender_receiver(char* array, char* input);
 
 #define REQUEST_TO_OPEN_CONNECTION 0b00010000
 #define ACKNOWLEDGE_OPENING_CONNECTION 0b00010001
@@ -47,6 +40,21 @@ int put_string_in_sender_receiver(char* array, char* input);
 #define REQUEST_IF_PEER_IS_ALIVE 0b00000010
 #define ACKNOWLEDGE_PEER_IS_DEAD 0b00000011
 
+
+
+extern struct ccp_contact contactlist[maxcontacts];
+extern char our_username[16];
+
+int printf_port(char arr[2]);
+int printf_ipv4(char arr[4]);
+int client_routine_chatmode(struct datapack mypack);//defined in client
+int cr_connection_establishment(struct datapack package); //defined in client
+int set_ccp_hello(struct ccp* hellopack, char* receivername);
+int put_contact_list_in_message_of_ccp(struct ccp* pack);
+int put_string_in_sender_receiver(char* array, char* input);
+int create_our_contact();
+int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
+int add_contact(struct ccp_contact con);
 int setusername(char* username);
 #endif

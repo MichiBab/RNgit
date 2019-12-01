@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include "server.h"
+#include "generic.h"
 
 /*struct ccp{
     char versionnum;
@@ -17,9 +19,31 @@ struct ccp_contact{
     char contactIPv4[4];
     char contactPort[2];
     };*/
-     
+
 struct ccp_contact contactlist[maxcontacts];//GLOBAL
 char our_username[16];//GLOBAL
+
+
+//if all data is 0, there is no contact
+//returns 0 if nullcontact, else 1
+static int check_if_nullcontact(ccp_contact con){
+    for(int i = 0; i < 16; i++){
+        if(con.contactalias[i] != 0){
+            return 1;
+            }
+        if(i<4){
+            if(con.contactIPv4[i] != 0){
+                return 1;
+                }
+            }
+        if(i<2){
+            if(con.contactPort[i] != 0){
+                return 1;
+                }
+            }
+        }
+    return 0;
+    }
 
 //17 to fill the 16th byte with snprintf
 int put_string_in_sender_receiver(char* array, char* input){
@@ -62,6 +86,42 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack){
     return 0;
     }
 
+int add_contact(struct ccp_contact con){
+    
+    }
+
+int create_our_contact(){
+
+    struct ccp_contact *me = (struct ccp_contact*)malloc(sizeof(struct ccp_contact));
+    
+    put_string_in_sender_receiver(me->contactalias,our_username);
+
+    
+    //char* ip_address_fromserver;
+    //ip_address_fromserver = malloc( sizeof(char)*4);
+   // get_my_ip(ip_address_fromserver);
+    
+    struct in_addr addr;
+    //hier muss ip_address_fromserver hin
+    
+    //inet_pton(AF_INET, ip_address_fromserver, &addr);
+    inet_pton(AF_INET, serversocket_ip_address, &addr);
+    int myip;
+    myip = addr.s_addr;
+    
+    me->contactIPv4[3] = (myip & 0b11111111<<24) >> 24;
+    me->contactIPv4[2] = (myip & 0b11111111<<16) >> 16;
+    me->contactIPv4[1] = (myip & 0b11111111<<8) >> 8;
+    me->contactIPv4[0] = (myip & 0b11111111);
+    
+    int port = PORT;
+    me->contactPort[1] = (port & 0b11111111<<8) >> 8;
+    me->contactPort[0] = (port & 0b11111111);
+    
+    print_contact(me);
+    
+    return 0;
+    }
 
 int print_my_contactlist(){
     
@@ -74,10 +134,11 @@ int setusername(char* username){
     return 0;
     }
     
-int print_contact(struct ccp_contact con){
-    printf("Alias: %s",con.contactalias);
-    printf_ipv4(con.contactIPv4);
-    
+int print_contact(struct ccp_contact* con){
+    printf("Alias: %s",con->contactalias);
+    printf_ipv4(con->contactIPv4);
+    printf_port(con->contactPort);
+    return 0;
     }
     
 int printf_ipv4(char arr[4]){
@@ -85,12 +146,16 @@ int printf_ipv4(char arr[4]){
     char buf[16];
     inet_ntop(AF_INET, &ip_as_integer, buf, 16);
     printf("IPv4 Address: %s\n", buf);
-    
     return 0;
     }
 
 int printf_port(char arr[2]){
-    short port_as_integer = (  ( arr[1] << 8 ) | arr[0] );
-    printf("Port: %d",port_as_integer);
+    uint16_t port_as_integer = 0;
+    char maskOne = arr[1];
+    char maskZero = arr[0];
+    uint16_t firstmask = 0b1111111100000000 & (maskOne<<8);
+    uint16_t secondmask = 0b0000000011111111 & maskZero;
+    port_as_integer = firstmask | secondmask;
+    printf("Port: %d\n",port_as_integer);
     return 0;
     }
