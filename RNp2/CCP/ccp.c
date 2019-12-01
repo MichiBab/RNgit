@@ -26,7 +26,7 @@ char our_username[16];//GLOBAL
 
 //if all data is 0, there is no contact
 //returns 0 if nullcontact, else 1
-static int check_if_nullcontact(ccp_contact con){
+static int check_if_nullcontact(struct ccp_contact con){
     for(int i = 0; i < 16; i++){
         if(con.contactalias[i] != 0){
             return 1;
@@ -86,8 +86,15 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack){
     return 0;
     }
 
+
+//method adds new contact to the first open spot
 int add_contact(struct ccp_contact con){
-    
+    for(int i = 0; i < maxcontacts; i++){
+        if(check_if_nullcontact(contactlist[i])==0){
+            contactlist[i] = con;
+            break;
+            }
+        }
     }
 
 int create_our_contact(){
@@ -118,7 +125,9 @@ int create_our_contact(){
     me->contactPort[1] = (port & 0b11111111<<8) >> 8;
     me->contactPort[0] = (port & 0b11111111);
     
-    print_contact(me);
+    
+    add_contact(*me);
+    print_contact(&contactlist[0]);
     
     return 0;
     }
