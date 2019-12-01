@@ -81,6 +81,7 @@ static int listenSocket(){
 static int readFromSocket(int socket){
     bzero(buffer, maxcharactersize);
     msgSize_in_bytes = read(socket, buffer, maxcharactersize);
+    printf("msginbytes: %d",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
         printf("ERROR reading from socket");
         exit(1);

@@ -40,7 +40,7 @@ void* clientSendHello(void* arg){
     }
 
 static int testingstuff(){
-
+    struct ccp_contact con;
     put_string_in_sender_receiver(con.contactalias, "testcontact");
     con.contactIPv4[0] = "1";
     con.contactIPv4[1] = "4";
@@ -50,17 +50,13 @@ static int testingstuff(){
     con.contactPort[1] = "8";
     contactlist[0] = con;
     contactlist[1] = con;
-
     return 0;
     }
 
 int main(int argc, char **argv)
 {
     testingstuff();
-  
-    
-    
-    
+
     int exitbool = 1;//abbruch der while schleife
     
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
@@ -69,7 +65,7 @@ int main(int argc, char **argv)
     setusername(usernamebuffer);
     
     
-    printf("s for create server, c for init a client, cm for chat mode, \ncc for close client, h for help, q for exit, p for print contacts\n ch for hello");
+    printf("s for create server, c for init a client, cm for chat mode, \ncc for close client, h for help, q for exit, p for print contacts\nch for hello\n");
 
     while(exitbool){
         bzero(buffer,buffersize);
@@ -84,8 +80,9 @@ int main(int argc, char **argv)
             }
         
         if(strcmp(buffer,"ch\n") == 0){
-            struct datapack paket;
-            
+            struct datapack dpaket;
+     
+           // bzero(paket,sizeof(paket));
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
@@ -93,16 +90,16 @@ int main(int argc, char **argv)
             bzero(ipbuffer,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
-            paket.address = ipbuffer;
+            dpaket.address = ipbuffer;
             
             printf("geben sie den port ein\n");
             int x;
             scanf("%d", &x);
-            paket.portnumber = x;
+            dpaket.portnumber = x;
             while ((getchar()) != '\n'); //clear space
             
-            set_ccp_hello(&paket, receiverbuffer);
-            pthread_create(&clientthread,NULL,clientArgInit,(struct datapack*)&paket);
+            set_ccp_hello(&dpaket.ccppackage, receiverbuffer);
+            pthread_create(&clientthread,NULL,clientSendHello,(struct datapack*)&dpaket);
             
             }
         
@@ -112,7 +109,7 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"c\n") == 0){
             struct datapack paket;
- 
+           // bzero(paket,sizeof(paket));
             bzero(ipbuffer,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
@@ -127,13 +124,14 @@ int main(int argc, char **argv)
             bzero(paket.ccppackage.message,buffersize);
             printf("geben sie eine nachricht an die versendet werden soll\n");
             fgets(paket.ccppackage.message,buffersize+1,stdin);
-            pthread_create(&clientthread,NULL,clientSendHello,(struct datapack*)&paket);
+            pthread_create(&clientthread,NULL,clientArgInit,(struct datapack*)&paket);
 
             }
             
         if(strcmp(buffer,"cm\n") == 0){
             struct datapack paket;
- 
+           // bzero(paket,sizeof(paket));
+            
             bzero(ipbuffer,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);

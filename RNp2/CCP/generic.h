@@ -3,5 +3,5 @@
 #define MAXCHARACTERS 1024 
 #define PORT 8080 
 #define MAXCLIENTS 20
-#define maxcharactersize (sizeof(char)*MAXCHARACTERS)
+#define maxcharactersize 1060 // ccp paket size
 #endif

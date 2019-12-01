@@ -19,9 +19,11 @@ int unlock(){
 
 int cr_connection_establishment(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
+    printf("uebergeben ip: %s\n", package.address);
+    printf("uebergeben port: %d\n",package.portnumber);
     init_client();
     connect_to_server(package.address, package.portnumber);
-    write(socketfd, ccp_data, sizeof(ccp_data));
+    write(socketfd, &ccp_data, sizeof(ccp_data));
     
     }
 
