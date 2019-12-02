@@ -123,7 +123,7 @@ int put_message_in_cpp(struct ccp* pack, char* message){
 
 
 int update_contact_list(struct ccp_contact* clientlist){
-    int marker[maxcontacts];//marking new contacts
+    int* marker = (int*) malloc(sizeof(int)*maxcontacts);//marking new contacts
     struct ccp_contact our_tmp;
     struct ccp_contact client_tmp;
     for(int i = 0; i<maxcontacts;i++){
@@ -140,13 +140,17 @@ int update_contact_list(struct ccp_contact* clientlist){
                   //  }
                 if(y==(maxcontacts-1)){//means its not in our list
                         add_contact(client_tmp);
-                        marker[y] = 1;//Mark new connection info
+                        marker[i] = 1;//Mark new connection info
                         }
                 }
             }
         }
     //TODO: send a hello paket to every marked entry/ == new contacts    
-    
+    for(int i = 0; i<maxcontacts;i++){
+        if(marker[i]){
+            printf("new entry from clientlist on index: %d\n",i);
+            }
+        }
     return 0;
     }
 

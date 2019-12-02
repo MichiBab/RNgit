@@ -130,6 +130,7 @@ int close_client(){
     
 
 //waren nur zum testen da-------------------------------------------------------------------------------------------------
+/*
 char* clientmessage;
 
 int changeMessage(char* msg){
@@ -161,4 +162,4 @@ int client_routine_chatmode(struct datapack mypack){
         }
     
     return 0;
-    }
+    }*/
