@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) 
+Objects0=../build-$(ConfigurationName)/CCP/ccp.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) 
 
 
 
@@ -114,14 +114,6 @@ PreBuild:
 
 ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix): main.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix) main.c
-
-../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix): ticketloop.c ../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ticketloop.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ticketloop.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix): ticketloop.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ticketloop.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ticketloop.c$(DependSuffix) -MM ticketloop.c
-
-../build-$(ConfigurationName)/CCP/ticketloop.c$(PreprocessSuffix): ticketloop.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ticketloop.c$(PreprocessSuffix) ticketloop.c
 
 ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)

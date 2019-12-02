@@ -54,42 +54,55 @@ int put_string_in_sender_receiver(char* array, char* input){
     return 0;
     }
     
+static int put_generic_name_data(struct ccp* pack, char* receivername){
+    pack->versionnum = '1';
+    put_string_in_sender_receiver(pack->receiverAlias,receivername);
+    put_string_in_sender_receiver(pack->senderAlias,our_username);
+    return 0;
+    }
+
 int set_ccp_hello(struct ccp* hellopack, char* receivername){
-    hellopack->versionnum = 1;
+    put_generic_name_data(hellopack,receivername);
     hellopack->typeFlags = REQUEST_TO_OPEN_CONNECTION;
-    for(int i = 0; i<contactaliassize;i++){
-        hellopack->senderAlias[i] = our_username[i];
-        }
-    put_string_in_sender_receiver(hellopack->receiverAlias,receivername);
-    put_string_in_sender_receiver(hellopack->senderAlias,our_username);
     put_contact_list_in_message_of_ccp(hellopack);
+    return 0;
+    }
     
+int set_ccp_hello_reply(struct ccp* hellopack, char* receivername){
+    put_generic_name_data(hellopack,receivername);
+    hellopack->typeFlags = ACKNOWLEDGE_OPENING_CONNECTION;
+    put_contact_list_in_message_of_ccp(hellopack);
     return 0;
     }
     
 //msg is unimportant
 int set_ccp_update(struct ccp* updatepack, char* receivername){
-    updatepack->versionnum = 1;
+    put_generic_name_data(updatepack,receivername);
     updatepack->typeFlags = REQUEST_IF_PEER_IS_ALIVE;
-    put_string_in_sender_receiver(updatepack->receiverAlias,receivername);
-    put_string_in_sender_receiver(updatepack->senderAlias,our_username);
     return 0;
+    }
+
+int set_ccp_update_reply(struct ccp* updatepack, char* receivername){
+    put_generic_name_data(updatepack,receivername);
+    updatepack->typeFlags = ACKNOWLEDGE_PEER_IS_STILL_ALIVE;
     }
 
 int set_ccp_message(struct ccp* msgpack, char* message, char* receivername){
-    
-    msgpack->versionnum = 1;
+    put_generic_name_data(msgpack,receivername);
     msgpack->typeFlags = SEND_A_MESSAGE;
-    put_message_in_cpp(msgpack,message);
-    
-    put_string_in_sender_receiver(msgpack->receiverAlias,receivername);
-    put_string_in_sender_receiver(msgpack->senderAlias,our_username);
-    
+    put_message_in_ccp(msgpack,message);
     return 0;
+    }
+    
+int set_ccp_message_reply(struct ccp* msgpack, char* receivername){
+    put_generic_name_data(msgpack,receivername);
+    msgpack->typeFlags = ACKNOWLEDGE_RECEIVING_MESSAGE;
+    return 0;
+    
     }
 
 int set_ccp_bye(struct ccp* byepack, char* receivername){
-    byepack->versionnum = 1;
+    byepack->versionnum = '1';
     byepack->typeFlags = PEER_DISCONNECTED;
     put_string_in_sender_receiver(byepack->receiverAlias,receivername);
     put_string_in_sender_receiver(byepack->senderAlias,our_username);
@@ -112,8 +125,9 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack){
         }
     return 0;
     }
+    
 
-int put_message_in_cpp(struct ccp* pack, char* message){
+int put_message_in_ccp(struct ccp* pack, char* message){
     bzero(pack->message,MAXCHARACTERS);
     int max;
     max = (strlen(message) < MAXCHARACTERS) ? strlen(message) : MAXCHARACTERS;
@@ -203,6 +217,17 @@ int print_my_contactlist(){
     for(int i = 0; i<maxcontacts;i++){
         if(check_if_nullcontact(contactlist[i])==1){
             print_contact(&contactlist[i]);
+            }
+        }
+    
+    return 0;
+    }
+    
+int print_a_contactlist_test(struct ccp_contact list[maxcontacts]){
+    
+    for(int i = 0; i<maxcontacts;i++){
+        if(check_if_nullcontact(list[i])==1){
+            print_contact(&list[i]);
             }
         }
     

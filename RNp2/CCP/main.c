@@ -15,17 +15,17 @@ char msgbuffer[buffersize];
 pthread_t serverthread;
 pthread_t clientthread;
 
-    
+//--------TRHEADMETHODS-------------------------------------------------------
 void* clientSendHello(void* arg){
     struct datapack *data = (struct datapack*) arg;
-    cr_connection_establishment(*data);
+    cr_send_hello(*data);
     return 0;
     }
-    
+
 //if connection is already established! Define receivername for datapack for this one
 void* clientSendUpdate(void* arg){
     struct datapack *data = (struct datapack*) arg;
-    cr_update_send(*data);
+    cr_send_update(*data);
     return 0;
     }
     
@@ -34,7 +34,39 @@ void* clientSentMessage(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_sent_msg(*data);
     return 0;
+    }    
+    
+ void* clientSentBye(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_bye(data->ccppackage);
+    return 0;
+    }   
+    
+
+
+void* clientSendHelloReply(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_send_hello_reply(*data);
+    return 0;
     }
+
+void* clientSendUpdateReply(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_send_update_reply(*data);
+    return 0;
+    }
+
+void* clientSentMessageReply(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_sent_msg_reply(*data);
+    return 0;
+    }
+    
+
+
+
+//-------------------------------------------------------------------------
+
 
 static int testing(){
     
@@ -70,8 +102,8 @@ int main(int argc, char **argv)
     bzero(ipbuffer,16);
     create_our_contact();
     
-    testing();
-    char* helpmsg = "s for create server, cm for chat mode, \ncc for close client, h for help, q for exit, p for print contacts\nch for hello\n";
+    //testing();
+    char* helpmsg = "s for create server, c for sending a message to a client, \ncc for close client, h for help, q for exit, p for print contacts\nch for hello\n";
     printf("%s",helpmsg);
     while(exitbool){
         bzero(buffer,buffersize);
@@ -86,27 +118,73 @@ int main(int argc, char **argv)
             
             }
         
-        if(strcmp(buffer,"ch\n") == 0){
-            struct datapack dpaket;
+        if(strcmp(buffer,"c\n") == 0){
+            pthread_t halloclient;
+            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack*));
     
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
+            dpaket->receivername = receiverbuffer;
             
             bzero(ipbuffer,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
-            dpaket.address = ipbuffer;
+            dpaket->address = ipbuffer;
             
             printf("geben sie den port ein\n");
             int x;
             scanf("%d", &x);
-            dpaket.portnumber = x;
+            dpaket->portnumber = x;
             while ((getchar()) != '\n'); //clear space
             
-            set_ccp_hello(&dpaket.ccppackage, receiverbuffer);
-            pthread_create(&clientthread,NULL,clientSendHello,(struct datapack*)&dpaket);
+            pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
             
+            //hier muss nun auf das hello reply gewartet werden. ???
+            pthread_join(halloclient,0);
+            
+            pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
+            //hier muss auf das update reply gewartet werden. ???
+            pthread_join(halloclient,0);
+            
+            printf("MESSAGE MODE, TERMINATE WITH exit\n");
+  
+            
+            while(strcmp(msgbuffer,"exit\n") != 0){
+                bzero(msgbuffer,buffersize);
+                printf("geben sie eine nachricht zum versenden ein:\n");
+                fgets(msgbuffer,buffersize+1,stdin);
+                if(strcmp(msgbuffer,"exit\n") != 0){
+                    dpaket->msg = msgbuffer;
+                    pthread_create(&halloclient,NULL,clientSentMessage,(struct datapack*)dpaket);
+                    pthread_join(halloclient,0);
+                    }
+                }
+            
+            }
+        
+        if(strcmp(buffer,"ch\n") == 0){
+            pthread_t halloclient;
+            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack*));
+    
+            bzero(receiverbuffer,buffersize);
+            printf("Geben sie den namen des Empfaengers ein\n");
+            fgets(receiverbuffer,buffersize+1,stdin);
+            dpaket->receivername = receiverbuffer;
+            
+            bzero(ipbuffer,buffersize);
+            printf("geben sie eine ip addresse fuer den clienten ein\n");
+            fgets(ipbuffer,buffersize+1,stdin);
+            dpaket->address = ipbuffer;
+            
+            printf("geben sie den port ein\n");
+            int x;
+            scanf("%d", &x);
+            dpaket->portnumber = x;
+            while ((getchar()) != '\n'); //clear space
+            
+            pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
+            free(dpaket);
             }
         
         if(strcmp(buffer,"cc\n") == 0){

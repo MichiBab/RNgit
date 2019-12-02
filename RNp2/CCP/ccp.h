@@ -42,7 +42,7 @@ struct ccp_contact{
 #define SEND_A_MESSAGE 0b00000100
 #define ACKNOWLEDGE_RECEIVING_MESSAGE 0b00000101
 #define REQUEST_IF_PEER_IS_ALIVE 0b00000010
-#define ACKNOWLEDGE_PEER_IS_DEAD 0b00000011
+#define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00000011
 
 
 
@@ -52,18 +52,29 @@ extern char our_username[16];
 int printf_port(char arr[2]);
 int printf_ipv4(char arr[4]);
 
-int cr_connection_establishment(struct datapack package); //defined in client
-int cr_update_send(struct datapack package); //defined in client
+//CLIENT ROUTINES
+int cr_send_hello(struct datapack package); //defined in client
+int cr_send_hello_reply(struct datapack package); //defined in client
+int cr_send_update(struct datapack package); //defined in client
+int cr_send_update_reply(struct datapack package); //defined in client
 int cr_sent_msg(struct datapack package); //defined in client
+int cr_sent_msg_reply(struct datapack package); //defined in client
 int cr_bye(struct ccp ccp_pack); //defined in client
 
+//CCP PAKET SET
 int set_ccp_hello(struct ccp* hellopack, char* receivername);
+int set_ccp_hello_reply(struct ccp* hellopack, char* receivername);
 int set_ccp_update(struct ccp* updatepack, char* receivername);
+int set_ccp_update_reply(struct ccp* updatepack, char* receivername);
 int set_ccp_message(struct ccp* msgpack, char* message, char* receivername);
+int set_ccp_message_reply(struct ccp* msgpack, char* receivername);
 int set_ccp_bye(struct ccp* byepack, char* receivername);
+
+int print_a_contactlist_test(struct ccp_contact list[maxcontacts]);
 
 int put_contact_list_in_message_of_ccp(struct ccp* pack);
 int put_string_in_sender_receiver(char* array, char* input);
+int put_message_in_ccp(struct ccp* pack, char* message);
 
 int create_our_contact();
 int print_contact(struct ccp_contact* con);
@@ -71,7 +82,6 @@ int print_my_contactlist();
 
 int add_contact(struct ccp_contact con);
 int setusername(char* username);
-int put_message_in_cpp(struct ccp* pack, char* message);
 int update_contact_list(struct ccp_contact* clientlist);
 int check_if_nullcontact(struct ccp_contact con);
 

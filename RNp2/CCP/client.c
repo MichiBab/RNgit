@@ -1,23 +1,15 @@
 #include "client.h"
 #include "generic.h"
 #include "ccp.h"
-#include "ticketloop.h"
+
 
 //int socketfd;
 //struct sockaddr_in serveraddress; 
 
-//fair mutex lock. priorities wont matter.
-ticket_lock_t chatmutex;
 
-int lock(){
-    ticket_lock(&chatmutex);
-    }
+
+static int send_routine(struct datapack package){
     
-int unlock(){
-    ticket_unlock(&chatmutex);
-    }
-
-int cr_connection_establishment(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     init_client( &package.serveraddress, &package.socketfd);
     connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd);
@@ -25,26 +17,43 @@ int cr_connection_establishment(struct datapack package){
     close_client(&package.socketfd);
     return 0;
     }
+
+int cr_send_hello(struct datapack package){
+    set_ccp_hello(&package.ccppackage,package.receivername);
+    send_routine(package);
+    return 0;
+    }
     
-int cr_update_send(struct datapack package){
+int cr_send_hello_reply(struct datapack package){
+    set_ccp_hello_reply(&package.ccppackage, package.receivername);
+    send_routine(package);
+    return 0;
+    }
+    
+int cr_send_update(struct datapack package){
     set_ccp_update(&package.ccppackage, package.receivername);
-    struct ccp ccp_data = package.ccppackage;
-    init_client( &package.serveraddress, &package.socketfd);
-    connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd);
-    write(package.socketfd, &ccp_data, sizeof(ccp_data));
-    close_client(&package.socketfd);
+    send_routine(package);
+    return 0;
+    }
+    
+int cr_send_update_reply(struct datapack package){
+    set_ccp_update_reply(&package.ccppackage, package.receivername);
+    send_routine(package);
     return 0;
     }
     
 int cr_sent_msg(struct datapack package){
     set_ccp_message(&package.ccppackage, package.msg, package.receivername);
-    struct ccp ccp_data = package.ccppackage;
-    init_client( &package.serveraddress, &package.socketfd);
-    connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd);
-    write(package.socketfd, &ccp_data, sizeof(ccp_data));
-    close_client(&package.socketfd);
+    send_routine(package);
     return 0;
     }
+
+int cr_sent_msg_reply(struct datapack package){
+    set_ccp_message_reply(&package.ccppackage, package.receivername);
+    send_routine(package);
+    return 0;
+    }
+
 
 //sending a bye package to everyone in the contact list except urself.
 //checks if client is not null, if so: set a bye package, init a socket
@@ -117,7 +126,9 @@ int init_client(struct sockaddr_in* serveraddress, int* socketfd ){
     }
     
 int connect_to_server(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
+    
     assign_IP_PORT(inetAddress,portnumber,serveraddress,socketfd);
+    printf("ip port assigned\n");
     build_connection(serveraddress,socketfd);
     return 0;
     }
