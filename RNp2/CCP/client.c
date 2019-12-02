@@ -87,7 +87,7 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     *socketfd = socket(AF_INET, SOCK_STREAM, 0); //returns a socket file descriptor
     if (*socketfd == -1) { 
         printf("socket creation failed...\n"); 
-        exit(0); 
+        //exit(0); 
     } 
     else
         printf("Socket successfully created..\n"); 
@@ -98,6 +98,10 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     
 static int assign_IP_PORT(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy
+    printf("my assingend ip for connecting : %s",inetAddress);
+    //if(strcmp(inetAddress, 0) == 0){
+    //    return -1;
+    //    }
     serveraddress->sin_family = AF_INET; 
     serveraddress->sin_addr.s_addr = inet_addr(inetAddress);
     //SET MY PORT
@@ -112,7 +116,7 @@ static int build_connection(struct sockaddr_in* serveraddress, int* socketfd ){
     Return 0 on success, -1 for errors. */
     if (connect(*socketfd, (struct sockaddr*)serveraddress, sizeof(*serveraddress)) != 0) { 
         printf("connection with the server failed...\n"); 
-        //exit(0); 
+        return -1;
     } 
     else
         printf("connected to the server..\n"); 

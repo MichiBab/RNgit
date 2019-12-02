@@ -6,6 +6,7 @@
 #include "ccp.h"
 
 #define buffersize 1024
+#define addrsize 16
 char buffer[buffersize];
 char usernamebuffer[16];
 char receiverbuffer[16];
@@ -74,15 +75,16 @@ static int testing(){
     con.contactIPv4[0] = '5';
     struct ccp_contact* newlist = (struct ccp_contact*) malloc(sizeof(contactlist)) ;
     bzero(newlist,maxcontacts);
-    newlist[2] = contactlist[0];
+    newlist[0] = contactlist[0];
     newlist[1] = con;
     con.contactIPv4[0] = '3';
-    newlist[0] = con;
+    newlist[2] = con;
     update_contact_list(newlist);
-    
+    print_my_contactlist();
     update_contact_list(newlist);
-    
-    update_contact_list(newlist);
+    printf("now removing place 2");
+    remove_contact(contactlist[1]);
+    print_my_contactlist();
     return 0;
     }
 
@@ -125,12 +127,12 @@ int main(int argc, char **argv)
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
-            dpaket->receivername = receiverbuffer;
+            put_string_in_sender_receiver(dpaket->receivername,receiverbuffer); 
             
-            bzero(ipbuffer,buffersize);
+            bzero(dpaket->address,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
-            fgets(ipbuffer,buffersize+1,stdin);
-            dpaket->address = ipbuffer;
+            fgets(dpaket->address,buffersize+1,stdin);
+            
             
             printf("geben sie den port ein\n");
             int x;
@@ -155,7 +157,7 @@ int main(int argc, char **argv)
                 printf("geben sie eine nachricht zum versenden ein:\n");
                 fgets(msgbuffer,buffersize+1,stdin);
                 if(strcmp(msgbuffer,"exit\n") != 0){
-                    dpaket->msg = msgbuffer;
+                    strcpy(dpaket->msg, msgbuffer);
                     pthread_create(&halloclient,NULL,clientSentMessage,(struct datapack*)dpaket);
                     pthread_join(halloclient,0);
                     }
@@ -170,12 +172,12 @@ int main(int argc, char **argv)
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
-            dpaket->receivername = receiverbuffer;
+            put_string_in_sender_receiver(dpaket->receivername,receiverbuffer);
             
             bzero(ipbuffer,buffersize);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
-            dpaket->address = ipbuffer;
+            put_string_in_sender_receiver(dpaket->address,ipbuffer);
             
             printf("geben sie den port ein\n");
             int x;

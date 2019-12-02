@@ -17,11 +17,11 @@ struct ccp{
 
 #pragma pack(push, 1)
 struct datapack{
-    char* address;
+    char address[16];
     struct ccp ccppackage;
-    int portnumber;
-    char* receivername; //for send update
-    char* msg; //for send msg
+    uint16_t portnumber;
+    char receivername[16]; //for send update
+    char msg[1024]; //for send msg
     struct sockaddr_in serveraddress;
     int socketfd; 
     };
@@ -79,6 +79,7 @@ int put_message_in_ccp(struct ccp* pack, char* message);
 int create_our_contact();
 int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
+int remove_contact(struct ccp_contact con);
 
 int add_contact(struct ccp_contact con);
 int setusername(char* username);

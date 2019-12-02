@@ -40,7 +40,7 @@ static int create_socket(){
     parentfd = socket(AF_INET, SOCK_STREAM, 0);
     if (parentfd < 0) {
         printf("ERROR opening socket");
-        exit(1);
+       // exit(1);
     }
 
     /*
@@ -53,7 +53,7 @@ static int create_socket(){
     int opt = 1;
     if( setsockopt(parentfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 ) {   
         printf("setsockopt");   
-        exit(1);   
+       // exit(1);   
     }
     
     
@@ -81,7 +81,7 @@ static int setIPandPort(){
 static int bindSocket(){
     if (bind(parentfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
         printf("ERROR binding socket");
-        exit(1);
+       // exit(1);
         }
     return 0;
     }
@@ -89,7 +89,7 @@ static int bindSocket(){
 static int listenSocket(){
     if (listen(parentfd, MAXCLIENTS) < 0) {
         printf("ERROR listening");
-        exit(1);
+       // exit(1);
     }
     return 0;
     }
@@ -101,7 +101,7 @@ static int readFromSocket(int socket){
     //printf("msginbytes: %d\n",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
         printf("ERROR reading from socket");
-        exit(1);
+        //exit(1);
     }
     else if(msgSize_in_bytes == 0){
         return 1;//for closing
@@ -136,7 +136,7 @@ static int react_to_package(struct ccp* ccp_data, int socket){
       //  return 1;
         }
     
-    char buf[INET_ADDRSTRLEN] = ""; //GET IP FROM SOCKET
+    char bufip[INET_ADDRSTRLEN] = ""; //GET IP FROM SOCKET
         struct sockaddr_in name;
         socklen_t len = sizeof(name);
 
@@ -144,9 +144,9 @@ static int react_to_package(struct ccp* ccp_data, int socket){
             printf("getpeername_error");
             return 1;
         } else {
-            inet_ntop(AF_INET, &name.sin_addr, buf, sizeof buf);
+            inet_ntop(AF_INET, &name.sin_addr, bufip, sizeof bufip);
             }
-    
+    printf("socket ip: %s\n",bufip);
     if(ccp_data->typeFlags == REQUEST_TO_OPEN_CONNECTION){
             
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
@@ -157,12 +157,12 @@ static int react_to_package(struct ccp* ccp_data, int socket){
         update_contact_list(ccp_contact_newlist);
 
         tmpdatapaket->portnumber = PORT;
-        tmpdatapaket->address = buf;
-        tmpdatapaket->receivername = ccp_data->senderAlias;
+        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias);
         put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
         pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
-        free(ccp_contact_newlist);
-        free(tmpdatapaket);
+        //free(ccp_contact_newlist);
+        //free(tmpdatapaket);
         }
     
     
@@ -172,8 +172,8 @@ static int react_to_package(struct ccp* ccp_data, int socket){
         struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
         update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. UPDATE CONTACT LIST HANDLES NEW HELLOs
-        free(ccp_contact_newlist);
-        free(tmpdatapaket);
+        //free(ccp_contact_newlist);
+        //free(tmpdatapaket);
         }
         
     if(ccp_data->typeFlags == PEER_DISCONNECTED){
@@ -189,11 +189,11 @@ static int react_to_package(struct ccp* ccp_data, int socket){
         printf("MSG FROM CLIENT:\n%s",tmpmsg); 
         
         tmpdatapaket->portnumber = PORT;
-        tmpdatapaket->address = buf;
-        tmpdatapaket->receivername = ccp_data->senderAlias;
+        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
-        free(tmpdatapaket);
-        free(tmpmsg);
+        //free(tmpdatapaket);
+        //free(tmpmsg);
         }
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_RECEIVING_MESSAGE){
@@ -204,10 +204,10 @@ static int react_to_package(struct ccp* ccp_data, int socket){
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
         pthread_t helperclient;
         tmpdatapaket->portnumber = PORT;
-        tmpdatapaket->address = buf;
-        tmpdatapaket->receivername = ccp_data->senderAlias;
+        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSendUpdateReply,(struct datapack*)tmpdatapaket);
-        free(tmpdatapaket);
+        //free(tmpdatapaket);
         }
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_PEER_IS_STILL_ALIVE){
@@ -254,7 +254,7 @@ static int acceptConnections(){
         new_socket = accept(parentfd, (struct sockaddr *)&serveraddr, (socklen_t*)&addrlen);
         if (new_socket < 0){
             printf("error accept\n");
-            exit(1);
+            //exit(1);
             }
         //add new socket to array of sockets  
         for (int i = 0; i < MAXCLIENTS; i++){   

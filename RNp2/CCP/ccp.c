@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include "server.h"
 #include "generic.h"
+#include "client.h"
 #define contactaliassize 16
 /*struct ccp{
     char versionnum;
@@ -162,7 +163,17 @@ int update_contact_list(struct ccp_contact* clientlist){
     //TODO: send a hello paket to every marked entry/ == new contacts    
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i]){
+            pthread_t helperthread;
+            struct datapack dpaket;
+            char tmpIP[16];
+            uint16_t tmpP;
             printf("new entry from clientlist on index: %d\n",i);
+            get_ipstring_from_contact(clientlist[i],tmpIP);
+            put_string_in_sender_receiver(dpaket.address,tmpIP);
+            get_port_int_from_contact(clientlist[i],&tmpP);
+            dpaket.portnumber = tmpP;
+            strcpy(dpaket.receivername,clientlist[i].contactalias);
+            pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)&dpaket);
             }
         }
     return 0;
@@ -178,6 +189,19 @@ int add_contact(struct ccp_contact con){
         }
     return 0;
     }
+
+int remove_contact(struct ccp_contact con){
+    for(int i = 0; i<maxcontacts;i++){
+            if(check_if_nullcontact(contactlist[i]) != 0){
+                if( (strcmp(contactlist[i].contactIPv4, con.contactIPv4) == 0) &&
+                    (strcmp(contactlist[i].contactPort, con.contactPort) == 0) ){
+                        bzero( &contactlist[i],sizeof (struct ccp_contact));
+                    }
+                }
+        }
+    return 0;
+    }
+    
 
 int create_our_contact(){
 

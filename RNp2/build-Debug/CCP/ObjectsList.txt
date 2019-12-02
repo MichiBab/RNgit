@@ -1,1 +1,1 @@
-../build-Debug/CCP/ccp.c.o ../build-Debug/CCP/client.c.o ../build-Debug/CCP/main.c.o ../build-Debug/CCP/server.c.o
+../build-Debug/CCP/main.c.o ../build-Debug/CCP/ccp.c.o ../build-Debug/CCP/server.c.o ../build-Debug/CCP/client.c.o
