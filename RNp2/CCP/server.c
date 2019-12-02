@@ -24,6 +24,7 @@ int addrlen = sizeof(serveraddr);
 
 int close_server(){
     close(parentfd);
+    return 0;
     }
 
 int set_serverip_address(char* msg){
@@ -157,7 +158,7 @@ static int acceptConnections(){
             //if position is empty  
             if( client_socket[i] == 0 ) {   
                 client_socket[i] = new_socket;   
-                printf("Adding to list of sockets as %d\n" , i);   
+              //  printf("Adding to list of sockets as %d\n" , i);   
                 break;   
                 }
             }
@@ -175,12 +176,13 @@ static int getMessages(){
         if (FD_ISSET( sd , &readfds)){
            //printf("server got a valid socket\n");
                 if(readFromSocket(client_socket[i])){
-                    printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
+                   // printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
                     close( sd );
                     client_socket[i] = 0;
                 }
             }
         }
+    return 0;
     
     }
 

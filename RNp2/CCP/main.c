@@ -26,52 +26,48 @@ void* clientArgInit(void* arg){
     client_routine(data->address,data->ccppackage.message, data->portnumber);
     return 0;
     }
-
-void* clientArgInitChatMode(void* arg){
-    struct datapack *data = (struct datapack*) arg;
-    client_routine_chatmode(*data);
-    return 0;
-    }
     
 void* clientSendHello(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_connection_establishment(*data);
     return 0;
     }
+    
+//if connection is already established! Define receivername for datapack for this one
+void* clientSendUpdate(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_update_send(*data);
+    return 0;
+    }
+    
+//if connection is already established and update got sent
+void* clientSentMessage(void* arg){
+    struct datapack *data = (struct datapack*) arg;
+    cr_sent_msg(*data);
+    return 0;
+    }
 
-static int testingstuff(){
+static int testing(){
     
-    struct in_addr addr;
-    inet_pton(AF_INET, "127.0.0.1", &addr);
-    printf("%d\n", addr.s_addr);
+    struct ccp_contact con = contactlist[0];
+    con.contactIPv4[0] = '5';
+    struct ccp_contact* newlist = (struct ccp_contact*) malloc(sizeof(contactlist)) ;
+    bzero(newlist,maxcontacts);
+    newlist[0] = contactlist[0];
+    newlist[1] = con;
+
+    update_contact_list(newlist);
     
+    update_contact_list(newlist);
     
-    char buf[16];
-    inet_ntop(AF_INET, &addr, buf, 16);
-    printf("%s\n", buf);
-    
-    struct ccp_contact con;
-    put_string_in_sender_receiver(con.contactalias, "testcontact");
-    con.contactIPv4[0] = "1";
-    con.contactIPv4[1] = "4";
-    con.contactIPv4[2] = "1";
-    con.contactIPv4[3] = "5";
-    con.contactPort[0] = "8";
-    con.contactPort[1] = "8";
-    contactlist[0] = con;
-    contactlist[1] = con;
-    
-    
-    
+    update_contact_list(newlist);
     return 0;
     }
 
 int main(int argc, char **argv)
 {
-    
-
     int exitbool = 1;//abbruch der while schleife
-    
+    bzero(contactlist,maxcontacts);
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
     bzero(usernamebuffer,16);
     fgets(usernamebuffer,16+1,stdin);
@@ -82,9 +78,11 @@ int main(int argc, char **argv)
     fgets(ipbuffer,16+1,stdin);
     set_serverip_address(ipbuffer);
     bzero(ipbuffer,16);
+    create_our_contact();
+    
+   // testing();
     
     printf("s for create server, c for init a client, cm for chat mode, \ncc for close client, h for help, q for exit, p for print contacts\nch for hello\n");
-
     while(exitbool){
         bzero(buffer,buffersize);
         fgets(buffer,buffersize+1,stdin);
@@ -95,14 +93,12 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"s\n") == 0){
             pthread_create(&serverthread,NULL,init_server,NULL);
-            sleep(2);
-            create_our_contact();
+            
             }
         
         if(strcmp(buffer,"ch\n") == 0){
             struct datapack dpaket;
-     
-           // bzero(paket,sizeof(paket));
+    
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
@@ -148,7 +144,28 @@ int main(int argc, char **argv)
 
             }
             
-        if(strcmp(buffer,"cm\n") == 0){
+        
+            
+        if(strcmp(buffer,"q\n") == 0){
+            exitbool = 0;
+            }
+        
+        if(strcmp(buffer,"h\n") == 0){
+            printf("s for create server, c for init a client, cm for init client with chat mode,\n cc for close client, h for help, q for exit\n");
+            }
+        
+        }
+        pthread_cancel(&serverthread);
+        pthread_cancel(&clientthread);
+        close_server();
+        
+        
+}
+
+
+
+/*
+ * if(strcmp(buffer,"cm\n") == 0){
             struct datapack paket;
            // bzero(paket,sizeof(paket));
             
@@ -182,22 +199,5 @@ int main(int argc, char **argv)
             close_client();
             
             
-            }
+            }*/ 
             
-        if(strcmp(buffer,"q\n") == 0){
-            exitbool = 0;
-            }
-        
-        if(strcmp(buffer,"h\n") == 0){
-            printf("s for create server, c for init a client, cm for init client with chat mode,\n cc for close client, h for help, q for exit\n");
-            }
-        
-        }
-        pthread_cancel(&serverthread);
-        pthread_cancel(&clientthread);
-        close_server();
-        
-        
-}
-
-

@@ -19,12 +19,56 @@ int unlock(){
 
 int cr_connection_establishment(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
-    printf("uebergeben ip: %s\n", package.address);
-    printf("uebergeben port: %d\n",package.portnumber);
+    //printf("uebergeben ip: %s\n", package.address);
+    //printf("uebergeben port: %d\n",package.portnumber);
     init_client();
     connect_to_server(package.address, package.portnumber);
     write(socketfd, &ccp_data, sizeof(ccp_data));
+    close_client();
+    return 0;
+    }
     
+int cr_update_send(struct datapack package){
+    set_ccp_update(&package.ccppackage, package.receivername);
+    struct ccp ccp_data = package.ccppackage;
+    init_client();
+    connect_to_server(package.address, package.portnumber);
+    write(socketfd, &ccp_data, sizeof(ccp_data));
+    close_client();
+    return 0;
+    }
+    
+int cr_sent_msg(struct datapack package){
+    set_ccp_message(&package.ccppackage, package.msg, package.receivername);
+    struct ccp ccp_data = package.ccppackage;
+    init_client();
+    connect_to_server(package.address, package.portnumber);
+    write(socketfd, &ccp_data, sizeof(ccp_data));
+    close_client();
+    return 0;
+    }
+
+//sending a bye package to everyone in the contact list except urself.
+//checks if client is not null, if so: set a bye package, init a socket
+//to communicate on, connect to the server through contact informations
+//and send the bye package. close the client socket and free malloc data
+int cr_bye(struct ccp ccp_pack){
+    char* ip;
+    uint16_t* por;
+    ip = (char*) malloc(sizeof(char)*4);
+    por = (uint16_t*) malloc(sizeof(uint16_t));
+    for(int i = 1; i<contactlist;i++){//we start with 1, cause we are index 0
+        if( check_if_nullcontact(contactlist[i]) ){ // if true, there is a contact
+            set_ccp_bye(&ccp_pack, contactlist[i].contactalias);
+            init_client();
+            connect_to_server( get_ipstring_from_contact(contactlist[i],ip), 
+                               get_port_int_from_contact(contactlist[i],por));
+            write(socketfd, &ccp_pack, sizeof(ccp_pack));
+            close_client();
+            }      
+        }
+    free(ip);
+    free(por);
     }
 
 static int createSocket(){

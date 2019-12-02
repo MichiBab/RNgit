@@ -13,13 +13,15 @@ struct ccp{
     };
 #pragma pack(pop)
 
+#include <arpa/inet.h>
 #pragma pack(push, 1)
 struct datapack{
     
     char* address;
     struct ccp ccppackage;
     int portnumber;
-    
+    char* receivername; //for send update
+    char* msg; //for send msg
     };
 #pragma pack(pop)
 
@@ -47,14 +49,30 @@ extern char our_username[16];
 
 int printf_port(char arr[2]);
 int printf_ipv4(char arr[4]);
-int client_routine_chatmode(struct datapack mypack);//defined in client
+
 int cr_connection_establishment(struct datapack package); //defined in client
+int cr_update_send(struct datapack package); //defined in client
+int cr_sent_msg(struct datapack package); //defined in client
+int cr_bye(struct ccp ccp_pack); //defined in client
+
 int set_ccp_hello(struct ccp* hellopack, char* receivername);
+int set_ccp_update(struct ccp* updatepack, char* receivername);
+int set_ccp_message(struct ccp* msgpack, char* message, char* receivername);
+int set_ccp_bye(struct ccp* byepack, char* receivername);
+
 int put_contact_list_in_message_of_ccp(struct ccp* pack);
 int put_string_in_sender_receiver(char* array, char* input);
+
 int create_our_contact();
 int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
+
 int add_contact(struct ccp_contact con);
 int setusername(char* username);
+int put_message_in_cpp(struct ccp* pack, char* message);
+int update_contact_list(struct ccp_contact* clientlist);
+int check_if_nullcontact(struct ccp_contact con);
+
+int get_ipstring_from_contact(struct ccp_contact con, char* erg);
+int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);
 #endif
