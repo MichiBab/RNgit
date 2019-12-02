@@ -9,7 +9,7 @@ int clientfd;
 char* serverip_address;
 
 struct sockaddr_in serveraddr; 
-//struct sockaddr_in clientaddr;
+
 
 char buffer[maxcharactersize]; /* message buffer */
 int msgSize_in_bytes; /* message byte size */

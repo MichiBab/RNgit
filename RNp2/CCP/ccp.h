@@ -1,6 +1,7 @@
 #ifndef ccp_h
 #define ccp_h
 #define maxcontacts 46 //what can fit in message block
+#include <arpa/inet.h>
 
 #pragma pack(push, 1) // exact fit - no padding
 struct ccp{
@@ -13,15 +14,16 @@ struct ccp{
     };
 #pragma pack(pop)
 
-#include <arpa/inet.h>
+
 #pragma pack(push, 1)
 struct datapack{
-    
     char* address;
     struct ccp ccppackage;
     int portnumber;
     char* receivername; //for send update
     char* msg; //for send msg
+    struct sockaddr_in serveraddress;
+    int socketfd; 
     };
 #pragma pack(pop)
 

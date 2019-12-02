@@ -110,7 +110,7 @@ int main(int argc, char **argv)
             }
         
         if(strcmp(buffer,"cc\n") == 0){
-            close_client();
+            //close_client();
             }
             
         if(strcmp(buffer,"q\n") == 0){
