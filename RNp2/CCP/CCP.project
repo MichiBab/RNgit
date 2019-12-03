@@ -8,13 +8,18 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ccp_thread_methods.h"/>
+    <File Name="ccp_handle_server.c"/>
+    <File Name="ccp_handle_list.c"/>
+    <File Name="ccp_thread_methods.c"/>
+    <File Name="ccp_client_routines.c"/>
+    <File Name="ccp_create_packs.c"/>
     <File Name="server.h"/>
     <File Name="server.c"/>
     <File Name="generic.h"/>
     <File Name="client.h"/>
     <File Name="client.c"/>
     <File Name="ccp.h"/>
-    <File Name="ccp.c"/>
     <File Name="main.c"/>
   </VirtualDirectory>
   <Settings Type="Executable">

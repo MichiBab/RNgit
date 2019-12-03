@@ -3,6 +3,8 @@
 #define maxcontacts 46 //what can fit in message block
 #include <arpa/inet.h>
 
+#define contactaliassize 16
+
 #pragma pack(push, 1) // exact fit - no padding
 struct ccp{
     char versionnum;
@@ -88,4 +90,9 @@ int check_if_nullcontact(struct ccp_contact con);
 
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);
+
+//servermethods
+int react_to_package(struct ccp* pack, int socket);
+
+
 #endif

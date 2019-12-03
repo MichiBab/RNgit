@@ -8,7 +8,7 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <arpa/inet.h>
-
+int readFromSocket(int socket);
 int init_server();
 int close_server();
 int get_my_ip(char* input);

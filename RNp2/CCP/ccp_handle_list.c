@@ -5,21 +5,8 @@
 #include "server.h"
 #include "generic.h"
 #include "client.h"
-#define contactaliassize 16
-/*struct ccp{
-    char versionnum;
-    char typeFlags;
-    char reserved[2];
-    char senderAlias[16];
-    char receiverAlias[16];
-    char message[1024];
-    };
+#include <pthread.h>
 
-struct ccp_contact{
-    char contactalias[16];
-    char contactIPv4[4];
-    char contactPort[2];
-    };*/
 
 struct ccp_contact contactlist[maxcontacts];//GLOBAL
 char our_username[contactaliassize];//GLOBAL
@@ -50,65 +37,11 @@ int check_if_nullcontact(struct ccp_contact con){
 int put_string_in_sender_receiver(char* array, char* input){
     bzero(array,contactaliassize);
     int buffersize;
-    strlen(input)<=17 ? buffersize = strlen(input) : 17;
-    snprintf(array,17,input);
+    (strlen(input)<=16) ? buffersize = strlen(input) : 16;
+    snprintf(array,buffersize+1,"%s",input);
     return 0;
     }
     
-static int put_generic_name_data(struct ccp* pack, char* receivername){
-    pack->versionnum = '1';
-    put_string_in_sender_receiver(pack->receiverAlias,receivername);
-    put_string_in_sender_receiver(pack->senderAlias,our_username);
-    return 0;
-    }
-
-int set_ccp_hello(struct ccp* hellopack, char* receivername){
-    put_generic_name_data(hellopack,receivername);
-    hellopack->typeFlags = REQUEST_TO_OPEN_CONNECTION;
-    put_contact_list_in_message_of_ccp(hellopack);
-    return 0;
-    }
-    
-int set_ccp_hello_reply(struct ccp* hellopack, char* receivername){
-    put_generic_name_data(hellopack,receivername);
-    hellopack->typeFlags = ACKNOWLEDGE_OPENING_CONNECTION;
-    put_contact_list_in_message_of_ccp(hellopack);
-    return 0;
-    }
-    
-//msg is unimportant
-int set_ccp_update(struct ccp* updatepack, char* receivername){
-    put_generic_name_data(updatepack,receivername);
-    updatepack->typeFlags = REQUEST_IF_PEER_IS_ALIVE;
-    return 0;
-    }
-
-int set_ccp_update_reply(struct ccp* updatepack, char* receivername){
-    put_generic_name_data(updatepack,receivername);
-    updatepack->typeFlags = ACKNOWLEDGE_PEER_IS_STILL_ALIVE;
-    }
-
-int set_ccp_message(struct ccp* msgpack, char* message, char* receivername){
-    put_generic_name_data(msgpack,receivername);
-    msgpack->typeFlags = SEND_A_MESSAGE;
-    put_message_in_ccp(msgpack,message);
-    return 0;
-    }
-    
-int set_ccp_message_reply(struct ccp* msgpack, char* receivername){
-    put_generic_name_data(msgpack,receivername);
-    msgpack->typeFlags = ACKNOWLEDGE_RECEIVING_MESSAGE;
-    return 0;
-    
-    }
-
-int set_ccp_bye(struct ccp* byepack, char* receivername){
-    byepack->versionnum = '1';
-    byepack->typeFlags = PEER_DISCONNECTED;
-    put_string_in_sender_receiver(byepack->receiverAlias,receivername);
-    put_string_in_sender_receiver(byepack->senderAlias,our_username);
-    return 0;
-    }
 
 int put_contact_list_in_message_of_ccp(struct ccp* pack){
     for(int i = 0; i<(MAXCHARACTERS/maxcontacts);i++){
@@ -164,16 +97,16 @@ int update_contact_list(struct ccp_contact* clientlist){
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i]){
             pthread_t helperthread;
-            struct datapack dpaket;
+            struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
             uint16_t tmpP;
             printf("new entry from clientlist on index: %d\n",i);
             get_ipstring_from_contact(clientlist[i],tmpIP);
-            put_string_in_sender_receiver(dpaket.address,tmpIP);
+            put_string_in_sender_receiver(dpaket->address,tmpIP);
             get_port_int_from_contact(clientlist[i],&tmpP);
-            dpaket.portnumber = tmpP;
-            strcpy(dpaket.receivername,clientlist[i].contactalias);
-            pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)&dpaket);
+            dpaket->portnumber = tmpP;
+            strcpy(dpaket->receivername,clientlist[i].contactalias);
+            pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
         }
     return 0;
@@ -208,10 +141,6 @@ int create_our_contact(){
     struct ccp_contact *me = (struct ccp_contact*)malloc(sizeof(struct ccp_contact));
     
     put_string_in_sender_receiver(me->contactalias,our_username);
-
-    //char* ip_address_fromserver;
-    //ip_address_fromserver = malloc( sizeof(char)*4);
-    //get_my_ip(ip_address_fromserver);
     
     struct in_addr addr;
     //hier muss ip_address_fromserver hin
@@ -232,7 +161,7 @@ int create_our_contact(){
     
     
     add_contact(*me);
-    
+    free(me);
     return 0;
     }
 
@@ -278,7 +207,8 @@ int print_contact(struct ccp_contact* con){
     }
     
 int printf_ipv4(char arr[4]){
-    int ip_as_integer = ( (arr[3] << 24 ) | (arr[2] << 16 ) | ( arr[1] << 8 ) | arr[0] );
+    int ip_as_integer = ( (arr[3] << 24 ) | (arr[2] << 16 ) | 
+                        ( arr[1] << 8 ) | arr[0] );
     char buf[16];
     inet_ntop(AF_INET, &ip_as_integer, buf, 16);
     printf("IPv4 Address: %s\n", buf);
@@ -297,7 +227,9 @@ int printf_port(char arr[2]){
     }
     
 int get_ipstring_from_contact(struct ccp_contact con, char* erg){
-    int ip_as_integer = ( (con.contactIPv4[3] << 24 ) | (con.contactIPv4[2] << 16 ) | ( con.contactIPv4[1] << 8 ) | con.contactIPv4[0] );
+    int ip_as_integer = ( (con.contactIPv4[3] << 24 ) | 
+                            (con.contactIPv4[2] << 16 ) | ( con.contactIPv4[1] << 8 ) 
+                            | con.contactIPv4[0] );
     inet_ntop(AF_INET, &ip_as_integer, erg, 16);
     return 0;
     }
