@@ -20,6 +20,7 @@ pthread_t clientthread;
 void* clientSendHello(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_send_hello(*data);
+    free(data);
     return 0;
     }
 
@@ -27,6 +28,7 @@ void* clientSendHello(void* arg){
 void* clientSendUpdate(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_send_update(*data);
+    free(data);
     return 0;
     }
     
@@ -34,12 +36,14 @@ void* clientSendUpdate(void* arg){
 void* clientSentMessage(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_sent_msg(*data);
+    free(data);
     return 0;
     }    
     
  void* clientSentBye(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_bye(data->ccppackage);
+    free(data);
     return 0;
     }   
     
@@ -48,18 +52,21 @@ void* clientSentMessage(void* arg){
 void* clientSendHelloReply(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_send_hello_reply(*data);
+    free(data);
     return 0;
     }
 
 void* clientSendUpdateReply(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_send_update_reply(*data);
+    free(data);
     return 0;
     }
 
 void* clientSentMessageReply(void* arg){
     struct datapack *data = (struct datapack*) arg;
     cr_sent_msg_reply(*data);
+    free(data);
     return 0;
     }
     
@@ -122,7 +129,7 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"c\n") == 0){
             pthread_t halloclient;
-            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack*));
+            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
@@ -144,7 +151,7 @@ int main(int argc, char **argv)
             
             //hier muss nun auf das hello reply gewartet werden. ???
             pthread_join(halloclient,0);
-            
+        
             pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
             //hier muss auf das update reply gewartet werden. ???
             pthread_join(halloclient,0);
@@ -167,7 +174,7 @@ int main(int argc, char **argv)
         
         if(strcmp(buffer,"ch\n") == 0){
             pthread_t halloclient;
-            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack*));
+            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     
             bzero(receiverbuffer,buffersize);
             printf("Geben sie den namen des Empfaengers ein\n");
@@ -186,7 +193,7 @@ int main(int argc, char **argv)
             while ((getchar()) != '\n'); //clear space
             
             pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
-            free(dpaket);
+            
             }
         
         if(strcmp(buffer,"cc\n") == 0){
