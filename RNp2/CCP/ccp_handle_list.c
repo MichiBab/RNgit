@@ -171,8 +171,8 @@ int create_our_contact(){
     
     struct in_addr addr;
 
-    inet_pton(AF_INET, serversocket_ip_address, &addr);
-    int myip;
+    inet_pton(AF_INET, "94.220.6.216", &addr);
+    uint32_t myip;
     myip = addr.s_addr;
     
     me->contactIPv4[3] = (myip & 0b11111111<<24) >> 24;
@@ -233,8 +233,20 @@ int print_contact(struct ccp_contact* con){
     }
     
 int printf_ipv4(char arr[4]){
-    int ip_as_integer = ( (arr[3] << 24 ) | (arr[2] << 16 ) | 
-                        ( arr[1] << 8 ) | arr[0] );
+    char zero = arr[0];
+    char one = arr[1];
+    char two = arr[2];
+    char three = arr[3];
+    uint32_t ip_as_integer = 0;
+    uint32_t mask1 = 
+            0b00000000000000000000000011111111 & zero;
+    uint32_t mask2 = 
+            0b00000000000000001111111100000000 & one<<8;
+    uint32_t mask3 = 
+            0b00000000111111110000000000000000 & two<<16;
+    uint32_t mask4 = 
+            0b11111111000000000000000000000000 & three<<24;
+    ip_as_integer = mask1 | mask2 | mask3 | mask4;
     char buf[16];
     inet_ntop(AF_INET, &ip_as_integer, buf, 16);
     printf("IPv4 Address: %s\n", buf);
