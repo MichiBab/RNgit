@@ -121,7 +121,6 @@ int update_contact_list(struct ccp_contact* clientlist){
             char tmpIP[16];
             uint16_t tmpP;
             printf("new entry from clientlist on index: %d\n",i);
-            sleep(3);
             get_ipstring_from_contact(clientlist[i],tmpIP);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             get_port_int_from_contact(clientlist[i],&tmpP);

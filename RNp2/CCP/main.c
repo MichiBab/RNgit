@@ -26,32 +26,6 @@ void* init_server_thread(void* arg){
 //-------------------------------------------------------------------------
 
 
-static int testing(){
-    return 0;//----------xxxxx
-    struct ccp_contact con = contactlist[0];
-    con.contactIPv4[0] = '5';
-    struct ccp_contact* newlist = (struct ccp_contact*) malloc(sizeof(contactlist)) ;
-    bzero(newlist,maxcontacts);
-    newlist[0] = contactlist[0];
-    newlist[1] = con;
-    con.contactIPv4[0] = '3';
-    newlist[2] = con;
-    newlist[3] = contactlist[0];
-    newlist[3].contactPort[0] = 3;
-    update_contact_list(newlist);
-    printf("ADDED NEW LIST, SHOULD HAVE 4 ENTRIES\n");
-    print_my_contactlist();
-    
-    update_contact_list(newlist);
-    printf("\n\nnow removing place 2\n");
-    print_my_contactlist();
-    remove_contact(contactlist[1]);
-
-    print_my_contactlist();
-    return 0;
-    }
-    
-
 int main(int argc, char **argv)
 {
     int exitbool = 1;//abbruch der while schleife
@@ -75,8 +49,6 @@ int main(int argc, char **argv)
     printf("angegebene ip ----%s----\n",ipbuffer);
     create_our_contact(ipbuffer);
 
-
-    //return 0;
     char* helpmsg = "c for sending messages to a client, ch just for the hello pack, h for help, q for exit, p for print contacts, d for delete contact\n";
     printf("%s",helpmsg);
     while(exitbool){
