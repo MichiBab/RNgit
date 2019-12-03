@@ -115,12 +115,13 @@ int update_contact_list(struct ccp_contact* clientlist){
 
     //send a hello pack to every new entry.
     for(int i = 0; i<maxcontacts;i++){
-        if(marker[i]){
+        if(marker[i] == 1){
             pthread_t helperthread;
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
             uint16_t tmpP;
             printf("new entry from clientlist on index: %d\n",i);
+            sleep(3);
             get_ipstring_from_contact(clientlist[i],tmpIP);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             get_port_int_from_contact(clientlist[i],&tmpP);
@@ -129,6 +130,7 @@ int update_contact_list(struct ccp_contact* clientlist){
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
         }
+    free(marker);
     pthread_cleanup_pop(1);
     return 0;
     }
@@ -171,7 +173,7 @@ int create_our_contact(){
     
     struct in_addr addr;
 
-    inet_pton(AF_INET, "94.220.6.216", &addr);
+    inet_pton(AF_INET, "127.0.0.1", &addr);
     uint32_t myip;
     myip = addr.s_addr;
     
@@ -265,9 +267,20 @@ int printf_port(char arr[2]){
     }
     
 int get_ipstring_from_contact(struct ccp_contact con, char* erg){
-    int ip_as_integer = ( (con.contactIPv4[3] << 24 ) | 
-                            (con.contactIPv4[2] << 16 ) | ( con.contactIPv4[1] << 8 ) 
-                            | con.contactIPv4[0] );
+    char zero = con.contactIPv4[0];
+    char one = con.contactIPv4[1];
+    char two = con.contactIPv4[2];
+    char three = con.contactIPv4[3];
+    uint32_t ip_as_integer = 0;
+    uint32_t mask1 = 
+            0b00000000000000000000000011111111 & zero;
+    uint32_t mask2 = 
+            0b00000000000000001111111100000000 & one<<8;
+    uint32_t mask3 = 
+            0b00000000111111110000000000000000 & two<<16;
+    uint32_t mask4 = 
+            0b11111111000000000000000000000000 & three<<24;
+    ip_as_integer = mask1 | mask2 | mask3 | mask4;
     inet_ntop(AF_INET, &ip_as_integer, erg, 16);
     return 0;
     }

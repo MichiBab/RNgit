@@ -46,6 +46,7 @@ int react_to_package(struct ccp* ccp_data, int socket){
     if(ccp_data->typeFlags == ACKNOWLEDGE_OPENING_CONNECTION){ // i sent a hello and got a hello reply back
         struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
+        printf("I GOT A HELLP REPLY!\n");
         update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. UPDATE CONTACT LIST HANDLES NEW HELLOs
         //TODO MESSAGE
         }
