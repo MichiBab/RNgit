@@ -140,7 +140,7 @@ int main(int argc, char **argv)
                 dpaket = (struct datapack*) malloc (sizeof(struct datapack));
                 put_string_in_sender_receiver(dpaket->receivername,receiverbuffer); 
                 put_string_in_sender_receiver(dpaket->address,ipbuffer);
-                bzero(msgbuffer,buffersize);
+                bzero(msgbuffer,sizeof msgbuffer);
                 printf("geben sie eine nachricht zum versenden ein:\n");
                 fgets(msgbuffer,buffersize+1,stdin);
                 if(strcmp(msgbuffer,"exit\n") != 0){
@@ -156,12 +156,12 @@ int main(int argc, char **argv)
             pthread_t halloclient;
             struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     
-            bzero(receiverbuffer,buffersize);
+            bzero(receiverbuffer,sizeof receiverbuffer);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
             put_string_in_sender_receiver(dpaket->receivername,receiverbuffer);
             
-            bzero(ipbuffer,buffersize);
+            bzero(ipbuffer,sizeof ipbuffer);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
             put_string_in_sender_receiver(dpaket->address,ipbuffer);
