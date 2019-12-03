@@ -7,10 +7,14 @@
 #include "client.h"
 #include <pthread.h>
 
-
 struct ccp_contact contactlist[maxcontacts];//GLOBAL
 char our_username[contactaliassize];//GLOBAL
 
+pthread_mutex_t listmutex = PTHREAD_MUTEX_INITIALIZER;
+
+static void cleanUpMutex(void* arg){
+    pthread_mutex_unlock(&listmutex);
+    }
 
 //if all data is 0, there is no contact
 //returns 0 if nullcontact, else 1
@@ -33,6 +37,16 @@ int check_if_nullcontact(struct ccp_contact con){
     return 0;
     }
 
+//compares ip address and port. ignores alias
+//returns 0 on equality
+static int compare_contact(struct ccp_contact one, struct ccp_contact two){
+     if( (memcmp(one.contactIPv4, two.contactIPv4, sizeof (one.contactIPv4)) == 0) && 
+            (memcmp(one.contactPort, two.contactPort, sizeof (one.contactPort)) == 0) ){
+                return 0;
+             }
+    return 1;
+    }
+
 //17 to fill the 16th byte with snprintf
 int put_string_in_sender_receiver(char* array, char* input){
     bzero(array,contactaliassize);
@@ -44,6 +58,8 @@ int put_string_in_sender_receiver(char* array, char* input){
     
 
 int put_contact_list_in_message_of_ccp(struct ccp* pack){
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<(MAXCHARACTERS/maxcontacts);i++){
         for(int y = 0; y<22;y++){
             if(y<contactaliassize){
@@ -57,6 +73,7 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack){
                 }
             }
         }
+    pthread_cleanup_pop(1);//remove cleanup handler
     return 0;
     }
     
@@ -71,6 +88,8 @@ int put_message_in_ccp(struct ccp* pack, char* message){
 
 
 int update_contact_list(struct ccp_contact* clientlist){
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     int* marker = (int*) malloc(sizeof(int)*maxcontacts);//marking new contacts
     struct ccp_contact our_tmp;
     struct ccp_contact client_tmp;
@@ -79,21 +98,22 @@ int update_contact_list(struct ccp_contact* clientlist){
         if(check_if_nullcontact(client_tmp) != 0){//if its valid, compare
             for(int y = 0; y<maxcontacts;y++){
                 our_tmp = contactlist[y];
-                //if(check_if_nullcontact(our_tmp) != 0){
-                    if( (strcmp(our_tmp.contactIPv4, client_tmp.contactIPv4) == 0) &&
-                        (strcmp(our_tmp.contactPort, client_tmp.contactPort) == 0) ){
+                if(check_if_nullcontact(our_tmp) != 0){
+                    if( compare_contact(client_tmp,our_tmp) == 0 ){
                             //if we got it in our list
                             y=maxcontacts; //break out
                             }
-                  //  }
+                }
                 if(y==(maxcontacts-1)){//means its not in our list
                         add_contact(client_tmp);
                         marker[i] = 1;//Mark new connection info
                         }
                 }
-            }
+            
         }
-    //TODO: send a hello paket to every marked entry/ == new contacts    
+    }
+
+    //send a hello pack to every new entry.
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i]){
             pthread_t helperthread;
@@ -109,29 +129,36 @@ int update_contact_list(struct ccp_contact* clientlist){
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
         }
+    pthread_cleanup_pop(1);
     return 0;
     }
 
 //method adds new contact to the first open spot
 int add_contact(struct ccp_contact con){
+
     for(int i = 0; i < maxcontacts; i++){
         if(check_if_nullcontact(contactlist[i])==0){
             contactlist[i] = con;
             break;
             }
         }
+
     return 0;
     }
 
 int remove_contact(struct ccp_contact con){
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<maxcontacts;i++){
             if(check_if_nullcontact(contactlist[i]) != 0){
-                if( (strcmp(contactlist[i].contactIPv4, con.contactIPv4) == 0) &&
-                    (strcmp(contactlist[i].contactPort, con.contactPort) == 0) ){
+                if( compare_contact(con,contactlist[i]) == 0 ){
                         bzero( &contactlist[i],sizeof (struct ccp_contact));
+                        printf("deleted succsessfully\n");
+                        i=maxcontacts;//breakout
                     }
                 }
         }
+    pthread_cleanup_pop(1);
     return 0;
     }
     
@@ -143,9 +170,7 @@ int create_our_contact(){
     put_string_in_sender_receiver(me->contactalias,our_username);
     
     struct in_addr addr;
-    //hier muss ip_address_fromserver hin
-    
-    //inet_pton(AF_INET, ip_address_fromserver, &addr);
+
     inet_pton(AF_INET, serversocket_ip_address, &addr);
     int myip;
     myip = addr.s_addr;
@@ -159,31 +184,33 @@ int create_our_contact(){
     me->contactPort[1] = (port & 0b11111111<<8) >> 8;
     me->contactPort[0] = (port & 0b11111111);
     
-    
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     add_contact(*me);
     free(me);
+    pthread_cleanup_pop(1);
     return 0;
     }
 
 int print_my_contactlist(){
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     
-    for(int i = 0; i<maxcontacts;i++){
-        if(check_if_nullcontact(contactlist[i])==1){
-            print_contact(&contactlist[i]);
-            }
-        }
+    print_a_contactlist(contactlist);
     
+    pthread_cleanup_pop(1);
     return 0;
     }
     
-int print_a_contactlist_test(struct ccp_contact list[maxcontacts]){
-    
+int print_a_contactlist(struct ccp_contact list[maxcontacts]){
     for(int i = 0; i<maxcontacts;i++){
         if(check_if_nullcontact(list[i])==1){
+            printf("----------------------\n");
+            printf("index: %d\n",i);
             print_contact(&list[i]);
+            printf("\n");
             }
         }
-    
     return 0;
     }
 
@@ -199,7 +226,6 @@ int setusername(char* username){
     }
     
 int print_contact(struct ccp_contact* con){
-    printf("----------------------\n");
     printf("Alias: %s\n",con->contactalias);
     printf_ipv4(con->contactIPv4);
     printf_port(con->contactPort);

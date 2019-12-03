@@ -72,7 +72,7 @@ int set_ccp_message(struct ccp* msgpack, char* message, char* receivername);
 int set_ccp_message_reply(struct ccp* msgpack, char* receivername);
 int set_ccp_bye(struct ccp* byepack, char* receivername);
 
-int print_a_contactlist_test(struct ccp_contact list[maxcontacts]);
+int print_a_contactlist(struct ccp_contact list[maxcontacts]);
 
 int put_contact_list_in_message_of_ccp(struct ccp* pack);
 int put_string_in_sender_receiver(char* array, char* input);

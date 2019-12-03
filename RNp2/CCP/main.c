@@ -36,12 +36,17 @@ static int testing(){
     newlist[1] = con;
     con.contactIPv4[0] = '3';
     newlist[2] = con;
+    newlist[3] = contactlist[0];
+    newlist[3].contactPort[0] = 3;
     update_contact_list(newlist);
+    printf("ADDED NEW LIST, SHOULD HAVE 4 ENTRIES\n");
     print_my_contactlist();
+    
     update_contact_list(newlist);
-    printf("now removing place 2");
+    printf("\n\nnow removing place 2\n");
+    print_my_contactlist();
     remove_contact(contactlist[1]);
-    update_contact_list(newlist);
+
     print_my_contactlist();
     return 0;
     }
@@ -63,8 +68,10 @@ int main(int argc, char **argv)
     create_our_contact();
     printf("creating server\n");
     pthread_create(&serverthread,NULL,init_server_thread,NULL);
-    testing();
-    char* helpmsg = "c for sending messages to a client, ch just for the hello pack, h for help, q for exit, p for print contacts\n";
+    printf("im in testing\n");
+    //testing();
+
+    char* helpmsg = "c for sending messages to a client, ch just for the hello pack, h for help, q for exit, p for print contacts, d for delete contact\n";
     printf("%s",helpmsg);
     while(exitbool){
         bzero(buffer,buffersize);
@@ -74,6 +81,21 @@ int main(int argc, char **argv)
             print_my_contactlist();
             }
         
+        if(strcmp(buffer,"d\n") == 0){
+            printf("this is the contact list:\n");
+            print_my_contactlist();
+            printf("delete one with typing an index now. from 0 to %d\n",maxcontacts-1);
+            int x;
+            scanf("%d", &x);
+            while ((getchar()) != '\n'); //clear space
+            if(x>=maxcontacts){
+                printf("wrong index\n");
+                }
+            else{
+                remove_contact(contactlist[x]);
+                }
+            
+            }
         
         if(strcmp(buffer,"c\n") == 0){
             pthread_t halloclient;
