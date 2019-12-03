@@ -8,14 +8,25 @@
 char buffer[maxcharactersize]; /* message buffer */
 int msgSize_in_bytes; /* message byte size */
 
-int react_to_package(struct ccp* ccp_data, int socket){
+/*struct sockaddr_in {
+    short            sin_family;   // e.g. AF_INET
+    unsigned short   sin_port;     // e.g. htons(3490)
+    struct in_addr   sin_addr;     // see struct in_addr, below
+    char             sin_zero[8];  // zero this if you want to
+};
+
+struct in_addr {
+    unsigned long s_addr;  // load with inet_aton()
+};*/
+
+int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clientdata){
     //printf("IM IN REACT TO PACKAGE\n");
     if(ccp_data->versionnum != '1'){
        // printf("Wrong version from paket detected!\n");
       //  return 1;
         }
     
-    char bufip[INET_ADDRSTRLEN] = ""; //GET IP FROM SOCKET
+    char bufip[INET_ADDRSTRLEN] = ""; //GET IP FROM EXTERN CLIENT
         struct sockaddr_in name;
         socklen_t len = sizeof(name);
 
@@ -23,9 +34,11 @@ int react_to_package(struct ccp* ccp_data, int socket){
             printf("getpeername_error");
             return 1;
         } else {
-            inet_ntop(AF_INET, &name.sin_addr, bufip, sizeof bufip);
+            inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
             }
-    printf("socket ip: %s\n",bufip);
+            
+        
+    printf("CLIENT IP: %s\n",bufip);
     if(ccp_data->typeFlags == REQUEST_TO_OPEN_CONNECTION){
             
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
@@ -34,7 +47,7 @@ int react_to_package(struct ccp* ccp_data, int socket){
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
         update_contact_list(ccp_contact_newlist);
         tmpdatapaket->portnumber = PORT;
-        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias);
         put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
         pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
@@ -64,7 +77,7 @@ int react_to_package(struct ccp* ccp_data, int socket){
         printf("MSG FROM CLIENT:\n%s",tmpmsg); 
         
         tmpdatapaket->portnumber = PORT;
-        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
         //free(tmpdatapaket);
@@ -92,7 +105,7 @@ int react_to_package(struct ccp* ccp_data, int socket){
     return 0;
     }
     
-int readFromSocket(int socket){
+int readFromSocket(int socket, struct sockaddr_in clientdata){
     char* buf = (char*) malloc(maxcharactersize);
     bzero(buf, maxcharactersize);
     msgSize_in_bytes = read(socket, buf, maxcharactersize);
@@ -112,7 +125,7 @@ int readFromSocket(int socket){
     printf("sender alias: %s\n",ccp_data->senderAlias);
     printf("receiver alias: %s\n",ccp_data->receiverAlias);
     
-    react_to_package(ccp_data, socket);
+    react_to_package(ccp_data, socket , clientdata);
     free(ccp_data);
     free(buf);
     return 0;

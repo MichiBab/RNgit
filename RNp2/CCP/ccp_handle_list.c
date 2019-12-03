@@ -165,15 +165,14 @@ int remove_contact(struct ccp_contact con){
     }
     
 
-int create_our_contact(){
+int create_our_contact(char* ipstring){
 
     struct ccp_contact *me = (struct ccp_contact*)malloc(sizeof(struct ccp_contact));
     
     put_string_in_sender_receiver(me->contactalias,our_username);
     
     struct in_addr addr;
-
-    inet_pton(AF_INET, "127.0.0.1", &addr);
+    inet_pton(AF_INET, ipstring, &addr);
     uint32_t myip;
     myip = addr.s_addr;
     
@@ -182,7 +181,7 @@ int create_our_contact(){
     me->contactIPv4[1] = (myip & 0b11111111<<8) >> 8;
     me->contactIPv4[0] = (myip & 0b11111111);
     
-    int port = PORT;
+    int port = 8080;
     me->contactPort[1] = (port & 0b11111111<<8) >> 8;
     me->contactPort[0] = (port & 0b11111111);
     

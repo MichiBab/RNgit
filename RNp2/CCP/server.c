@@ -8,10 +8,8 @@
 int parentfd; 
 
 
-char* serverip_address;
-
 struct sockaddr_in serveraddr; 
-
+struct sockaddr_in client_addr[MAXCLIENTS];
 
 
 
@@ -27,12 +25,6 @@ int addrlen = sizeof(serveraddr);
 
 int close_server(){
     close(parentfd);
-    return 0;
-    }
-
-int set_serverip_address(char* msg){
-    serverip_address = (char*) malloc(sizeof(char)*16);
-    strncpy(serverip_address, msg, 16);
     return 0;
     }
 
@@ -60,11 +52,7 @@ static int create_socket(){
     return 0;
     }
     
-int get_my_ip(char* input){
-    inet_ntop(AF_INET, &(serveraddr.sin_addr), input, INET_ADDRSTRLEN);
-    return 0;
-    }
-    
+
 static int setIPandPort(){
     /* this is an Internet address */
     serveraddr.sin_family = AF_INET;
@@ -83,6 +71,7 @@ static int bindSocket(){
         printf("ERROR binding socket");
        // exit(1);
         }
+    
     return 0;
     }
 
@@ -129,7 +118,8 @@ static int acceptConnections(){
     //If something happened on the master socket ,  
     //then its an incoming connection     
     if (FD_ISSET(parentfd, &readfds)){
-        new_socket = accept(parentfd, (struct sockaddr *)&serveraddr, (socklen_t*)&addrlen);
+        struct sockaddr_in temp;
+        new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&addrlen);
         if (new_socket < 0){
             printf("error accept\n");
             //exit(1);
@@ -138,8 +128,9 @@ static int acceptConnections(){
         for (int i = 0; i < MAXCLIENTS; i++){   
             //if position is empty  
             if( client_socket[i] == 0 ) {   
+                client_addr[i] = temp;
                 client_socket[i] = new_socket;   
-              //  printf("Adding to list of sockets as %d\n" , i);   
+                //printf("Adding to list of sockets as %d\n" , i);   
                 break;   
                 }
             }
@@ -156,7 +147,7 @@ static int getMessages(){
         //if there is a valid socket
         if (FD_ISSET( sd , &readfds)){
            //printf("server got a valid socket\n");
-                if(readFromSocket(client_socket[i])){
+                if(readFromSocket(client_socket[i], client_addr[i])){
                    // printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
                     close( sd );
                     client_socket[i] = 0;
@@ -168,6 +159,8 @@ static int getMessages(){
     }
 
 int init_server() {
+    
+    
     
     init_clientfds();
     

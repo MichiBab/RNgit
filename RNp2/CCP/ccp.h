@@ -78,7 +78,7 @@ int put_contact_list_in_message_of_ccp(struct ccp* pack);
 int put_string_in_sender_receiver(char* array, char* input);
 int put_message_in_ccp(struct ccp* pack, char* message);
 
-int create_our_contact();
+int create_our_contact(char* ipstring);
 int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
 int remove_contact(struct ccp_contact con);
@@ -92,7 +92,7 @@ int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);
 
 //servermethods
-int react_to_package(struct ccp* pack, int socket);
+int react_to_package(struct ccp* pack, int socket , struct sockaddr_in clientdata);
 
 
 #endif

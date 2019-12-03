@@ -27,7 +27,7 @@ void* init_server_thread(void* arg){
 
 
 static int testing(){
-    
+    return 0;//----------xxxxx
     struct ccp_contact con = contactlist[0];
     con.contactIPv4[0] = '5';
     struct ccp_contact* newlist = (struct ccp_contact*) malloc(sizeof(contactlist)) ;
@@ -50,6 +50,7 @@ static int testing(){
     print_my_contactlist();
     return 0;
     }
+    
 
 int main(int argc, char **argv)
 {
@@ -59,18 +60,23 @@ int main(int argc, char **argv)
     bzero(usernamebuffer,16);
     fgets(usernamebuffer,16+1,stdin);
     setusername(usernamebuffer);
+    bzero(ipbuffer,16);
     
-    printf("enter your socket server ip address\n");
-    bzero(ipbuffer,16);
-    fgets(ipbuffer,16+1,stdin);
-    set_serverip_address(ipbuffer);
-    bzero(ipbuffer,16);
-    create_our_contact();
     printf("creating server\n");
     pthread_create(&serverthread,NULL,init_server_thread,NULL);
-    printf("im in testing\n");
-    //testing();
 
+    bzero(ipbuffer,sizeof ipbuffer);
+    printf("geben sie eine ip addresse fuer ihren eigenen contact ein\n");
+    fgets(ipbuffer,buffersize+1,stdin);
+    char *pos;
+    if ((pos=strchr(ipbuffer, '\n')) != NULL){//remove newline for ip
+        *pos = '\0';
+    }
+    printf("angegebene ip ----%s----\n",ipbuffer);
+    create_our_contact(ipbuffer);
+
+
+    //return 0;
     char* helpmsg = "c for sending messages to a client, ch just for the hello pack, h for help, q for exit, p for print contacts, d for delete contact\n";
     printf("%s",helpmsg);
     while(exitbool){
@@ -194,3 +200,5 @@ int main(int argc, char **argv)
         
         
 }
+
+

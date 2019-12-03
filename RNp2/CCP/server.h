@@ -8,10 +8,9 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <arpa/inet.h>
-int readFromSocket(int socket);
+int readFromSocket(int socket, struct sockaddr_in clientdata);
 int init_server();
 int close_server();
-int get_my_ip(char* input);
-extern char* serverip_address;
-int set_serverip_address(char* msg);
+
+
 #endif
