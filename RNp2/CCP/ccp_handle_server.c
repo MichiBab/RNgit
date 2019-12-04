@@ -79,7 +79,7 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         pthread_t helperclient;
         char *tmpmsg = (char *) malloc (MAXCHARACTERS);
         memcpy(tmpmsg,ccp_data->message,MAXCHARACTERS);
-        
+        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
         tmpdatapaket->portnumber = PORT;
 
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
