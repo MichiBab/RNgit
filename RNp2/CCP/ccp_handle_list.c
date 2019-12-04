@@ -90,7 +90,10 @@ int put_message_in_ccp(struct ccp* pack, char* message){
 int update_contact_list(struct ccp_contact* clientlist){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
-    int* marker = (int*) malloc(sizeof(int)*maxcontacts);//marking new contacts
+    int marker[maxcontacts];//marking new contacts
+    for(int i = 0; i<maxcontacts;i++){
+        marker[i] = 0;
+        }
     struct ccp_contact our_tmp;
     struct ccp_contact client_tmp;
     for(int i = 0; i<maxcontacts;i++){
@@ -128,9 +131,9 @@ int update_contact_list(struct ccp_contact* clientlist){
             dpaket->portnumber = PORT;
             strcpy(dpaket->receivername,clientlist[i].contactalias);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
+            sleep(3);
             }
         }
-    free(marker);
     pthread_cleanup_pop(1);
     return 0;
     }
