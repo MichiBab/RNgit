@@ -124,8 +124,8 @@ int main(int argc, char **argv){
                     do{
                         //Setup again, because threads clear their memory when finished
                         dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-                        put_string_in_sender_receiver(dpaket->receivername,receiverbuffer); 
-                        put_string_in_sender_receiver(dpaket->address,ipbuffer);
+                        strcpy(dpaket->receivername,con.contactIPv4); 
+                        get_ipstring_from_contact(con,dpaket->address);
                         bzero(msgbuffer,sizeof msgbuffer);
                         printf("geben sie eine nachricht zum versenden ein:\n");
                         fgets(msgbuffer,buffersize+1,stdin);
