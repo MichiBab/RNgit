@@ -164,23 +164,26 @@ int main(int argc, char **argv)
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
             if ((pos=strchr(receiverbuffer, '\n')) != NULL){//remove newline for ip
-                *pos = '\0';
+            *pos = '\0';
             }   
-            put_string_in_sender_receiver(dpaket->receivername,receiverbuffer);
+            put_string_in_sender_receiver(dpaket->receivername,receiverbuffer); 
+            
             
             bzero(ipbuffer,sizeof ipbuffer);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
-            if ((pos=strchr(ipbuffer, '\n')) != NULL){//remove newline for ip
-                *pos = '\0';
-            }   
             fgets(ipbuffer,buffersize+1,stdin);
+            if ((pos=strchr(ipbuffer, '\n')) != NULL){//remove newline for ip
+            *pos = '\0';
+            }   
             put_string_in_sender_receiver(dpaket->address,ipbuffer);
             
+
             printf("geben sie den port ein\n");
             int x;
             scanf("%d", &x);
             dpaket->portnumber = x;
             while ((getchar()) != '\n'); //clear space
+            
             
             pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
             
