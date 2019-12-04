@@ -97,10 +97,10 @@ int update_contact_list(struct ccp_contact* clientlist){
         }
     struct ccp_contact our_tmp;
     struct ccp_contact client_tmp;
-    for(int i = 0; i<maxcontacts;i++){
+    for(int i = 0; i<maxcontacts-1;i++){
         client_tmp = clientlist[i];
         if(check_if_nullcontact(client_tmp) != 0){//if its valid, compare
-            for(int y = 0; y<maxcontacts;y++){
+            for(int y = 0; y<maxcontacts-1;y++){
                 our_tmp = contactlist[y];
                 if(check_if_nullcontact(our_tmp) != 0){
                     if( compare_contact(client_tmp,our_tmp) == 0 ){
@@ -108,7 +108,7 @@ int update_contact_list(struct ccp_contact* clientlist){
                             y=maxcontacts; //break out
                             }
                 }
-                if(y==(maxcontacts-1)){//means its not in our list
+                if(y==(maxcontacts-1-1)){//means its not in our list
                         add_contact(client_tmp);
                         printf("NEW CONTACT: \n");
                         print_contact(&client_tmp);
