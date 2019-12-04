@@ -149,6 +149,7 @@ int set_msg_flag(){
     pthread_cleanup_pop(1);
     return 0;
     }
+    
 int rm_msg_flag(){
     pthread_mutex_lock(&flagmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
@@ -168,7 +169,7 @@ int set_up_flag(){
 int rm_up_flag(){
     pthread_mutex_lock(&flagmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
-    msgflagarray[Update_Flag] = 1;
+    msgflagarray[Update_Flag] = 0;
     pthread_cleanup_pop(1);
     return 0;
     }

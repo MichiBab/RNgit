@@ -107,7 +107,9 @@ int main(int argc, char **argv){
                     printf(" failed to get the update reply.\n");
                     }
                 else{
+                    
                     pthread_join(halloclient,0);
+                    printf("i got an update reply and thread is stopped, trying to msg now\n");
                     rm_up_flag();
                     //NOW U CAN COMMUNICATE
                     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
