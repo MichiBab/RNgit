@@ -88,6 +88,7 @@ int put_message_in_ccp(struct ccp* pack, char* message){
 
 
 int update_contact_list(struct ccp_contact* clientlist){
+    printf("im in update contact list\n");
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
     int marker[maxcontacts];//marking new contacts
@@ -119,6 +120,7 @@ int update_contact_list(struct ccp_contact* clientlist){
     //send a hello pack to every new entry.
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i] == 1){
+            printf("im in marker with index %d",i);
             pthread_t helperthread;
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
@@ -134,6 +136,7 @@ int update_contact_list(struct ccp_contact* clientlist){
             sleep(1);
             }
         }
+    printf("i finished in update contact list\n");
     pthread_cleanup_pop(1);
     return 0;
     }
@@ -142,7 +145,7 @@ int update_contact_list(struct ccp_contact* clientlist){
 int add_contact(struct ccp_contact con){
 
     for(int i = 0; i < maxcontacts; i++){
-        if(check_if_nullcontact(contactlist[i])==0 && check_if_nullcontact(con)==0){
+        if((check_if_nullcontact(contactlist[i])==0) && (check_if_nullcontact(con)==0)){
             contactlist[i] = con;
             break;
             }
