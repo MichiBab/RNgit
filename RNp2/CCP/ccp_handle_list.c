@@ -85,7 +85,7 @@ int put_message_in_ccp(struct ccp* pack, char* message){
     strncpy(pack->message, message, max);
     return 0;
     }
-
+//
 
 int update_contact_list(struct ccp_contact* clientlist){
     printf("im in update contact list\n");
