@@ -134,6 +134,8 @@ int update_contact_list(struct ccp_contact* clientlist){
             //dpaket->portnumber = tmpP;
             dpaket->portnumber = PORT;
             strcpy(dpaket->receivername,clientlist[i].contactalias);
+            printf("IM NOW SENDING A HELLO THIS LIST:\n");
+            print_a_contactlist(clientlist);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             sleep(1);
             }
