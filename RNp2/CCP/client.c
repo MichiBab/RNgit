@@ -13,7 +13,7 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
         //exit(0); 
     } 
     else
-        printf("Socket successfully created..\n"); 
+     //   printf("Socket successfully created..\n"); 
     //fill the struct serveraddress with 0's
     bzero(serveraddress, sizeof(*serveraddress)); 
     return 0;
@@ -21,12 +21,12 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     
 static int assign_IP_PORT(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy
-    printf("my assingend ip for connecting : %s\n",inetAddress);
-    printf("my assingend port for connecting : %d\n",portnumber);
+   // printf("my assingend ip for connecting : %s\n",inetAddress);
+  //  printf("my assingend port for connecting : %d\n",portnumber);
     serveraddress->sin_family = AF_INET; 
     serveraddress->sin_addr.s_addr = inet_addr(inetAddress);
     //SET MY PORT
-    serveraddress->sin_port = htons(PORT); 
+    serveraddress->sin_port = htons(portnumber); 
     return 0;
     }
 
@@ -53,7 +53,7 @@ int init_client(struct sockaddr_in* serveraddress, int* socketfd ){
 int connect_to_server(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     
     assign_IP_PORT(inetAddress,portnumber,serveraddress,socketfd);
-    printf("ip port assigned\n");
+    //printf("ip port assigned\n");
     build_connection(serveraddress,socketfd);
     return 0;
     }

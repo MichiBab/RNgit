@@ -27,18 +27,13 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         }
     
     char bufip[INET_ADDRSTRLEN] = ""; //GET IP FROM EXTERN CLIENT
-        struct sockaddr_in name;
-        socklen_t len = sizeof(name);
-
-        if (getpeername(socket, (struct sockaddr *)&name, &len) != 0) {
-            printf("getpeername_error");
-            return 1;
-        } else {
-            inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
-            }
+    
+    inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
+   
             
         
     printf("CLIENT IP: %s\n",bufip);
+    printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port));
     if(ccp_data->typeFlags == REQUEST_TO_OPEN_CONNECTION){
             
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
@@ -47,10 +42,12 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
         update_contact_list(ccp_contact_newlist);
         tmpdatapaket->portnumber = PORT;
-        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
+        //inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
+        put_string_in_sender_receiver(tmpdatapaket->address,bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias);
         put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
         pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
+        printf("I GOT A HELLO!\n");
         //free(ccp_contact_newlist);
         //free(tmpdatapaket);
         }
@@ -59,12 +56,43 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
     if(ccp_data->typeFlags == ACKNOWLEDGE_OPENING_CONNECTION){ // i sent a hello and got a hello reply back
         struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
-        printf("I GOT A HELLP REPLY!\n");
+        printf("I GOT A HELLO REPLY!\n");
         update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. UPDATE CONTACT LIST HANDLES NEW HELLOs
         //TODO MESSAGE
         }
         
-    if(ccp_data->typeFlags == PEER_DISCONNECTED){
+    if(ccp_data->typeFlags == PEER_DISCONNECTED){ //removing this contact from our list
+        printf("I GOT A DISCONNECT!\n");
+        struct in_addr addrtmp;
+        struct ccp_contact* tempcon = (struct ccp_contact*) malloc (sizeof(struct ccp_contact) );
+        
+        inet_pton(AF_INET, bufip, &addrtmp);
+        printf("%d\n", addrtmp.s_addr);
+        memcpy(tempcon->contactIPv4,&addrtmp.s_addr,sizeof(tempcon->contactIPv4));
+        int16_t porttmp;
+        porttmp = clientdata.sin_port;
+        char maskOne;
+        char maskZero;
+        maskZero = (0b0000000011111111 & porttmp);
+        maskOne = ((0b1111111100000000 & porttmp)>>8);
+        tempcon->contactPort[0] = maskZero;
+        tempcon->contactPort[1] = maskOne;
+        put_string_in_sender_receiver(tempcon->contactalias,"DELETE ME");
+        print_contact(tempcon);
+
+        /*uint16_t porttmp;
+        porttmp = htons(clientdata.sin_port);
+        printf("%d\n", porttmp);
+        char maskOne;
+        char maskZero;
+        maskZero = (0b0000000011111111 & porttmp) & 0b11111111;
+        maskOne = ((0b1111111100000000 & porttmp<<8)>>8) & 0b11111111;
+        tempcon->contactPort[0] = maskZero;
+        tempcon->contactPort[1] = maskOne;
+        put_string_in_sender_receiver(tempcon->contactalias,"DELETE ME");
+        print_contact(tempcon);
+        remove_contact(*tempcon);*/
+        free(tempcon);
         //todo
         
         }
@@ -77,7 +105,7 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         printf("MSG FROM CLIENT:\n%s",tmpmsg); 
         
         tmpdatapaket->portnumber = PORT;
-        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
+
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
         //free(tmpdatapaket);
@@ -85,6 +113,7 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         }
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_RECEIVING_MESSAGE){
+        printf("I GOT A MSG ACK!\n");
         //todo???
         }
     
@@ -92,13 +121,16 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
         pthread_t helperclient;
         tmpdatapaket->portnumber = PORT;
-        inet_ntop(AF_INET, &name.sin_addr, tmpdatapaket->address, sizeof bufip);
+        inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSendUpdateReply,(struct datapack*)tmpdatapaket);
+        printf("I GOT A ALIVE REQUEST!\n");
         //free(tmpdatapaket);
         }
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_PEER_IS_STILL_ALIVE){
+        printf("I GOT A ALIVE ACK!\n");
+        
         //todo???
         }
     

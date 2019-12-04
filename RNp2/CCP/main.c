@@ -22,12 +22,29 @@ void* init_server_thread(void* arg){
      return 0;
      }
 
+static void test(){
+    struct in_addr addr;
 
+    inet_pton(AF_INET, "127.0.0.1", &addr);
+    printf("%d\n", addr.s_addr);
+    
+    int a = addr.s_addr;
+    struct in_addr addr3;
+    addr3.s_addr = a;
+    
+    char buf[16];
+    inet_ntop(AF_INET, &addr3, buf, 16);
+    printf("%s\n", buf);
+    exit(0);
+    }
 //-------------------------------------------------------------------------
 
 
 int main(int argc, char **argv)
 {
+   // test();
+    
+    
     int exitbool = 1;//abbruch der while schleife
     bzero(contactlist,maxcontacts);
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
@@ -82,18 +99,27 @@ int main(int argc, char **argv)
             bzero(receiverbuffer,sizeof receiverbuffer);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
+            if ((pos=strchr(receiverbuffer, '\n')) != NULL){//remove newline for ip
+            *pos = '\0';
+            }   
             put_string_in_sender_receiver(dpaket->receivername,receiverbuffer); 
+            
             
             bzero(ipbuffer,sizeof ipbuffer);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
             fgets(ipbuffer,buffersize+1,stdin);
+            if ((pos=strchr(ipbuffer, '\n')) != NULL){//remove newline for ip
+            *pos = '\0';
+            }   
             put_string_in_sender_receiver(dpaket->address,ipbuffer);
             
+
             printf("geben sie den port ein\n");
             int x;
             scanf("%d", &x);
             dpaket->portnumber = x;
             while ((getchar()) != '\n'); //clear space
+            
             
             pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
             
@@ -137,10 +163,16 @@ int main(int argc, char **argv)
             bzero(receiverbuffer,sizeof receiverbuffer);
             printf("Geben sie den namen des Empfaengers ein\n");
             fgets(receiverbuffer,buffersize+1,stdin);
+            if ((pos=strchr(receiverbuffer, '\n')) != NULL){//remove newline for ip
+                *pos = '\0';
+            }   
             put_string_in_sender_receiver(dpaket->receivername,receiverbuffer);
             
             bzero(ipbuffer,sizeof ipbuffer);
             printf("geben sie eine ip addresse fuer den clienten ein\n");
+            if ((pos=strchr(ipbuffer, '\n')) != NULL){//remove newline for ip
+                *pos = '\0';
+            }   
             fgets(ipbuffer,buffersize+1,stdin);
             put_string_in_sender_receiver(dpaket->address,ipbuffer);
             
@@ -159,7 +191,10 @@ int main(int argc, char **argv)
             }
             
         if(strcmp(buffer,"q\n") == 0){
-            exitbool = 0;
+            pthread_t halloclient;
+            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
+            pthread_create(&halloclient,NULL,clientSentBye,(struct datapack*)dpaket);
+            //exitbool = 0;
             }
         
         if(strcmp(buffer,"h\n") == 0){

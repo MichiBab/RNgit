@@ -59,8 +59,10 @@ int cr_bye(struct ccp ccp_pack){
     uint16_t* por;
     char* ip = (char*) malloc(sizeof(char)*4);
     por = (uint16_t*) malloc(sizeof(uint16_t));
-    for(int i = 1; i<maxcontacts;i++){//we start with 1, cause we are index 0
-        if( check_if_nullcontact(contactlist[i]) ){ // if true, there is a contact
+    for(int i = 0; i<maxcontacts;i++){//we start with 1, cause we are index 0. for testing its on 0
+        if( check_if_nullcontact(contactlist[i]) ){ 
+            printf("SENDING A DELETE TO THIS CONTACT ON INDEX %d\n",i);
+            print_contact(&contactlist[i]);
             set_ccp_bye(&ccp_pack, contactlist[i].contactalias);
             init_client( &serveraddress, &socketfd);
             get_ipstring_from_contact(contactlist[i],ip);

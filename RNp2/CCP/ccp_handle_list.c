@@ -120,7 +120,7 @@ int update_contact_list(struct ccp_contact* clientlist){
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
             uint16_t tmpP;
-            printf("new entry from clientlist on index: %d\n",i);
+            printf("new entry from clientlist\n");
             get_ipstring_from_contact(clientlist[i],tmpIP);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             get_port_int_from_contact(clientlist[i],&tmpP);
@@ -146,6 +146,8 @@ int add_contact(struct ccp_contact con){
 
     return 0;
     }
+
+
 
 int remove_contact(struct ccp_contact con){
     pthread_mutex_lock(&listmutex); 
@@ -180,7 +182,7 @@ int create_our_contact(char* ipstring){
     me->contactIPv4[1] = (myip & 0b11111111<<8) >> 8;
     me->contactIPv4[0] = (myip & 0b11111111);
     
-    int port = 8080;
+    int port = PORT;
     me->contactPort[1] = (port & 0b11111111<<8) >> 8;
     me->contactPort[0] = (port & 0b11111111);
     
