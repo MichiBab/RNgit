@@ -46,6 +46,8 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         put_string_in_sender_receiver(tmpdatapaket->address,bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias);
         put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
+        printf("IM NOW SENDING A HELLP REPLY WITH THIS LIST:\n");
+        print_a_contactlist(ccp_contact_newlist);
         pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
         
         //free(ccp_contact_newlist);

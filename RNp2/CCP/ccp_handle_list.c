@@ -110,6 +110,8 @@ int update_contact_list(struct ccp_contact* clientlist){
                 }
                 if(y==(maxcontacts-1)){//means its not in our list
                         add_contact(client_tmp);
+                        printf("NEW CONTACT: \n");
+                        print_contact(&client_tmp);
                         marker[i] = 1;//Mark new connection info
                         }
                 }
@@ -145,7 +147,7 @@ int update_contact_list(struct ccp_contact* clientlist){
 int add_contact(struct ccp_contact con){
 
     for(int i = 0; i < maxcontacts; i++){
-        if((check_if_nullcontact(contactlist[i])==0) && (check_if_nullcontact(con)!=0)){
+        if((check_if_nullcontact(contactlist[i])==0)){
             contactlist[i] = con;
             break;
             }
