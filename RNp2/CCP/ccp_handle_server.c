@@ -72,8 +72,8 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         inet_pton(AF_INET, bufip, &addrtmp);
         //printf("%d\n", addrtmp.s_addr);
         memcpy(tempcon->contactIPv4,&addrtmp.s_addr,sizeof(tempcon->contactIPv4));
-        int16_t porttmp;
-        porttmp = clientdata.sin_port;
+//        int16_t porttmp;
+      //  porttmp = clientdata.sin_port;
         char maskOne;
         char maskZero;
         maskZero = (0b0000000011111111 & PORT);

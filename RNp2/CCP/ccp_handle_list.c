@@ -137,7 +137,7 @@ int update_contact_list(struct ccp_contact* clientlist){
             printf("IM NOW SENDING A HELLO THIS LIST:\n");
             print_a_contactlist(clientlist);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
-            sleep(1);
+            //sleep(1);
             }
         }
     printf("i finished in update contact list\n");
