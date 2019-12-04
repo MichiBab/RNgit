@@ -33,9 +33,9 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
             
         
     printf("CLIENT IP: %s\n",bufip);
-    printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port));
+    //printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port)); ???
     if(ccp_data->typeFlags == REQUEST_TO_OPEN_CONNECTION){
-            
+         printf("I GOT A HELLO!\n");   
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
         struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
         pthread_t helperclient;
@@ -47,16 +47,17 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias);
         put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
         pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
-        printf("I GOT A HELLO!\n");
+        
         //free(ccp_contact_newlist);
         //free(tmpdatapaket);
         }
     
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_OPENING_CONNECTION){ // i sent a hello and got a hello reply back
+        printf("I GOT A HELLO REPLY!\n");
         struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
         memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
-        printf("I GOT A HELLO REPLY!\n");
+        
         update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. UPDATE CONTACT LIST HANDLES NEW HELLOs
         //TODO MESSAGE
         }
@@ -67,7 +68,7 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         struct ccp_contact* tempcon = (struct ccp_contact*) malloc (sizeof(struct ccp_contact) );
         
         inet_pton(AF_INET, bufip, &addrtmp);
-        printf("%d\n", addrtmp.s_addr);
+        //printf("%d\n", addrtmp.s_addr);
         memcpy(tempcon->contactIPv4,&addrtmp.s_addr,sizeof(tempcon->contactIPv4));
         int16_t porttmp;
         porttmp = clientdata.sin_port;
@@ -98,15 +99,19 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         }
     
     if(ccp_data->typeFlags == SEND_A_MESSAGE){ // we reseaved a msg. print it and send a reply
+        printf("I GOT A MESSAGE\n");
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
         pthread_t helperclient;
         char *tmpmsg = (char *) malloc (MAXCHARACTERS);
         memcpy(tmpmsg,ccp_data->message,MAXCHARACTERS);
-        printf("MSG FROM CLIENT:\n%s",tmpmsg); 
+        
         
         tmpdatapaket->portnumber = PORT;
 
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
+        
+        printf("MSG FROM CLIENT:\n%s",tmpmsg); 
+        
         pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
         //free(tmpdatapaket);
         //free(tmpmsg);
@@ -118,13 +123,15 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         }
     
     if(ccp_data->typeFlags == REQUEST_IF_PEER_IS_ALIVE){
+        printf("I GOT A ALIVE REQUEST!\n");
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
+        
         pthread_t helperclient;
         tmpdatapaket->portnumber = PORT;
         inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
         put_string_in_sender_receiver(tmpdatapaket->receivername,ccp_data->senderAlias) ;
         pthread_create(&helperclient,NULL,clientSendUpdateReply,(struct datapack*)tmpdatapaket);
-        printf("I GOT A ALIVE REQUEST!\n");
+        
         //free(tmpdatapaket);
         }
     
@@ -153,9 +160,9 @@ int readFromSocket(int socket, struct sockaddr_in clientdata){
     struct ccp *ccp_data = (struct ccp *) malloc (sizeof(struct ccp));
     memcpy(ccp_data,buf,sizeof(struct ccp));
     
-    printf("received data. now printing it\n");
-    printf("sender alias: %s\n",ccp_data->senderAlias);
-    printf("receiver alias: %s\n",ccp_data->receiverAlias);
+    //printf("received data. now printing it\n");
+    //printf("sender alias: %s\n",ccp_data->senderAlias);
+    //printf("receiver alias: %s\n",ccp_data->receiverAlias);
     
     react_to_package(ccp_data, socket , clientdata);
     free(ccp_data);

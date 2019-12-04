@@ -131,7 +131,7 @@ int update_contact_list(struct ccp_contact* clientlist){
             dpaket->portnumber = PORT;
             strcpy(dpaket->receivername,clientlist[i].contactalias);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
-            sleep(3);
+            sleep(1);
             }
         }
     pthread_cleanup_pop(1);
