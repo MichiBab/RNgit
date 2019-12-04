@@ -73,13 +73,13 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         porttmp = clientdata.sin_port;
         char maskOne;
         char maskZero;
-        maskZero = (0b0000000011111111 & porttmp);
-        maskOne = ((0b1111111100000000 & porttmp)>>8);
+        maskZero = (0b0000000011111111 & PORT);
+        maskOne = ((0b1111111100000000 & PORT)>>8);
         tempcon->contactPort[0] = maskZero;
         tempcon->contactPort[1] = maskOne;
         put_string_in_sender_receiver(tempcon->contactalias,"DELETE ME");
         print_contact(tempcon);
-
+        remove_contact(*tempcon);
         /*uint16_t porttmp;
         porttmp = htons(clientdata.sin_port);
         printf("%d\n", porttmp);
@@ -91,7 +91,7 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
         tempcon->contactPort[1] = maskOne;
         put_string_in_sender_receiver(tempcon->contactalias,"DELETE ME");
         print_contact(tempcon);
-        remove_contact(*tempcon);*/
+        */
         free(tempcon);
         //todo
         

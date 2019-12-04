@@ -124,7 +124,8 @@ int update_contact_list(struct ccp_contact* clientlist){
             get_ipstring_from_contact(clientlist[i],tmpIP);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             get_port_int_from_contact(clientlist[i],&tmpP);
-            dpaket->portnumber = tmpP;
+            //dpaket->portnumber = tmpP;
+            dpaket->portnumber = PORT;
             strcpy(dpaket->receivername,clientlist[i].contactalias);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
