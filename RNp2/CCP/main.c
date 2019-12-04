@@ -107,10 +107,9 @@ int main(int argc, char **argv){
                     printf(" failed to get the update reply.\n");
                     }
                 else{
-                    
-                    pthread_join(halloclient,0);
                     printf("i got an update reply and thread is stopped, trying to msg now\n");
                     rm_up_flag();
+                    pthread_t msgclient;
                     //NOW U CAN COMMUNICATE
                     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
                     //now we send a update to con and wait for him to reply to the update
@@ -132,7 +131,7 @@ int main(int argc, char **argv){
                         if(strcmp(msgbuffer,"exit\n") != 0){
                             strcpy(dpaket->msg, msgbuffer);
                             dpaket->portnumber = PORT;
-                            pthread_create(&halloclient,NULL,clientSentMessage,(struct datapack*)dpaket);
+                            pthread_create(&msgclient,NULL,clientSentMessage,(struct datapack*)dpaket);
                             pthread_join(halloclient,0);
                             printf("waiting for update repl\ny");
                             for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
