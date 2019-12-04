@@ -83,5 +83,3 @@ int cr_bye(struct ccp ccp_pack){
     free(por);
     return 0;
     }
-
-//int connect_to_server(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd );

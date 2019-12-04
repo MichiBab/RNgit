@@ -93,6 +93,10 @@ int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);
 
 //servermethods
 int react_to_package(struct ccp* pack, int socket , struct sockaddr_in clientdata);
+int set_msg_flag();
+int rm_msg_flag();
+int set_up_flag();
+int rm_up_flag();
 
 
 #endif
