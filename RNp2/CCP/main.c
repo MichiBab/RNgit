@@ -131,6 +131,7 @@ int main(int argc, char **argv){
                         fgets(msgbuffer,buffersize+1,stdin);
                         if(strcmp(msgbuffer,"exit\n") != 0){
                             strcpy(dpaket->msg, msgbuffer);
+                            dpaket->portnumber = PORT;
                             pthread_create(&halloclient,NULL,clientSentMessage,(struct datapack*)dpaket);
                             pthread_join(halloclient,0);
                             printf("waiting for update repl\ny");
