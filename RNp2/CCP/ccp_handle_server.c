@@ -37,9 +37,9 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
     if(ccp_data->typeFlags == REQUEST_TO_OPEN_CONNECTION){
          printf("I GOT A HELLO!\n");   
         struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
-        struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
+        struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
         pthread_t helperclient;
-        memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
+        memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
         update_contact_list(ccp_contact_newlist);
         tmpdatapaket->portnumber = PORT;
         //inet_ntop(AF_INET, &clientdata.sin_addr, tmpdatapaket->address, sizeof bufip);
@@ -57,8 +57,8 @@ int react_to_package(struct ccp* ccp_data, int socket , struct sockaddr_in clien
     
     if(ccp_data->typeFlags == ACKNOWLEDGE_OPENING_CONNECTION){ // i sent a hello and got a hello reply back
         printf("I GOT A HELLO REPLY!\n");
-        struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (MAXCHARACTERS);
-        memcpy(ccp_contact_newlist,ccp_data->message,MAXCHARACTERS);
+        struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
+        memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
         
         update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. UPDATE CONTACT LIST HANDLES NEW HELLOs
         //TODO MESSAGE
