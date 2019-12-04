@@ -95,7 +95,7 @@ int main(int argc, char **argv){
                 pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
                 printf("waiting for update repl\ny");
                 for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
-                    if(msgflagarray[MSG_Flag]){
+                    if(msgflagarray[Update_Flag]){
                         i = WAITTIME;
                         }
                     else{
