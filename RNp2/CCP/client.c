@@ -40,7 +40,7 @@ static int build_connection(struct sockaddr_in* serveraddress, int* socketfd ){
         return -1;
     } 
     else
-        printf("connected to the server..\n"); 
+        //printf("connected to the server..\n"); 
     return 0;
     }
 

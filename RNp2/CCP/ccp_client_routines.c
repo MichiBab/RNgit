@@ -13,36 +13,42 @@ static int send_routine(struct datapack package){
     }
 
 int cr_send_hello(struct datapack package){
+    printf("I SEND A HELLO\n"); 
     set_ccp_hello(&package.ccppackage,package.receivername);
     send_routine(package);
     return 0;
     }
     
 int cr_send_hello_reply(struct datapack package){
+    printf("I SEND A HELLO REPLY\n"); 
     set_ccp_hello_reply(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
     }
     
 int cr_send_update(struct datapack package){
+    printf("I SEND A UPDATE\n"); 
     set_ccp_update(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
     }
     
 int cr_send_update_reply(struct datapack package){
+    printf("I SEND A UPDATE REPLY\n"); 
     set_ccp_update_reply(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
     }
     
 int cr_sent_msg(struct datapack package){
+    printf("I SEND A MSG\n"); 
     set_ccp_message(&package.ccppackage, package.msg, package.receivername);
     send_routine(package);
     return 0;
     }
 
 int cr_sent_msg_reply(struct datapack package){
+    printf("I SEND A MSG REPLY\n"); 
     set_ccp_message_reply(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
