@@ -34,8 +34,9 @@ int cr_send_update(struct datapack package){
     }
     
 int cr_send_update_reply(struct datapack package){
-    printf("I SEND A UPDATE REPLY\n"); 
+    
     set_ccp_update_reply(&package.ccppackage, package.receivername);
+    printf("I SEND A UPDATE REPLY\n"); 
     send_routine(package);
     return 0;
     }
