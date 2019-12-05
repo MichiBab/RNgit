@@ -86,7 +86,7 @@ int remove_contact(struct ccp_contact con);
 int add_contact(struct ccp_contact con);
 int setusername(char* username);
 int update_contact_list(struct ccp_contact* clientlist);
-int check_if_nullcontact(struct ccp_contact con);
+int check_if_not_null_contact(struct ccp_contact con);
 
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);

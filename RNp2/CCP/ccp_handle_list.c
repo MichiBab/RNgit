@@ -18,7 +18,7 @@ static void cleanUpMutex(void* arg){
 
 //if all data is 0, there is no contact
 //returns 0 if nullcontact, else 1
-int check_if_nullcontact(struct ccp_contact con){
+int check_if_not_null_contact(struct ccp_contact con){
     for(int i = 0; i < contactaliassize; i++){
         if(con.contactalias[i] != 0){
             return 1;
@@ -99,10 +99,10 @@ int update_contact_list(struct ccp_contact* clientlist){
     struct ccp_contact client_tmp;
     for(int i = 0; i<maxcontacts-1;i++){
         client_tmp = clientlist[i];
-        if(check_if_nullcontact(client_tmp) != 0){//if its valid, compare
+        if(check_if_not_null_contact(client_tmp) != 0){//if its valid, compare
             for(int y = 0; y<maxcontacts-1;y++){
                 our_tmp = contactlist[y];
-                if(check_if_nullcontact(our_tmp) != 0){
+                if(check_if_not_null_contact(our_tmp) != 0){
                     if( compare_contact(client_tmp,our_tmp) == 0 ){
                             //if we got it in our list
                             y=maxcontacts; //break out
@@ -147,7 +147,7 @@ int update_contact_list(struct ccp_contact* clientlist){
 int add_contact(struct ccp_contact con){
 
     for(int i = 0; i < maxcontacts; i++){
-        if((check_if_nullcontact(contactlist[i])==0)){
+        if((check_if_not_null_contact(contactlist[i])==0)){
             contactlist[i] = con;
             break;
             }
@@ -162,7 +162,7 @@ int remove_contact(struct ccp_contact con){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<maxcontacts;i++){
-            if(check_if_nullcontact(contactlist[i]) != 0){
+            if(check_if_not_null_contact(contactlist[i]) != 0){
                 if( compare_contact(con,contactlist[i]) == 0 ){
                         bzero( &contactlist[i],sizeof (struct ccp_contact));
                         printf("deleted succsessfully\n");
@@ -215,7 +215,7 @@ int print_my_contactlist(){
     
 int print_a_contactlist(struct ccp_contact list[maxcontacts]){
     for(int i = 0; i<maxcontacts;i++){
-        if(check_if_nullcontact(list[i])==1){
+        if(check_if_not_null_contact(list[i])==1){
             printf("----------------------\n");
             printf("index: %d\n",i);
             print_contact(&list[i]);

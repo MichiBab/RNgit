@@ -13,7 +13,7 @@ int main(int argc, char **argv){
     
     ccp_c_init_program();
 
-    char* helpmsg = "c for the hello pack, h for help, q for exit, p for print contacts, d for delete contact\n";
+    char* helpmsg = "c for the hello pack, h for help, q for exit, p for print contacts, d for delete contact, u for update all\n";
     printf("%s",helpmsg);
     
     while(exitbool){
@@ -41,9 +41,14 @@ int main(int argc, char **argv){
             exitbool = 0;
             }
             
+        if(strcmp(buffer,"u\n") == 0){
+            ccp_c_update_all();
+            }
+            
         if(strcmp(buffer,"h\n") == 0){
             printf("%s",helpmsg);
             }
+            
         
         }
         return 0;
