@@ -7,21 +7,15 @@
 
 int parentfd; 
 
-
 struct sockaddr_in serveraddr; 
 struct sockaddr_in client_addr[MAXCLIENTS];
 
-
-
-//--select test
+//--select 
 int client_socket[MAXCLIENTS];
 int max_sd, activity, sd, new_socket;
 fd_set readfds; 
-int valread;
 int addrlen = sizeof(serveraddr);
 //--
-
-
 
 int close_server(){
     close(parentfd);
@@ -35,20 +29,7 @@ static int create_socket(){
        // exit(1);
     }
 
-    /*
-    * build the server's Internet address
-    */
     bzero((char *) &serveraddr, sizeof(serveraddr));
-    
-    //set master socket to allow multiple connections ,  
-    //this is just a good habit, it will work without this  
-    int opt = 1;
-    if( setsockopt(parentfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 ) {   
-        printf("setsockopt");   
-       // exit(1);   
-    }
-    
-    
     return 0;
     }
     
@@ -99,13 +80,10 @@ static int addchilds(){
     for (int i = 0 ; i < MAXCLIENTS ; i++){
         //socket descriptor
         sd = client_socket[i];
-          
         //if valid socket descriptor then add to read list
         if(sd > 0){
             FD_SET( sd , &readfds);
             }
-          
-          
         //if valid socket descriptor then add to read list
         if(sd > 0){
             max_sd = sd;
@@ -159,8 +137,6 @@ static int getMessages(){
     }
 
 int init_server() {
-    
-    
     
     init_clientfds();
     

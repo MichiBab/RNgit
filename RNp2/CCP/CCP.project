@@ -8,6 +8,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ccp_controller_functions.h"/>
+    <File Name="ccp_controller_functions.c"/>
+    <File Name="ccp_react_routine.c"/>
+    <File Name="msgflags.h"/>
+    <File Name="msgflags.c"/>
     <File Name="ccp_thread_methods.h"/>
     <File Name="ccp_handle_server.c"/>
     <File Name="ccp_handle_list.c"/>

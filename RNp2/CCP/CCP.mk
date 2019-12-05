@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=michi
-Date                   :=04/12/19
+Date                   :=05/12/19
 CodeLitePath           :=/home/michi/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,7 +60,8 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix) 
+Objects0=../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/msgflags.c$(ObjectSuffix) ../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) \
+	../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(ObjectSuffix) 
 
 
 
@@ -91,45 +92,13 @@ PreBuild:
 ##
 ## Objects
 ##
-../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix): main.c ../build-$(ConfigurationName)/CCP/main.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/main.c$(DependSuffix): main.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/main.c$(DependSuffix) -MM main.c
+../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix): ccp_create_packs.c ../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_create_packs.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_create_packs.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix): ccp_create_packs.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix) -MM ccp_create_packs.c
 
-../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix): main.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix) main.c
-
-../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix): client.c ../build-$(ConfigurationName)/CCP/client.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/client.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/client.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/client.c$(DependSuffix): client.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/client.c$(DependSuffix) -MM client.c
-
-../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix): client.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix) client.c
-
-../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/server.c$(DependSuffix): server.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/server.c$(DependSuffix) -MM server.c
-
-../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix): server.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix) server.c
-
-../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix): ccp_handle_server.c ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_handle_server.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix): ccp_handle_server.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix) -MM ccp_handle_server.c
-
-../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(PreprocessSuffix): ccp_handle_server.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(PreprocessSuffix) ccp_handle_server.c
-
-../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix): ccp_thread_methods.c ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_thread_methods.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix): ccp_thread_methods.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix) -MM ccp_thread_methods.c
-
-../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(PreprocessSuffix): ccp_thread_methods.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(PreprocessSuffix) ccp_thread_methods.c
+../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(PreprocessSuffix): ccp_create_packs.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(PreprocessSuffix) ccp_create_packs.c
 
 ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(ObjectSuffix): ccp_handle_list.c ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_list.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_handle_list.c$(ObjectSuffix) $(IncludePath)
@@ -139,6 +108,46 @@ PreBuild:
 ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(PreprocessSuffix): ccp_handle_list.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_handle_list.c$(PreprocessSuffix) ccp_handle_list.c
 
+../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix): ccp_thread_methods.c ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_thread_methods.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix): ccp_thread_methods.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(DependSuffix) -MM ccp_thread_methods.c
+
+../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(PreprocessSuffix): ccp_thread_methods.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_thread_methods.c$(PreprocessSuffix) ccp_thread_methods.c
+
+../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix): ccp_handle_server.c ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_handle_server.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix): ccp_handle_server.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(DependSuffix) -MM ccp_handle_server.c
+
+../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(PreprocessSuffix): ccp_handle_server.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_handle_server.c$(PreprocessSuffix) ccp_handle_server.c
+
+../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(ObjectSuffix): ccp_controller_functions.c ../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_controller_functions.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(DependSuffix): ccp_controller_functions.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(DependSuffix) -MM ccp_controller_functions.c
+
+../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(PreprocessSuffix): ccp_controller_functions.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_controller_functions.c$(PreprocessSuffix) ccp_controller_functions.c
+
+../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix): server.c ../build-$(ConfigurationName)/CCP/server.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/server.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/server.c$(DependSuffix): server.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/server.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/server.c$(DependSuffix) -MM server.c
+
+../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix): server.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/server.c$(PreprocessSuffix) server.c
+
+../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix): client.c ../build-$(ConfigurationName)/CCP/client.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/client.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/client.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/client.c$(DependSuffix): client.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/client.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/client.c$(DependSuffix) -MM client.c
+
+../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix): client.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/client.c$(PreprocessSuffix) client.c
+
 ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(ObjectSuffix): ccp_client_routines.c ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_client_routines.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_client_routines.c$(ObjectSuffix) $(IncludePath)
 ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(DependSuffix): ccp_client_routines.c
@@ -147,13 +156,29 @@ PreBuild:
 ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(PreprocessSuffix): ccp_client_routines.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_client_routines.c$(PreprocessSuffix) ccp_client_routines.c
 
-../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix): ccp_create_packs.c ../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_create_packs.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_create_packs.c$(ObjectSuffix) $(IncludePath)
-../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix): ccp_create_packs.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(DependSuffix) -MM ccp_create_packs.c
+../build-$(ConfigurationName)/CCP/msgflags.c$(ObjectSuffix): msgflags.c ../build-$(ConfigurationName)/CCP/msgflags.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/msgflags.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/msgflags.c$(DependSuffix): msgflags.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/msgflags.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/msgflags.c$(DependSuffix) -MM msgflags.c
 
-../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(PreprocessSuffix): ccp_create_packs.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_create_packs.c$(PreprocessSuffix) ccp_create_packs.c
+../build-$(ConfigurationName)/CCP/msgflags.c$(PreprocessSuffix): msgflags.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/msgflags.c$(PreprocessSuffix) msgflags.c
+
+../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix): main.c ../build-$(ConfigurationName)/CCP/main.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/main.c$(DependSuffix): main.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/main.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/main.c$(DependSuffix) -MM main.c
+
+../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix): main.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/main.c$(PreprocessSuffix) main.c
+
+../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(ObjectSuffix): ccp_react_routine.c ../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_react_routine.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ccp_react_routine.c$(ObjectSuffix) $(IncludePath)
+../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(DependSuffix): ccp_react_routine.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(ObjectSuffix) -MF../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(DependSuffix) -MM ccp_react_routine.c
+
+../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(PreprocessSuffix): ccp_react_routine.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) ../build-$(ConfigurationName)/CCP/ccp_react_routine.c$(PreprocessSuffix) ccp_react_routine.c
 
 
 -include ../build-$(ConfigurationName)/CCP//*$(DependSuffix)

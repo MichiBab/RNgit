@@ -3,7 +3,6 @@
 #include <unistd.h>
 
 static int send_routine(struct datapack package){
-    
     struct ccp ccp_data = package.ccppackage;
     init_client( &package.serveraddress, &package.socketfd);
     connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd);
@@ -83,3 +82,6 @@ int cr_bye(struct ccp ccp_pack){
     free(por);
     return 0;
     }
+
+
+    

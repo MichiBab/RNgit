@@ -122,7 +122,7 @@ int update_contact_list(struct ccp_contact* clientlist){
     //send a hello pack to every new entry.
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i] == 1){
-            printf("im in marker with index %d",i);
+            printf("im in marker with index %d\n",i);
             pthread_t helperthread;
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
