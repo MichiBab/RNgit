@@ -38,7 +38,7 @@ int react_to_package(struct ccp* ccp_data , struct sockaddr_in clientdata){
     inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
 
     printf("CLIENT IP: %s\n",bufip);
-    //printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port)); ???
+    printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port)); 
     
     switch(ccp_data->typeFlags){
         case REQUEST_TO_OPEN_CONNECTION:

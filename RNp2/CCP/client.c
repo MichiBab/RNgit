@@ -21,8 +21,8 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     
 static int assign_IP_PORT(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy
-    //printf("my assingend ip for connecting : %s\n",inetAddress);
-    //printf("my assingend port for connecting : %d\n",portnumber);
+    printf("my assingend ip for connecting : %s\n",inetAddress);
+    printf("my assingend port for connecting : %d\n",portnumber);
     serveraddress->sin_family = AF_INET; 
     serveraddress->sin_addr.s_addr = inet_addr(inetAddress);
     //SET MY PORT
