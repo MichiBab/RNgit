@@ -162,7 +162,12 @@ int ccp_c_quit(){
     pthread_t halloclient;
     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     pthread_create(&halloclient,NULL,clientSentBye,(struct datapack*)dpaket);
+    pthread_join(halloclient,0);
+    pthread_cancel(serverthread);
     close_server();
+    pthread_join(serverthread,0);
+    destroy_list_mutex();
+    pthread_mutex_destroy(&updatemutex);
     return 0;
     }
     

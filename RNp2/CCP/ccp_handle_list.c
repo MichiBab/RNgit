@@ -15,6 +15,11 @@ pthread_mutex_t listmutex = PTHREAD_MUTEX_INITIALIZER;
 static void cleanUpMutex(void* arg){
     pthread_mutex_unlock(&listmutex);
     }
+    
+int destroy_list_mutex(){
+    pthread_mutex_destroy(&listmutex);
+    return 0;
+    }
 
 //if all data is 0, there is no contact
 //returns 0 if nullcontact, else 1

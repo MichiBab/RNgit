@@ -102,4 +102,6 @@ int react_to_update_reply();
 int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata);
 int react_to_msg_reply();
 int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata);
+
+int destroy_list_mutex();
 #endif
