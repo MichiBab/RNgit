@@ -1,8 +1,15 @@
 #include "client.h"
 #include "generic.h"
 #include <unistd.h> 
+#include <signal.h>
 //int socketfd;
 //struct sockaddr_in serveraddress; 
+
+void interrupt_handler(int sig){
+    printf("Interrupt recieved from client!\n");
+    return;
+}
+
 
 static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy, here IPv4; SOCK STREAM Means TCP connection
@@ -35,9 +42,10 @@ static int build_connection(struct sockaddr_in* serveraddress, int* socketfd ){
     For connectionless socket types, just set the default address to send to
     and the only address from which to accept transmissions.
     Return 0 on success, -1 for errors. */
+    signal(SIGINT, interrupt_handler);
     if (connect(*socketfd, (struct sockaddr*)serveraddress, sizeof(*serveraddress)) != 0) { 
         printf("connection with the server failed...\n"); 
-        return -1;
+        //return -1;
     } 
     else
         //printf("connected to the server..\n"); 
@@ -53,8 +61,11 @@ int init_client(struct sockaddr_in* serveraddress, int* socketfd ){
 int connect_to_server(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     
     assign_IP_PORT(inetAddress,portnumber,serveraddress,socketfd);
-    //printf("ip port assigned\n");
-    build_connection(serveraddress,socketfd);
+
+    if(build_connection(serveraddress,socketfd) == -1){
+        printf("error in connecting \n");
+        return -1;
+        }
     return 0;
     }
     

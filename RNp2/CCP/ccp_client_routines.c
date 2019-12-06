@@ -5,8 +5,10 @@
 static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     init_client( &package.serveraddress, &package.socketfd);
-    connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd);
-    write(package.socketfd, &ccp_data, sizeof(ccp_data));
+    if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
+        send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
+        // so no interrupt if server unavailable
+        }
     close_client(&package.socketfd);
     return 0;
     }
@@ -73,8 +75,10 @@ int cr_bye(struct ccp ccp_pack){
             init_client( &serveraddress, &socketfd);
             get_ipstring_from_contact(contactlist[i],ip);
             get_port_int_from_contact(contactlist[i],por);
-            connect_to_server( ip,  *por, &serveraddress, &socketfd);
-            write(socketfd, &ccp_pack, sizeof(ccp_pack));
+            if(connect_to_server( ip,  *por, &serveraddress, &socketfd)  == 0){
+                send(socketfd, &ccp_pack, sizeof(ccp_pack), MSG_NOSIGNAL); 
+                // so no interrupt if server unavailable
+            }
             close_client(&socketfd);
             }      
         }

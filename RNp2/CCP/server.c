@@ -97,7 +97,8 @@ static int acceptConnections(){
     //then its an incoming connection     
     if (FD_ISSET(parentfd, &readfds)){
         struct sockaddr_in temp;
-        new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&addrlen);
+        int templen = sizeof(struct sockaddr_in);
+        new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&templen);
         if (new_socket < 0){
             printf("error accept\n");
             //exit(1);
