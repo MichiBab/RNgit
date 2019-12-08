@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "ccp_controller_functions.h"
 #include <string.h>
-#include "server.h"
+
 
 #define buffersize 1024
 #define addrsize 16

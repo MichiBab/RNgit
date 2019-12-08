@@ -81,7 +81,7 @@ static void cleanUpMutex(void* arg){
         }
     
 int ccp_c_update_all(){
-    for(int i = 0; i<maxcontacts-1;i++){
+    for(int i = 1; i<maxcontacts-1;i++){ // 0 is our contact
         struct ccp_contact con = contactlist[i];        
         if(check_if_not_null_contact(con)){
             print_contact(&con);

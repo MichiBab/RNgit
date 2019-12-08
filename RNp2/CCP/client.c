@@ -50,6 +50,8 @@ static int build_connection(struct sockaddr_in* serveraddress, int* socketfd ){
     else
         //printf("connected to the server..\n"); 
     return 0;
+    
+    return 0;
     }
 
 
