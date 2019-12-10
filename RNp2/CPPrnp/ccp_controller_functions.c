@@ -19,6 +19,7 @@ char portbuffer[buffersize];
 char ipbuffer[addrsize];
 char msgbuffer[buffersize];
 char *pos;
+int sctp_mode = 0;
 
 pthread_t serverthread;
 
@@ -48,6 +49,14 @@ void* init_timer_updater(void* arg){
     }
     
 int ccp_c_init_program(){
+    printf("Type 1 to enter SCTP Mode\n");
+    bzero(usernamebuffer,16);
+    fgets(usernamebuffer,16+1,stdin);
+    if(strcmp(usernamebuffer,"1\n") == 0){
+        printf("SCTP Mode enabled\n");
+        sctp_mode = 1;
+        }
+    
     bzero(contactlist,maxcontacts);
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
     bzero(usernamebuffer,16);

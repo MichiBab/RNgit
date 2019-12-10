@@ -1,20 +1,18 @@
 #include "client.h"
 #include "generic.h"
 #include <unistd.h> 
-#include <signal.h>
-//int socketfd;
-//struct sockaddr_in serveraddress; 
+//#include <signal.h>
 
-void interrupt_handler(int sig){
+/*void interrupt_handler(int sig){
     printf("Interrupt recieved from client!\n");
     return;
-}
+}*/
 
 
 static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy, here IPv4; SOCK STREAM Means TCP connection
     //TODO last input means Protocoll type, 0 means automatically choosen?
-    *socketfd = socket(AF_INET, SOCK_STREAM, 0); //returns a socket file descriptor
+    *socketfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG); //returns a socket file descriptor
     if (*socketfd == -1) { 
         printf("socket creation failed...\n"); 
         //exit(0); 
@@ -29,7 +27,7 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
 static int assign_IP_PORT(char* inetAddress, int portnumber, struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy
     printf("my assingend ip for connecting : %s\n",inetAddress);
-    printf("my assingend port for connecting : %d\n",portnumber);
+    //printf("my assingend port for connecting : %d\n",portnumber);
     serveraddress->sin_family = AF_INET; 
     serveraddress->sin_addr.s_addr = inet_addr(inetAddress);
     //SET MY PORT
@@ -42,7 +40,7 @@ static int build_connection(struct sockaddr_in* serveraddress, int* socketfd ){
     For connectionless socket types, just set the default address to send to
     and the only address from which to accept transmissions.
     Return 0 on success, -1 for errors. */
-    signal(SIGINT, interrupt_handler);
+    //signal(SIGINT, interrupt_handler);
     if (connect(*socketfd, (struct sockaddr*)serveraddress, sizeof(*serveraddress)) != 0) { 
         printf("connection with the server failed...\n"); 
         //return -1;

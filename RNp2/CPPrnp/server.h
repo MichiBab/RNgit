@@ -8,6 +8,7 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <arpa/inet.h>
+
 int readFromSocket(int socket, struct sockaddr_in clientdata);
 int init_server();
 int close_server();

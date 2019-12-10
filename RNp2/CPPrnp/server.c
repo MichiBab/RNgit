@@ -1,8 +1,6 @@
 #include "server.h"
 #include "generic.h"
-#include "ccp.h"
 #include <errno.h> 
-#include "client.h"
 #include <unistd.h> 
 
 int parentfd; 
@@ -23,7 +21,7 @@ int close_server(){
     }
 
 static int create_socket(){
-    parentfd = socket(AF_INET, SOCK_STREAM, 0);
+    parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
     if (parentfd < 0) {
         printf("ERROR opening socket");
        // exit(1);
@@ -109,7 +107,7 @@ static int acceptConnections(){
             if( client_socket[i] == 0 ) {   
                 client_addr[i] = temp;
                 client_socket[i] = new_socket;   
-                //printf("Adding to list of sockets as %d\n" , i);   
+                printf("Adding to list of sockets as %d\n" , i);   
                 break;   
                 }
             }
@@ -153,7 +151,7 @@ int init_server() {
     * main loop: wait for a connection request, read input line, 
     * then close connection.
     */
-    
+    printf("server now in main loop\n");
     while (1) {
       
         //clear the socket set
@@ -171,7 +169,7 @@ int init_server() {
         if ((activity < 0) && (errno!=EINTR)){
             printf("select error \n");
             }
-            
+        printf("accepted something\n");
         acceptConnections();
         
         getMessages();
