@@ -105,7 +105,7 @@ int update_contact_list(struct ccp_contact* clientlist){
     for(int i = 0; i<maxcontacts-1;i++){
         client_tmp = clientlist[i];
         if(check_if_not_null_contact(client_tmp) != 0){//if its valid, compare
-            for(int y = 0; y<maxcontacts-1;y++){
+            for(int y = 0; y<maxcontacts;y++){ //hier war noch ein -1 bei maxcontact 46
                 our_tmp = contactlist[y];
                 if(check_if_not_null_contact(our_tmp) != 0){
                     if( compare_contact(client_tmp,our_tmp) == 0 ){

@@ -1,6 +1,6 @@
 #ifndef ccp_h
 #define ccp_h
-#define maxcontacts 46 //what can fit in message block
+#define maxcontacts 45 //what can fit in message block
 #include <arpa/inet.h>
 
 #define contactaliassize 16
