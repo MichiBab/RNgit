@@ -1,73 +1,73 @@
 [{
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/main.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/main.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/main.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_client_routines.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_client_routines.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_client_routines.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/client.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/client.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/client.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/server.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/server.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/server.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_controller_functions.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/server.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/server.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/server.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_server.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_server.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_server.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_create_packs.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_create_packs.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_create_packs.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_list.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_list.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_handle_list.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/msgflags.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/generic.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/generic.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/generic.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/generic.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/generic.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/generic.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_react_routine.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_react_routine.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_react_routine.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_react_routine.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_react_routine.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_react_routine.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/msgflags.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_controller_functions.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_server.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_server.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_server.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/main.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/main.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/main.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_thread_methods.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp.h",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp.h -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/server.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/client.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/client.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/client.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_client_routines.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_client_routines.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_client_routines.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.h",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.h -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.h.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_list.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_list.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_handle_list.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/client.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }, {
-  "file": "/home/michi/OneDrive/RNgit/RNp2/CCP/ccp_create_packs.c",
-  "directory": "/home/michi/OneDrive/RNgit/RNp2/CCP",
-  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_create_packs.c -o /home/michi/OneDrive/RNgit/RNp2/CCP/ccp_create_packs.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
+  "file": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.c",
+  "directory": "/home/michi/OneDrive/RNgit/RNp2/CPPrnp",
+  "command": "clang  -c /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.c -o /home/michi/OneDrive/RNgit/RNp2/CPPrnp/ccp_thread_methods.c.o  -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/9/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include -I. -I.  -g  -O0  -Wall"
  }]

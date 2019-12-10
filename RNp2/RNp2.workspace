@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="RNp2" Database="" Version="10000">
-  <Project Name="CCP" Path="CCP/CCP.project" Active="Yes"/>
+  <Project Name="CPPrnp" Path="CPPrnp/CPPrnp.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
-      <Project Name="CCP" ConfigName="Debug"/>
+      <Project Name="CPPrnp" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
-      <Project Name="CCP" ConfigName="Release"/>
+      <Project Name="CPPrnp" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

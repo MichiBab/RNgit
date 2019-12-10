@@ -65,6 +65,7 @@ int put_string_in_sender_receiver(char* array, char* input){
 int put_contact_list_in_message_of_ccp(struct ccp* pack){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
+    bzero(pack->message, sizeof (pack->message));
     for(int i = 0; i<(MAXCHARACTERS/maxcontacts);i++){
         for(int y = 0; y<22;y++){
             if(y<contactaliassize){
@@ -102,7 +103,7 @@ int update_contact_list(struct ccp_contact* clientlist){
         }
     struct ccp_contact our_tmp;
     struct ccp_contact client_tmp;
-    for(int i = 0; i<maxcontacts-1;i++){
+    for(int i = 0; i<maxcontacts;i++){ //hier war -1
         client_tmp = clientlist[i];
         if(check_if_not_null_contact(client_tmp) != 0){//if its valid, compare
             for(int y = 0; y<maxcontacts;y++){ //hier war noch ein -1 bei maxcontact 46
@@ -113,7 +114,7 @@ int update_contact_list(struct ccp_contact* clientlist){
                             y=maxcontacts; //break out
                             }
                 }
-                if(y==(maxcontacts-1-1)){//means its not in our list
+                if(y==(maxcontacts-1)){//means its not in our list //hier war auch -1
                         add_contact(client_tmp);
                         printf("NEW CONTACT: \n");
                         print_contact(&client_tmp);
