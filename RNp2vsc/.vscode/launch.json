@@ -8,12 +8,12 @@
             "name": "(gdb) Starten",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Philosophenproblem",
+            "program": "${workspaceFolder}/bin/CCP",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/src",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "MIMode": "gdb",
             "setupCommands": [
                 {

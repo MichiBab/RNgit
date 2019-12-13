@@ -1,4 +1,4 @@
-TARGET   = Philosophenproblem
+TARGET   = CCP
 
 CC       = gcc
 # compiling flags here
@@ -22,7 +22,7 @@ rm       = rm -f
 
 INCLUDES := $(OBJDIR)/:.o=.d
 
-all: dirs $(TESTDIR)/$(TARGET) install
+all: $(TESTDIR)/$(TARGET) install
 
 -include $(OBJECTS:.o=.d)
 
@@ -50,9 +50,7 @@ help:
 
 .PHONEY: clean
 clean:
-	@$(rm) $(OBJECTS)/*
 	@$(rm) $(OBJDIR)/*
-	@$(rm) $(INSTALLDIR)/*
 	@echo "Cleanup complete!"
 
 .PHONEY: run
@@ -61,7 +59,6 @@ run:
 
 .PHONEY: remove
 remove: clean
-	rm -r $(TESTDIR)
 	rm -r $(OBJDIR)
 	rm -r $(INSTALLDIR)
 	@echo "Executable removed!"
