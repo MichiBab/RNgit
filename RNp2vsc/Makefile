@@ -2,11 +2,11 @@ TARGET   = Philosophenproblem
 
 CC       = gcc
 # compiling flags here
-CFLAGS   = -lrt -pthread -MD -MMD
+CFLAGS   = -g -pthread -MD -MMD
 
 LINKER   = gcc -o 
 # linking flags here
-LFLAGS   = -lrt -g -Wall -I. -lm -pthread #-m fuer autodependencys
+LFLAGS   = -g -pthread #-m fuer autodependencys
 
 # change these to set the proper directories where each files shoould be
 SRCDIR   = src
@@ -24,12 +24,10 @@ INCLUDES := $(OBJDIR)/:.o=.d
 
 all: dirs $(TESTDIR)/$(TARGET) install
 
-
 -include $(OBJECTS:.o=.d)
 
 .PHONEY: dirs
 dirs: 
-	#mkdir -p $(TESTDIR)
 	mkdir -p $(OBJDIR)
 	mkdir -p $(INSTALLDIR)
 
@@ -52,7 +50,9 @@ help:
 
 .PHONEY: clean
 clean:
-	@$(rm) $(OBJECTS)
+	@$(rm) $(OBJECTS)/*
+	@$(rm) $(OBJDIR)/*
+	@$(rm) $(INSTALLDIR)/*
 	@echo "Cleanup complete!"
 
 .PHONEY: run
