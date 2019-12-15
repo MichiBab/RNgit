@@ -55,7 +55,7 @@ clean:
 
 .PHONEY: run
 run:
-	$(INSTALLDIR)/$(TARGET)
+	gnome-terminal -x sh -c "$(INSTALLDIR)/$(TARGET)"
 
 .PHONEY: remove
 remove: clean
