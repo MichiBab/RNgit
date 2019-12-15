@@ -49,6 +49,7 @@ struct ccp_contact{
 
 
 extern struct ccp_contact contactlist[maxcontacts];
+extern int contactlist_sockets[maxcontacts][2];
 extern char our_username[16];
 
 int printf_port(char arr[2]);

@@ -108,7 +108,7 @@ static int acceptConnections(){
             if( client_socket[i] == 0 ) {   
                 client_addr[i] = temp;
                 client_socket[i] = new_socket;   
-                printf("Adding to list of sockets as %d\n" , i);   
+                //printf("Adding to list of sockets as %d\n" , i);   
                 break;   
                 }
             }

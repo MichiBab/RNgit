@@ -10,7 +10,6 @@ char buffer[buffersize];
 int main(int argc, char **argv){
     
     int exitbool = 1;
-    printf("testing vsc debug\n");
     ccp_c_init_program();
 
     char* helpmsg = "c for the hello pack, h for help, q for exit, p for print contacts, d for delete contact, u for update all\n";
