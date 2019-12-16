@@ -78,8 +78,7 @@ int put_message_in_ccp(struct ccp* pack, char* message){
     }
 
 //sends an update to every new entry
-int update_contact_list(struct ccp_contact* clientlist){
-
+int update_contact_list(){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<maxcontacts;i++){
@@ -90,10 +89,10 @@ int update_contact_list(struct ccp_contact* clientlist){
             char tmpIP[16];
             uint16_t tmpP;
             printf("new entry from clientlist\n");
-            inet_ntop(AF_INET, &clientlist[i].contactIPv4, tmpIP, 16);
+            inet_ntop(AF_INET, &contactlist[i].contactIPv4, tmpIP, 16);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             dpaket->portnumber = PORT;
-            strcpy(dpaket->receivername,clientlist[i].contactalias);
+            strcpy(dpaket->receivername,contactlist[i].contactalias);
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
     }
@@ -122,10 +121,10 @@ int merge_lists(struct ccp_contact* clientlist){
                             }
                 }
                 if(y==(maxcontacts-1)){//means its not in our list //hier war auch -1
-                        add_contact(client_tmp);
+                        int spot = add_contact(client_tmp);
                         printf("NEW CONTACT: \n");
                         print_contact(&client_tmp);
-                        marker[i] = 1;//Mark new connection info
+                        marker[spot] = 1;//Mark new connection info
                         }
                 }
             
@@ -147,11 +146,6 @@ int add_contact(struct ccp_contact con){
 
     return -1;
     }
-
-//input 
-int return_contact_index_through_ip4(char* client_ipv4, struct ccp_contact* clientlist){
-
-}
 
 int remove_contact(struct ccp_contact con){
     pthread_mutex_lock(&listmutex); 
@@ -229,4 +223,14 @@ int print_contact(struct ccp_contact* con){
 int get_ipstring_from_contact(struct ccp_contact con, char* erg){
     inet_ntop(AF_INET, &con.contactIPv4, erg, 16);
     return 0;
+}
+
+//-1 if not in client contact list. else return idnex
+int return_client_contact_index_through_ip4(uint32_t client_ipv4, struct ccp_contact* clientlist){
+    for(int i = 0; i<maxcontacts;i++){
+        if(clientlist[i].contactIPv4 == client_ipv4){
+            return i;
+        }
+    }
+    return -1;
 }

@@ -82,9 +82,9 @@ int remove_contact(struct ccp_contact con);
 int merge_lists(struct ccp_contact* clientlist);
 int add_contact(struct ccp_contact con);
 int setusername(char* username);
-int update_contact_list(struct ccp_contact* clientlist);
+int update_contact_list();
 int check_if_not_null_contact(struct ccp_contact con);
-int return_contact_index_through_ip4(char* client_ipv4, struct ccp_contact* clientlist);
+int return_client_contact_index_through_ip4(uint32_t client_ipv4, struct ccp_contact* clientlist);
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 
 //servermethods
