@@ -8,7 +8,7 @@
 char buffer[buffersize];
 
 int main(int argc, char **argv){
-    
+
     int exitbool = 1;
     ccp_c_init_program();
 

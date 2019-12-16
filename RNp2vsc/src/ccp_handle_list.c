@@ -43,7 +43,7 @@ int check_if_not_null_contact(struct ccp_contact con){
 //returns 0 on equality
 static int compare_contact(struct ccp_contact one, struct ccp_contact two){
      if( ( one.contactIPv4 == two.contactIPv4) && 
-            (one.contactPort == two.contactIPv4) ){
+            (one.contactPort == two.contactPort) ){
                 return 0;
              }
     return 1;
@@ -96,12 +96,15 @@ int update_contact_list(){
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
     }
+    for(int i = 0; i < maxcontacts;i++){
+        marker[i] = 0;
+    }
     pthread_cleanup_pop(1);
 
     return 0;
     }
 
-int merge_lists(struct ccp_contact* clientlist){
+int merge_lists(struct ccp_contact clientlist[maxcontacts]){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<maxcontacts;i++){

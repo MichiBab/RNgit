@@ -63,7 +63,7 @@ Threading:
     the update all function that updates the new contacts. Afterwards the thread frees his datapack and terminates.
 
 Flag System:
-    The Flag system should be added now to the global socket_array
+    The Flag system should be added to the global socket_array
 
 
 

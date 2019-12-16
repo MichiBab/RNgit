@@ -77,6 +77,19 @@ int ccp_c_init_program(){
     create_our_contact(ipbuffer);
     pthread_t updateclient;
     pthread_create(&updateclient,NULL,init_timer_updater,NULL);
+    
+    //TESTING LIST
+    struct ccp_contact newlist[maxcontacts];
+    bzero(&newlist, sizeof(newlist));
+    struct ccp_contact tcon;
+    strcpy(tcon.contactalias, "hallo");
+    tcon.contactIPv4 = 123;
+    tcon.contactPort = 8080;
+    newlist[0] = tcon;
+    merge_lists(newlist);
+    //END TESTING LIST
+
+
     return 0;
     }
 

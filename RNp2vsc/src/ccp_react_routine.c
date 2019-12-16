@@ -22,6 +22,7 @@ int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata){
     struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
     pthread_t helperclient;
     memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
+    merge_lists(ccp_contact_newlist);
     update_contact_list(ccp_contact_newlist);
     setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata);
     put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
