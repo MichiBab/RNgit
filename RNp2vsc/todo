@@ -15,10 +15,10 @@ Managing the new List: defined downwards.
     Scan through the Contact list, till we find a contact matching the sender ip Address, so we ensure its him. Maybe
     he is not on the first Contact List entry, its undefined. If we find him in his contact list: We have to add his
     Index from our List, after we accepted him, and add his Socket, that we got through accept in a Global socket_array. 
-    It will be 2 Dimensional: socket_array[maxcontacts][1]. In the first one will be the Index from our List, in the second 
-    one will be the Persons Socket to communicate on. The same will go on with the Hello Repy Pack. We wait to receive a 
-    Hello Reply, find his IP and add (this time) OUR Socket, thats made to communicate with him and his Index in the Global
-    socket_array.
+    It will be 2 Dimensional: socket_array[maxcontacts][2]. In the first one will be the Index from our List, in the second 
+    one will be the Persons Socket to communicate on. The second one will show the Reply Flag.
+    The same will go on with the Hello Repy Pack. We wait to receive a Hello Reply, find his IP and add (this time) 
+    OUR Socket, thats made to communicate with him and his Index in the Global socket_array.
     
 Server:
     The Server now will use the Global socket_array and scan thorugh every Contact and their Socket. If one is updatet,
@@ -62,7 +62,8 @@ Threading:
     adds him and the socket he created to the global socket_array, adds all new contacts to the list, sends the hello reply and calls
     the update all function that updates the new contacts. Afterwards the thread frees his datapack and terminates.
 
-
+Flag System:
+    The Flag system should be added now to the global socket_array
 
 
 

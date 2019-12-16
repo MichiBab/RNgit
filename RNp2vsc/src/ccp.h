@@ -32,8 +32,8 @@ struct datapack{
 #pragma pack(push, 1) // exact fit - no padding
 struct ccp_contact{
     char contactalias[16];
-    char contactIPv4[4];
-    char contactPort[2];
+    uint32_t contactIPv4;
+    uint16_t contactPort;
     };
 #pragma pack(pop)
 
@@ -47,13 +47,9 @@ struct ccp_contact{
 #define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00000011
 
 
-
 extern struct ccp_contact contactlist[maxcontacts];
 extern int contactlist_sockets[maxcontacts][2];
 extern char our_username[16];
-
-int printf_port(char arr[2]);
-int printf_ipv4(char arr[4]);
 
 //CLIENT ROUTINES
 int cr_send_hello(struct datapack package); //defined in client
@@ -83,14 +79,13 @@ int create_our_contact(char* ipstring);
 int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
 int remove_contact(struct ccp_contact con);
-
+int merge_lists(struct ccp_contact* clientlist);
 int add_contact(struct ccp_contact con);
 int setusername(char* username);
 int update_contact_list(struct ccp_contact* clientlist);
 int check_if_not_null_contact(struct ccp_contact con);
-
+int return_contact_index_through_ip4(char* client_ipv4, struct ccp_contact* clientlist);
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
-int get_port_int_from_contact(struct ccp_contact con, uint16_t* erg);
 
 //servermethods
 int react_to_package(struct ccp* pack , struct sockaddr_in clientdata);

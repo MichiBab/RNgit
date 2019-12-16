@@ -78,13 +78,8 @@ int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata){
     struct in_addr addrtmp;
     struct ccp_contact* tempcon = (struct ccp_contact*) malloc (sizeof(struct ccp_contact) );
     inet_pton(AF_INET, bufip, &addrtmp);
-    memcpy(tempcon->contactIPv4,&addrtmp.s_addr,sizeof(tempcon->contactIPv4));
-    char maskOne;
-    char maskZero;
-    maskZero = (0b0000000011111111 & PORT);
-    maskOne = ((0b1111111100000000 & PORT)>>8);
-    tempcon->contactPort[0] = maskZero;
-    tempcon->contactPort[1] = maskOne;
+    tempcon->contactIPv4 = addrtmp.s_addr;
+    tempcon->contactPort = PORT;
     put_string_in_sender_receiver(tempcon->contactalias,"DELETE ME");
     print_contact(tempcon);
     remove_contact(*tempcon);

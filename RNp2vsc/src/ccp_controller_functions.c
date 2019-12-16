@@ -99,8 +99,8 @@ int ccp_c_update_all(){
             struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
             //now we send a update to con and wait for him to reply to the update
             dpaket->portnumber = PORT;
-            strcpy(dpaket->receivername,con.contactIPv4);
-            get_ipstring_from_contact(con,dpaket->address);
+            strcpy(dpaket->receivername,con.contactalias);
+            inet_ntop(AF_INET, &con.contactIPv4, dpaket->address, 16);
             pthread_mutex_lock(&updatemutex); 
             pthread_cleanup_push(cleanUpMutex,NULL);
             pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
@@ -202,7 +202,7 @@ int ccp_c_messaging(){
             }
         //now we send a update to con and wait for him to reply to the update
         dpaket->portnumber = PORT;
-        strcpy(dpaket->receivername,con.contactIPv4);
+        strcpy(dpaket->receivername,con.contactalias);
         get_ipstring_from_contact(con,dpaket->address);
         pthread_mutex_lock(&updatemutex); 
         pthread_cleanup_push(cleanUpMutex,NULL);
@@ -233,13 +233,13 @@ int ccp_c_messaging(){
         struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
             //now we send a update to con and wait for him to reply to the update
         dpaket->portnumber = PORT;
-        strcpy(dpaket->receivername,con.contactIPv4);
+        strcpy(dpaket->receivername,con.contactalias);
         get_ipstring_from_contact(con,dpaket->address);
         printf("MESSAGE MODE, TERMINATE WITH exit\n");
         do{
                 //Setup again, because threads clear their memory when finished
             dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-            strcpy(dpaket->receivername,con.contactIPv4); 
+            strcpy(dpaket->receivername,con.contactalias); 
             get_ipstring_from_contact(con,dpaket->address);
             bzero(msgbuffer,sizeof msgbuffer);
             printf("geben sie eine nachricht zum versenden ein:\n");

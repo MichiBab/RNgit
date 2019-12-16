@@ -62,7 +62,7 @@ int cr_sent_msg_reply(struct datapack package){
 //to communicate on, connect to the server through contact informations
 //and send the bye package. close the client socket and free malloc data
 int cr_bye(struct ccp ccp_pack){
-    struct sockaddr_in serveraddress;
+   /* struct sockaddr_in serveraddress;
     int socketfd; 
     uint16_t* por;
     char* ip = (char*) malloc(sizeof(char)*4);
@@ -83,7 +83,7 @@ int cr_bye(struct ccp ccp_pack){
             }      
         }
     free(ip);
-    free(por);
+    free(por);*/
     return 0;
     }
 
