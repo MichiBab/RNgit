@@ -97,11 +97,22 @@ int add_socket_to_server_array(int socket, struct sockaddr_in cli){
     pthread_cleanup_push(cleanUpMutex,NULL);
     for( i=0; i< FD_SETSIZE; i++){
         if(client_socket[i] < 0) {
+            printf("server: added socket\n");
             client_socket[i] = temp_accept_socket;
             client_addr[i] = cli;
             break;
             }
          }
+
+    /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
+    if( i == FD_SETSIZE ){
+        printf("zu viele verbindungen\n");
+        //exit(1);
+        }
+
+    /* Den neuen (Socket-)Deskriptor zur
+     * (Gesamt-)Menge hinzufügen */
+    FD_SET(temp_accept_socket, &gesamt_sock);
     pthread_cleanup_pop(1);
     return 0;
 }
@@ -145,15 +156,6 @@ int init_server() {
              * in client_sock suchen und vergeben */
             add_socket_to_server_array(temp_accept_socket, client_temp);
             
-            /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
-            if( i == FD_SETSIZE ){
-                printf("zu viele verbindungen\n");
-                //exit(1);
-            }
-
-            /* Den neuen (Socket-)Deskriptor zur
-             * (Gesamt-)Menge hinzufügen */
-            FD_SET(temp_accept_socket, &gesamt_sock);
 
             /* select() benötigt die höchste 
              * (Socket-)Deskriptor-Nummer */
