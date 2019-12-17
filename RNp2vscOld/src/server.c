@@ -48,7 +48,7 @@ static int setIPandPort(){
     
 static int bindSocket(){
     if (bind(parentfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
-        printf("ERROR binding socket\n");
+        printf("ERROR binding socket");
        // exit(1);
         }
     
@@ -57,7 +57,7 @@ static int bindSocket(){
 
 static int listenSocket(){
     if (listen(parentfd, MAXCLIENTS) < 0) {
-        printf("ERROR listening\n");
+        printf("ERROR listening");
        // exit(1);
     }
     return 0;
@@ -68,7 +68,7 @@ static int listenSocket(){
 //initialise all client_socket[] to 0 so not checked  
 static int init_clientfds(){
     for (int i = 0; i < MAXCLIENTS; i++){   
-        client_socket[i] = -1;   
+        client_socket[i] = 0;   
         }   
     return 0;
     }
@@ -124,9 +124,9 @@ static int getMessages(){
         
         //if there is a valid socket
         if (FD_ISSET( sd , &readfds)){
-            printf("server got a valid socket\n");
+           //printf("server got a valid socket\n");
                 if(readFromSocket(client_socket[i], client_addr[i])){
-                    printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
+                   // printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
                     close( sd );
                     client_socket[i] = 0;
                 }
@@ -135,18 +135,6 @@ static int getMessages(){
     return 0;
     
     }
-
-void accept_socket(int *socket, int *new_socket){
-   struct sockaddr_in client;
-   int len;
-   
-   len = sizeof(client);
-   *new_socket = accept( *socket,(struct sockaddr *)&client,
-                         &len );
-   if (*new_socket  == -1) 
-      printf("Fehler bei accept");
-      exit(1);
-}
 
 int init_server() {
     
@@ -165,84 +153,27 @@ int init_server() {
     * then close connection.
     */
     printf("server now in main loop\n");
-
-    int  temp_accept_socket, temp_read_socket ;
-    int i, ready, sock_max, max=-1;
-    fd_set gesamt_sock, lese_sock;
-    sock_max = parentfd;
-    FD_ZERO(&gesamt_sock);  
-    FD_SET(parentfd, &gesamt_sock);
-
     while (1) {
-        /* Immer aktualisieren */
-        lese_sock = gesamt_sock;
-
-        /* Hier wird auf die Ankunft von Daten oder
-         * neuer Verbindungen von Clients gewartet */
-        ready = select(sock_max+1, &lese_sock, NULL, NULL, NULL);
-
-        /* Eine neue Clientverbindung ... ? */
-        if( FD_ISSET(parentfd, &lese_sock)) {
-            accept_socket( &parentfd, &temp_accept_socket );
-            
-            /* Freien Platz für (Socket-)Deskriptor 
-             * in client_sock suchen und vergeben */
-            for( i=0; i< FD_SETSIZE; i++){
-                if(client_socket[i] < 0) {
-                    client_socket[i] = temp_accept_socket;
-                    break;
-                }
+      
+        //clear the socket set
+        FD_ZERO(&readfds);
+      
+        //add master socket to set  
+        FD_SET(parentfd, &readfds);
+        max_sd = parentfd;
+      
+        addchilds();
+          
+        //wait for an activity on one of the sockets , timeout is NULL ,  
+        //so wait indefinitely
+        activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
+        if ((activity < 0) && (errno!=EINTR)){
+            printf("select error \n");
             }
-            /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
-            if( i == FD_SETSIZE ){
-                printf("zu viele verbindungen\n");
-                exit(1);
-            }
-
-            /* Den neuen (Socket-)Deskriptor zur
-             * (Gesamt-)Menge hinzufügen */
-            FD_SET(temp_accept_socket, &gesamt_sock);
-
-            /* select() benötigt die höchste 
-             * (Socket-)Deskriptor-Nummer */
-            if( temp_accept_socket > sock_max ){
-                sock_max = temp_accept_socket;
-            }
-
-            /* höchster Index für client_sock
-            * für die anschließende Schleife benötigt */
-            if( i > max ){
-                max = i;
-            }
-
-            /* ... weitere (Lese-)Deskriptoren bereit? */
-            if( --ready <= 0 ){
-                continue; //Nein ...
-            }
-            
-        }
-
-        /* Ab hier werden alle Verbindungen von Clients auf
-        * die Ankunft von neuen Daten überprüft */
-        for(i=0; i<=max; i++) {
-
-            temp_read_socket = client_socket[i];
-
-            if(sd >= 0){
-                /* (Socket-)Deskriptor gesetzt ... */   
-                if(FD_ISSET(temp_read_socket, &lese_sock)){
-                    /* ... dann die Daten lesen */
-                    if(readFromSocket(client_socket[i], client_addr[i])){
-                        printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
-                        close( temp_read_socket );
-                        client_socket[i] = -1;
-                    }
-
-                }
-
-            }
-
-        }
+        printf("accepted something\n");
+        acceptConnections();
+        
+        getMessages();
     }
 }
 

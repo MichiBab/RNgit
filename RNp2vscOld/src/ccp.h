@@ -38,13 +38,13 @@ struct ccp_contact{
 #pragma pack(pop)
 
 
-#define REQUEST_TO_OPEN_CONNECTION 0b00000001
-#define ACKNOWLEDGE_OPENING_CONNECTION 0b00000101
-#define PEER_DISCONNECTED 0b00000010
-#define SEND_A_MESSAGE 0b00001000
-#define ACKNOWLEDGE_RECEIVING_MESSAGE 0b00001100
-#define REQUEST_IF_PEER_IS_ALIVE 0b00010000
-#define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00010100
+#define REQUEST_TO_OPEN_CONNECTION 0b00010000
+#define ACKNOWLEDGE_OPENING_CONNECTION 0b00010001
+#define PEER_DISCONNECTED 0b00001000
+#define SEND_A_MESSAGE 0b00000100
+#define ACKNOWLEDGE_RECEIVING_MESSAGE 0b00000101
+#define REQUEST_IF_PEER_IS_ALIVE 0b00000010
+#define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00000011
 
 
 extern struct ccp_contact contactlist[maxcontacts];
@@ -88,16 +88,16 @@ int return_client_contact_index_through_ip4(uint32_t client_ipv4, struct ccp_con
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 
 //servermethods
-int react_to_package(struct ccp* pack , struct sockaddr_in clientdata, int socket);
+int react_to_package(struct ccp* pack , struct sockaddr_in clientdata);
 
 //react routine
-int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
-int react_to_hello_reply(struct ccp* ccp_data , int socket);
-int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
-int react_to_update_reply( int socket);
-int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
-int react_to_msg_reply( int socket);
-int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
+int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata);
+int react_to_hello_reply(struct ccp* ccp_data);
+int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata);
+int react_to_update_reply();
+int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata);
+int react_to_msg_reply();
+int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata);
 
 int destroy_list_mutex();
 #endif

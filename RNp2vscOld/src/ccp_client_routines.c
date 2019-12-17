@@ -5,14 +5,18 @@
 static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     init_client( &package.serveraddress, &package.socketfd);
-    send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
+    if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
+        send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
+        // so no interrupt if server unavailable
+        }
+    close_client(&package.socketfd);
     return 0;
     }
 
 int cr_send_hello(struct datapack package){
     printf("I SEND A HELLO\n"); 
     set_ccp_hello(&package.ccppackage,package.receivername);
-    //create socket, add to our watch list for the server
+    send_routine(package);
     return 0;
     }
     
@@ -31,6 +35,7 @@ int cr_send_update(struct datapack package){
     }
     
 int cr_send_update_reply(struct datapack package){
+    
     set_ccp_update_reply(&package.ccppackage, package.receivername);
     printf("I SEND A UPDATE REPLY\n"); 
     send_routine(package);
