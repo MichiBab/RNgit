@@ -42,8 +42,8 @@ New Update Contacts:
     contacts and dont have timeout problems.
 
 Client Routines:
-    Sending Hello: create socket, connect with it, if connected send him our contactlist. if we receive a hello reply: find his 
-    contact through his ip in his sent list, add him to our contact list and add the socket we created in the Global socket_array 
+    Sending Hello: create socket, connect with it, if connected send him our contactlist and add the socket. if we receive a hello reply: 
+    find his contact through his ip in his sent list, add him to our contact list and add the socket we created in the Global socket_array 
     with his index in our own contact list. 
 
     Sending Hello through Update Contacts: the same as above, but we just add his index and socket to Global socket_array, 

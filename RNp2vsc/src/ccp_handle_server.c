@@ -46,7 +46,7 @@ int react_to_package(struct ccp* ccp_data , struct sockaddr_in clientdata , int 
             break;
         
         case ACKNOWLEDGE_OPENING_CONNECTION:
-            react_to_hello_reply(ccp_data,socket);
+            react_to_hello_reply(ccp_data,clientdata,socket);
             break;
         
         case PEER_DISCONNECTED:

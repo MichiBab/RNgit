@@ -3,6 +3,7 @@
 #include <errno.h> 
 #include <unistd.h> 
 #include <sys/select.h>
+#include <pthread.h>
 
 int parentfd; 
 
@@ -14,12 +15,22 @@ int client_socket[MAXCLIENTS];
 int max_sd, activity, sd, new_socket;
 fd_set readfds; 
 int addrlen = sizeof(serveraddr);
+int  temp_accept_socket, temp_read_socket ;
+int i, ready, sock_max, max=-1;
+fd_set gesamt_sock, lese_sock;
+pthread_mutex_t socket_lock = PTHREAD_MUTEX_INITIALIZER;
 //--
+
+static void cleanUpMutex(void* arg){
+    pthread_mutex_unlock(&socket_lock);
+    }
 
 int close_server(){
     close(parentfd);
     return 0;
     }
+
+
 
 static int create_socket(){
     parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
@@ -63,8 +74,6 @@ static int listenSocket(){
     return 0;
     }
 
-
-
 //initialise all client_socket[] to 0 so not checked  
 static int init_clientfds(){
     for (int i = 0; i < MAXCLIENTS; i++){   
@@ -74,78 +83,27 @@ static int init_clientfds(){
     }
 
 
-static int addchilds(){
-    //add child sockets to set  
-    for (int i = 0 ; i < MAXCLIENTS ; i++){
-        //socket descriptor
-        sd = client_socket[i];
-        //if valid socket descriptor then add to read list
-        if(sd > 0){
-            FD_SET( sd , &readfds);
-            }
-        //if valid socket descriptor then add to read list
-        if(sd > 0){
-            max_sd = sd;
-            }
-        }
-    return 0;
-    }
-    
-static int acceptConnections(){
-    //If something happened on the master socket ,  
-    //then its an incoming connection     
-    if (FD_ISSET(parentfd, &readfds)){
-        struct sockaddr_in temp;
-        int templen = sizeof(struct sockaddr_in);
-        new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&templen);
-        if (new_socket < 0){
-            printf("error accept\n");
-            //exit(1);
-            }
-        //add new socket to array of sockets  
-        for (int i = 0; i < MAXCLIENTS; i++){   
-            //if position is empty  
-            if( client_socket[i] == 0 ) {   
-                client_addr[i] = temp;
-                client_socket[i] = new_socket;   
-                //printf("Adding to list of sockets as %d\n" , i);   
-                break;   
-                }
-            }
-        }
-    return 0;
-    }
-    
-static int getMessages(){
-    //GET MESSAGES
-    //printf("server tries to read messages now\n");
-    for (int i = 0; i < MAXCLIENTS; i++){
-        sd = client_socket[i];    
-        
-        //if there is a valid socket
-        if (FD_ISSET( sd , &readfds)){
-            printf("server got a valid socket\n");
-                if(readFromSocket(client_socket[i], client_addr[i])){
-                    printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
-                    close( sd );
-                    client_socket[i] = 0;
-                }
-            }
-        }
-    return 0;
-    
-    }
-
-void accept_socket(int *socket, int *new_socket){
-   struct sockaddr_in client;
+void accept_connection(int *socket, int *new_socket, struct sockaddr_in* client){
    int len;
-   
    len = sizeof(client);
-   *new_socket = accept( *socket,(struct sockaddr *)&client,
-                         &len );
+   *new_socket = accept( *socket,(struct sockaddr *)client, &len );
    if (*new_socket  == -1) 
       printf("Fehler bei accept");
-      exit(1);
+      //exit(1);
+}
+
+int add_socket_to_server_array(int socket, struct sockaddr_in cli){
+    pthread_mutex_lock(&socket_lock); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
+    for( i=0; i< FD_SETSIZE; i++){
+        if(client_socket[i] < 0) {
+            client_socket[i] = temp_accept_socket;
+            client_addr[i] = cli;
+            break;
+            }
+         }
+    pthread_cleanup_pop(1);
+    return 0;
 }
 
 int init_server() {
@@ -166,13 +124,11 @@ int init_server() {
     */
     printf("server now in main loop\n");
 
-    int  temp_accept_socket, temp_read_socket ;
-    int i, ready, sock_max, max=-1;
-    fd_set gesamt_sock, lese_sock;
+    
     sock_max = parentfd;
     FD_ZERO(&gesamt_sock);  
     FD_SET(parentfd, &gesamt_sock);
-
+    struct sockaddr_in client_temp;
     while (1) {
         /* Immer aktualisieren */
         lese_sock = gesamt_sock;
@@ -183,20 +139,16 @@ int init_server() {
 
         /* Eine neue Clientverbindung ... ? */
         if( FD_ISSET(parentfd, &lese_sock)) {
-            accept_socket( &parentfd, &temp_accept_socket );
+            accept_connection( &parentfd, &temp_accept_socket, &client_temp );
             
             /* Freien Platz für (Socket-)Deskriptor 
              * in client_sock suchen und vergeben */
-            for( i=0; i< FD_SETSIZE; i++){
-                if(client_socket[i] < 0) {
-                    client_socket[i] = temp_accept_socket;
-                    break;
-                }
-            }
+            add_socket_to_server_array(temp_accept_socket, client_temp);
+            
             /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
             if( i == FD_SETSIZE ){
                 printf("zu viele verbindungen\n");
-                exit(1);
+                //exit(1);
             }
 
             /* Den neuen (Socket-)Deskriptor zur

@@ -1,18 +1,31 @@
 #include "ccp.h"
 #include "client.h"
+#include "server.h"
+#include "generic.h"
 #include <unistd.h>
 
 static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
-    init_client( &package.serveraddress, &package.socketfd);
+    //init_client( &package.serveraddress, &package.socketfd);
     send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
     return 0;
     }
 
 int cr_send_hello(struct datapack package){
-    printf("I SEND A HELLO\n"); 
+    printf("IM SENDING A HELLO\n"); 
     set_ccp_hello(&package.ccppackage,package.receivername);
-    //create socket, add to our watch list for the server
+    //creats socket
+    init_client( &package.serveraddress, &package.socketfd);
+    
+    if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
+        //if connected
+        printf("package send\n");
+        add_socket_to_server_array(package.socketfd,package.serveraddress);
+        send_routine(package);
+        return 0;
+    }
+    printf("package not send\n");
+
     return 0;
     }
     

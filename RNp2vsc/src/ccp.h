@@ -47,9 +47,14 @@ struct ccp_contact{
 #define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00010100
 
 
+
+#define SOCKETFIELD 0
+#define FLAGFIELD 1
 extern struct ccp_contact contactlist[maxcontacts];
 extern int contactlist_sockets[maxcontacts][2];
 extern char our_username[16];
+
+
 
 //CLIENT ROUTINES
 int cr_send_hello(struct datapack package); //defined in client
@@ -68,13 +73,11 @@ int set_ccp_update_reply(struct ccp* updatepack, char* receivername);
 int set_ccp_message(struct ccp* msgpack, char* message, char* receivername);
 int set_ccp_message_reply(struct ccp* msgpack, char* receivername);
 
-
+//CCP LIST HANDLING
 int print_a_contactlist(struct ccp_contact list[maxcontacts]);
-
 int put_contact_list_in_message_of_ccp(struct ccp* pack);
 int put_string_in_sender_receiver(char* array, char* input);
 int put_message_in_ccp(struct ccp* pack, char* message);
-
 int create_our_contact(char* ipstring);
 int print_contact(struct ccp_contact* con);
 int print_my_contactlist();
@@ -86,18 +89,20 @@ int update_contact_list();
 int check_if_not_null_contact(struct ccp_contact con);
 int return_client_contact_index_through_ip4(uint32_t client_ipv4, struct ccp_contact* clientlist);
 int get_ipstring_from_contact(struct ccp_contact con, char* erg);
+int add_contact_mutex_locked(struct ccp_contact con);
+int add_entrys_to_socket_array(int listindex, int MODE, int data);
+int destroy_list_mutex();
 
 //servermethods
 int react_to_package(struct ccp* pack , struct sockaddr_in clientdata, int socket);
 
 //react routine
 int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
-int react_to_hello_reply(struct ccp* ccp_data , int socket);
+int react_to_hello_reply(struct ccp* ccp_data, struct sockaddr_in clientdataint, int socket);
 int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
 int react_to_update_reply( int socket);
 int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
 int react_to_msg_reply( int socket);
 int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket);
 
-int destroy_list_mutex();
 #endif

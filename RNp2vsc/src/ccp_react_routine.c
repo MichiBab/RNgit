@@ -17,27 +17,55 @@ static int setup_datapackage(struct datapack* tmpdatapaket, char* alias, struct 
     return 0;
     }
 
+static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct ccp_contact* ccp_contact_newlist){
+
+    //first we need to find his contact in his own list
+    int his_con_index = 
+        return_client_contact_index_through_ip4(clientdata.sin_addr.s_addr, ccp_contact_newlist);
+    if(his_con_index == -1){
+        printf("we did not find him in his own contact list\n");
+        return -1;
+    }
+    //now we add him to our list, so we dont send a hello to him
+    int his_con_in_our_list_index = 
+        add_contact_mutex_locked(ccp_contact_newlist[his_con_index]);
+    if(his_con_in_our_list_index == -1){
+        printf("hes already in our list!\n");
+        return -1;
+    }
+    //now we mark him and his socket in our global socket_array
+    add_entrys_to_socket_array(his_con_in_our_list_index, SOCKETFIELD, socket);
+    printf("added contact  with his socket on index %d",his_con_in_our_list_index);
+    //JUST UPDATE OUR CONTACT LIST. 
+    merge_lists(ccp_contact_newlist);//we will ignore him, cause he got added already before.
+    update_contact_list(ccp_contact_newlist); 
+
+    return 0;
+
+}
+
 int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket){
-    printf("I GOT AN HELLO!\n");   
+    printf("I GOT A HELLO!\n");   
     struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
     struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
     pthread_t helperclient;
     memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
-    merge_lists(ccp_contact_newlist);
-    update_contact_list(ccp_contact_newlist);
+
+    react_to_listdata(clientdata, socket, ccp_contact_newlist);
+
     setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata, socket);
     put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
+
     pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
     free(ccp_contact_newlist);
     return 0;
 }
 
-int react_to_hello_reply(struct ccp* ccp_data, int socket){
-    printf("I GOT AN HELLO REPLY!\n");
+int react_to_hello_reply(struct ccp* ccp_data, struct sockaddr_in clientdata, int socket){
+    printf("I GOT A HELLO REPLY!\n");
     struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
     memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
-    update_contact_list(ccp_contact_newlist); //JUST UPDATE OUR CONTACT LIST. 
-    //UPDATE CONTACT LIST HANDLES NEW HELLOs
+    react_to_listdata(clientdata, socket, ccp_contact_newlist);
     return 0;
     }
     

@@ -10,6 +10,7 @@
 struct ccp_contact contactlist[maxcontacts];//GLOBAL
 char our_username[contactaliassize];//GLOBAL
 int marker[maxcontacts];//marking new contacts
+int contactlist_sockets[maxcontacts][2];
 
 pthread_mutex_t listmutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -85,14 +86,16 @@ int update_contact_list(){
         if(marker[i] == 1){
             printf("im in marker with index %d\n",i);
             pthread_t helperthread;
+
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
             uint16_t tmpP;
-            printf("new entry from clientlist\n");
+            printf("new entry from clientlist, sending a hello\n");
             inet_ntop(AF_INET, &contactlist[i].contactIPv4, tmpIP, 16);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             dpaket->portnumber = PORT;
-            strcpy(dpaket->receivername,contactlist[i].contactalias);
+            put_string_in_sender_receiver(dpaket->receivername,contactlist[i].contactalias);
+
             pthread_create(&helperthread,NULL,clientSendHello,(struct datapack*)dpaket);
             }
     }
@@ -139,7 +142,6 @@ int merge_lists(struct ccp_contact clientlist[maxcontacts]){
 
 //method adds new contact to the first open spot and returns the index. -1 if its already in
 int add_contact(struct ccp_contact con){
-
     for(int i = 0; i < maxcontacts; i++){
         if((check_if_not_null_contact(contactlist[i])==0)){
             contactlist[i] = con;
@@ -148,6 +150,23 @@ int add_contact(struct ccp_contact con){
         }
 
     return -1;
+    }
+
+//method adds new contact to the first open spot and returns the index. -1 if its already in
+int add_contact_mutex_locked(struct ccp_contact con){
+
+    int index = -1;
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
+    for(int i = 0; i < maxcontacts; i++){
+        if((check_if_not_null_contact(contactlist[i])==0)){
+            contactlist[i] = con;
+            index = i;
+            i = maxcontacts; //break
+            }
+        }
+    pthread_cleanup_pop(1);
+    return index;
     }
 
 int remove_contact(struct ccp_contact con){
@@ -236,4 +255,13 @@ int return_client_contact_index_through_ip4(uint32_t client_ipv4, struct ccp_con
         }
     }
     return -1;
+}
+
+int add_entrys_to_socket_array(int listindex, int MODE, int data){
+    pthread_mutex_lock(&listmutex); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
+
+    contactlist_sockets[listindex][MODE] = data;
+    
+    pthread_cleanup_pop(1);
 }
