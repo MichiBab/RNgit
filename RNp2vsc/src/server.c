@@ -265,7 +265,7 @@ int init_server() {
             //read to clear pipe
             char buf[3];
             int bytesread = read(pipe_fd[0],buf,2);
-            getMessages();
+            //getMessages();
         }
         acceptConnections();
 
