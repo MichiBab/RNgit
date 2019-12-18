@@ -1,0 +1,297 @@
+-Change the communication:
+
+Hello pack:
+    If u send a hello pack, u need to create a new Socket and call the connect to the person u send the hello on.
+    Then u send the hello. The newly created Socket will be storted into the SELECT routine, so the Server will react
+    to new Inputs. For Example if the connected to Person sends back the hello reply. We will keep a Socket open for 
+    every communication Partner.
+
+Getting a Hello Pack:
+    If we receive a hello Pack, accept will return a new Socket: The Socket from the Sender. We have to store it now
+    in our SELECT routine like above. And in this Case, send a Hello Reply back.
+
+Managing the new List: defined downwards.
+    If we receive a new Socket for SELECT through accepting, we will get a Contact list from the Sender. Now we have
+    Scan through the Contact list, till we find a contact matching the sender ip Address, so we ensure its him. Maybe
+    he is not on the first Contact List entry, its undefined. If we find him in his contact list: We have to add his
+    Index from our List, after we accepted him, and add his Socket, that we got through accept in a Global socket_array. 
+    It will be 2 Dimensional: socket_array[maxcontacts][2]. In the first one will be the Index from our List, in the second 
+    one will be the Persons Socket to communicate on. The second one will show the Reply Flag.
+    The same will go on with the Hello Repy Pack. We wait to receive a Hello Reply, find his IP and add (this time) 
+    OUR Socket, thats made to communicate with him and his Index in the Global socket_array.
+    
+Server:
+    The Server now will use the Global socket_array and scan thorugh every Contact and their Socket. If one is updatet,
+    the server will react to it. 
+
+Server reacting:
+    A Thread will be made that handles the react_routine. Maybe a Taskqueue??. Or just have a Thread do it and terminate
+    itself. 
+
+Update Contacts: Will be called MERGE CONTACTS
+    We will add everyone to our List, so we can send back our newly merged List as a hello reply
+    before conforming every new Entry as a true entry communication point so we dont time out. After sending the hello reply,
+    we send a Hello to everyone thats new. For that we can run a new Function. This hello will send the index of the entry, 
+    so our "sending hello through contactlist" will be called. 
+
+New Update Contacts: 
+    This function will check if we got a contact in our global socket_array, if not, we will send a Hello Pack. Its used, so
+    a Thread can get a hello, add the contact and his socket, merge every other new contacts to our list before giving
+    everyone a socket to send a reply back. If we dont do this, we run the risk of timing out. So after sending the merged 
+    list back, we just have 1 new entry in our global socket_array, the person we got a hello from. now we call the new update 
+    contacts and dont have timeout problems.
+
+Client Routines:
+    Sending Hello: create socket, connect with it, if connected send him our contactlist and add the socket. if we receive a hello reply: 
+    find his contact through his ip in his sent list, add him to our contact list and add the socket we created in the Global socket_array 
+    with his index in our own contact list. 
+
+    Sending Hello through Update Contacts: the same as above, but we just add his index and socket to Global socket_array, 
+    because he already is in our List. We need to receive his Index though as a parameter. Basically, we just skip the 
+    "locate his contact in his list" step.
+
+    Getting Hello: search for his contact through his ip in the List he send us, add him to our contactlist, now add his new 
+    index and socket, that we got with accept to our Global socket_array. Run update contacts.
+
+    The other methods: They now will run through our Socket Indexing. So if we want to message contact 1, we will send a msg to the 
+    Socket on Index 1 in our global socket_array. Basically the methods will stay the same, but work as a always open connection.
+
+Threading:
+    the Server will manage all. so if u send a hello pack, the server will create a thread that creats a socket, sends hello, waits for
+    reply, searches the Sender Contact through the destination ip, adds him to the List, gets the Index from the add List function and
+    adds him and the socket he created to the global socket_array, adds all new contacts to the list, sends the hello reply and calls
+    the update all function that updates the new contacts. Afterwards the thread frees his datapack and terminates.
+
+Flag System:
+    The Flag system should be added to the global socket_array
+
+
+
+
+
+
+
+#include "server.h"
+#include "generic.h"
+#include <errno.h> 
+#include <unistd.h> 
+#include <sys/select.h>
+#include <pthread.h>
+
+int parentfd; 
+
+struct sockaddr_in serveraddr; 
+struct sockaddr_in client_addr[MAXCLIENTS];
+
+//--select 
+int client_socket[MAXCLIENTS];
+int max_sd, activity, sd, new_socket;
+fd_set readfds; 
+int addrlen = sizeof(serveraddr);
+int  temp_accept_socket, temp_read_socket ;
+int i, ready, sock_max, max=-1;
+fd_set gesamt_sock, lese_sock;
+pthread_mutex_t socket_lock = PTHREAD_MUTEX_INITIALIZER;
+//--
+
+static void cleanUpMutex(void* arg){
+    pthread_mutex_unlock(&socket_lock);
+    }
+
+int close_server(){
+    close(parentfd);
+    return 0;
+    }
+
+
+
+static int create_socket(){
+    parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
+    if (parentfd < 0) {
+        printf("ERROR opening socket");
+       // exit(1);
+    }
+
+    bzero((char *) &serveraddr, sizeof(serveraddr));
+    return 0;
+    }
+    
+
+static int setIPandPort(){
+    /* this is an Internet address */
+    serveraddr.sin_family = AF_INET;
+
+    /* let the system figure out our IP address */
+    serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    /* this is the port we will listen on */
+    serveraddr.sin_port = htons(PORT);
+    
+    return 0;
+    }
+    
+static int bindSocket(){
+    if (bind(parentfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
+        printf("ERROR binding socket\n");
+       // exit(1);
+        }
+    
+    return 0;
+    }
+
+static int listenSocket(){
+    if (listen(parentfd, MAXCLIENTS) < 0) {
+        printf("ERROR listening\n");
+       // exit(1);
+    }
+    return 0;
+    }
+
+//initialise all client_socket[] to 0 so not checked  
+static int init_clientfds(){
+    for (int i = 0; i < MAXCLIENTS; i++){   
+        client_socket[i] = -1;   
+        }   
+    return 0;
+    }
+
+
+void accept_connection(int *socket, int *new_socket, struct sockaddr_in* client){
+   int len;
+   len = sizeof(client);
+   *new_socket = accept( *socket,(struct sockaddr *)client, &len );
+   if (*new_socket  == -1) 
+      printf("Fehler bei accept");
+      //exit(1);
+}
+
+int add_socket_to_server_array(int socket, struct sockaddr_in cli){
+    pthread_mutex_lock(&socket_lock); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
+    printf("----------------SERVER IN add_socket_to_server_array\n");
+    for( i=0; i< FD_SETSIZE; i++){
+        if(client_socket[i] < 0) {
+            printf("server: added socket %d\n",temp_accept_socket);
+            client_socket[i] = temp_accept_socket;
+            client_addr[i] = cli;
+            break;
+            }
+         }
+
+    /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
+    if( i == FD_SETSIZE ){
+        printf("zu viele verbindungen\n");
+        //exit(1);
+        }
+
+    /* Den neuen (Socket-)Deskriptor zur
+     * (Gesamt-)Menge hinzufügen */
+    FD_SET(temp_accept_socket, &gesamt_sock);
+    //lese_sock = gesamt_sock;
+    pthread_cleanup_pop(1);
+    return 0;
+}
+
+int init_server() {
+    
+    init_clientfds();
+    
+    create_socket();
+
+    setIPandPort();
+  
+    bindSocket();
+
+    listenSocket();
+
+    /* 
+    * main loop: wait for a connection request, read input line, 
+    * then close connection.
+    */
+    printf("server now in main loop\n");
+
+    
+    sock_max = parentfd;
+    FD_ZERO(&gesamt_sock);  
+    FD_SET(parentfd, &gesamt_sock);
+    struct sockaddr_in client_temp;
+    while (1) {
+        /* Immer aktualisieren */
+        lese_sock = gesamt_sock;
+
+        /* Hier wird auf die Ankunft von Daten oder
+         * neuer Verbindungen von Clients gewartet */
+        printf("----------------SERVER IN SELECT\n");
+        ready = select(sock_max+1, &lese_sock, NULL, NULL, NULL);
+
+        /* Eine neue Clientverbindung ... ? */
+        printf("----------------SERVER IN FD_ISSET\n");
+        if( FD_ISSET(parentfd, &lese_sock)) {
+            printf("----------------SERVER IN ACCEPT_CONNECTION\n");
+            accept_connection( &parentfd, &temp_accept_socket, &client_temp );
+            
+            /* Freien Platz für (Socket-)Deskriptor 
+             * in client_sock suchen und vergeben */
+            
+            add_socket_to_server_array(temp_accept_socket, client_temp);
+            
+
+            /* select() benötigt die höchste 
+             * (Socket-)Deskriptor-Nummer */
+            if( temp_accept_socket > sock_max ){
+                sock_max = temp_accept_socket;
+            }
+
+            /* höchster Index für client_sock
+            * für die anschließende Schleife benötigt */
+            if( i > max ){
+                max = i;
+            }
+
+            /* ... weitere (Lese-)Deskriptoren bereit? */
+            if( --ready <= 0 ){
+                continue; //Nein ...
+            }
+            
+        }
+
+        /* Ab hier werden alle Verbindungen von Clients auf
+        * die Ankunft von neuen Daten überprüft */
+        for(i=0; i<=max; i++) {
+             printf("----------------SERVER READING DATA\n");
+            temp_read_socket = client_socket[i];
+
+            if(sd >= 0){
+                /* (Socket-)Deskriptor gesetzt ... */   
+                if(FD_ISSET(temp_read_socket, &lese_sock)){
+                    /* ... dann die Daten lesen */
+                    if(readFromSocket(client_socket[i], client_addr[i])){
+                        printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
+                        close( temp_read_socket );
+                        client_socket[i] = -1;
+                    }
+
+                }
+
+            }
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
