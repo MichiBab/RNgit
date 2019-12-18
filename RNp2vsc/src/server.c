@@ -121,17 +121,13 @@ int add_socket_to_server_array(int socket, struct sockaddr_in cli){
             
             pthread_cleanup_pop(1);
             printf("Adding to list of sockets as index %d ---socket: %d \n" , i, socket);  
-
+            send_pipe_signal();
             break;   
             }
     }
 
 }
 
-int test_read(){
-    getMessages();
-    return 0;
-}
 
 static int acceptConnections(){
     //If something happened on the master socket ,  
@@ -188,10 +184,14 @@ static int getMessages(){
     
     }
 
+//this wakes up the select call. So if a thread updates the fdset,
+//select has to skip waiting, else it wont be noticed
 int send_pipe_signal(){
-    
+    pthread_mutex_lock(&socket_lock); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
     write(pipe_fd[1] , "a" ,2);
     printf("send pipe signal\n");
+    pthread_cleanup_pop(1);
     return 0;
 }
 

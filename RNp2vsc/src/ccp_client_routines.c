@@ -23,9 +23,7 @@ int cr_send_hello(struct datapack package){
         printf("package send\n");
         add_socket_to_server_array(package.socketfd,package.serveraddress);
         send_routine(package);
-        send_pipe_signal();
         
-        test_read();
         return 0;
     }
     printf("package not send\n");
