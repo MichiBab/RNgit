@@ -5,21 +5,18 @@
 #include <sys/select.h>
 #include <pthread.h>
 
-int parentfd; 
+int pipe_fd[2];
 
+int parentfd; 
+pthread_mutex_t socket_lock = PTHREAD_MUTEX_INITIALIZER;
 struct sockaddr_in serveraddr; 
 struct sockaddr_in client_addr[MAXCLIENTS];
-
+static int getMessages();
 //--select 
 int client_socket[MAXCLIENTS];
 int max_sd, activity, sd, new_socket;
 fd_set readfds; 
 int addrlen = sizeof(serveraddr);
-int  temp_accept_socket, temp_read_socket ;
-int i, ready, sock_max, max=-1;
-fd_set gesamt_sock, lese_sock;
-pthread_mutex_t socket_lock = PTHREAD_MUTEX_INITIALIZER;
-//--
 
 static void cleanUpMutex(void* arg){
     pthread_mutex_unlock(&socket_lock);
@@ -29,8 +26,6 @@ int close_server(){
     close(parentfd);
     return 0;
     }
-
-
 
 static int create_socket(){
     parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
@@ -59,7 +54,7 @@ static int setIPandPort(){
     
 static int bindSocket(){
     if (bind(parentfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
-        printf("ERROR binding socket\n");
+        printf("ERROR binding socket");
        // exit(1);
         }
     
@@ -68,57 +63,125 @@ static int bindSocket(){
 
 static int listenSocket(){
     if (listen(parentfd, MAXCLIENTS) < 0) {
-        printf("ERROR listening\n");
+        printf("ERROR listening");
        // exit(1);
     }
     return 0;
     }
 
+
+
 //initialise all client_socket[] to 0 so not checked  
 static int init_clientfds(){
     for (int i = 0; i < MAXCLIENTS; i++){   
-        client_socket[i] = -1;   
+        client_socket[i] = 0;   
         }   
     return 0;
     }
 
 
-void accept_connection(int *socket, int *new_socket, struct sockaddr_in* client){
-   int len;
-   len = sizeof(client);
-   *new_socket = accept( *socket,(struct sockaddr *)client, &len );
-   if (*new_socket  == -1) 
-      printf("Fehler bei accept");
-      //exit(1);
-}
-
-int add_socket_to_server_array(int socket, struct sockaddr_in cli){
+static int addchilds(){
+    //add child sockets to set  
     pthread_mutex_lock(&socket_lock); 
     pthread_cleanup_push(cleanUpMutex,NULL);
-    for( i=0; i< FD_SETSIZE; i++){
-        if(client_socket[i] < 0) {
-            printf("server: added socket\n");
-            client_socket[i] = temp_accept_socket;
-            client_addr[i] = cli;
-            break;
+    for (int i = 0 ; i < MAXCLIENTS ; i++){
+        //socket descriptor
+        sd = client_socket[i];
+        //if valid socket descriptor then add to read list
+        if(sd > 0){
+            FD_SET( sd , &readfds);
             }
-         }
-
-    /* Mehr als FD_SETSIZE Clients sind nicht möglich */ 
-    if( i == FD_SETSIZE ){
-        printf("zu viele verbindungen\n");
-        //exit(1);
+        //get greatest
+        if(sd > max_sd){
+            max_sd = sd;
+            }
         }
-
-    /* Den neuen (Socket-)Deskriptor zur
-     * (Gesamt-)Menge hinzufügen */
-    FD_SET(temp_accept_socket, &gesamt_sock);
     pthread_cleanup_pop(1);
+    return 0;
+    }
+
+int add_socket_to_server_array(int socket, struct sockaddr_in cli){
+    for (int i = 0; i < MAXCLIENTS; i++){   
+        //if position is empty  
+        if( client_socket[i] == 0 ) {   
+            pthread_mutex_lock(&socket_lock); 
+            pthread_cleanup_push(cleanUpMutex,NULL);
+
+            client_addr[i] = cli;
+            client_socket[i] = socket;  
+            FD_SET(socket,&readfds);
+            
+            pthread_cleanup_pop(1);
+            printf("Adding to list of sockets as index %d ---socket: %d \n" , i, socket);  
+
+            break;   
+            }
+    }
+
+}
+
+int test_read(){
+    getMessages();
     return 0;
 }
 
-int init_server() {
+static int acceptConnections(){
+    //If something happened on the master socket ,  
+    //then its an incoming connection     
+    if (FD_ISSET(parentfd, &readfds)){
+        struct sockaddr_in temp;
+        int templen = sizeof(struct sockaddr_in);
+        printf("trying to accept a socket\n");
+        new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&templen);
+        if (new_socket < 0){
+            printf("error accept\n");
+            //exit(1);
+            }
+        //add new socket to array of sockets  
+        for (int i = 0; i < MAXCLIENTS; i++){   
+            //if position is empty  
+            if( client_socket[i] == 0 ) {   
+                pthread_mutex_lock(&socket_lock); 
+                pthread_cleanup_push(cleanUpMutex,NULL);
+
+                client_addr[i] = temp;
+                client_socket[i] = new_socket;  
+
+                pthread_cleanup_pop(1);
+                //printf("Adding to list of sockets as %d\n" , i);   
+                break;   
+                }
+            }
+        }
+    return 0;
+    }
     
+static int getMessages(){
+    //GET MESSAGES
+    //printf("server tries to read messages now\n");
+    for (int i = 0; i < MAXCLIENTS; i++){
+        sd = client_socket[i];    
+        //if there is a valid socket
+        if (FD_ISSET( sd , &readfds)){
+           //printf("server got a valid socket\n");
+                if(readFromSocket(client_socket[i], client_addr[i])){
+                   // printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
+                    close( sd );
+                    pthread_mutex_lock(&socket_lock); 
+                    pthread_cleanup_push(cleanUpMutex,NULL);
+
+                    client_socket[i] = 0;
+
+                    pthread_cleanup_pop(1);
+                }
+            }
+        }
+    return 0;
+    
+    }
+
+int init_server() {
+
     init_clientfds();
     
     create_socket();
@@ -135,70 +198,50 @@ int init_server() {
     */
     printf("server now in main loop\n");
 
+    //selfpiping to wake up select
+    if (pipe(pipe_fd) == -1){
+        printf("error creating pipe, shuting down server\n");
+        return -1;
+    }
+
     
-    sock_max = parentfd;
-    FD_ZERO(&gesamt_sock);  
-    FD_SET(parentfd, &gesamt_sock);
-    struct sockaddr_in client_temp;
+
     while (1) {
-        /* Immer aktualisieren */
-        lese_sock = gesamt_sock;
+      
+        //clear the socket set
+        FD_ZERO(&readfds);
+      
+        //add master socket to set  
+        FD_SET(parentfd, &readfds);
 
-        /* Hier wird auf die Ankunft von Daten oder
-         * neuer Verbindungen von Clients gewartet */
-        ready = select(sock_max+1, &lese_sock, NULL, NULL, NULL);
-
-        /* Eine neue Clientverbindung ... ? */
-        if( FD_ISSET(parentfd, &lese_sock)) {
-            accept_connection( &parentfd, &temp_accept_socket, &client_temp );
-            
-            /* Freien Platz für (Socket-)Deskriptor 
-             * in client_sock suchen und vergeben */
-            add_socket_to_server_array(temp_accept_socket, client_temp);
-            
-
-            /* select() benötigt die höchste 
-             * (Socket-)Deskriptor-Nummer */
-            if( temp_accept_socket > sock_max ){
-                sock_max = temp_accept_socket;
-            }
-
-            /* höchster Index für client_sock
-            * für die anschließende Schleife benötigt */
-            if( i > max ){
-                max = i;
-            }
-
-            /* ... weitere (Lese-)Deskriptoren bereit? */
-            if( --ready <= 0 ){
-                continue; //Nein ...
-            }
-            
+        //add pipe
+        FD_SET(pipe_fd[0], &readfds);
+        if(pipe_fd[0] > parentfd){
+            max_sd = pipe_fd[0];
+        }
+        else{
+            max_sd = parentfd;
         }
 
-        /* Ab hier werden alle Verbindungen von Clients auf
-        * die Ankunft von neuen Daten überprüft */
-        for(i=0; i<=max; i++) {
-
-            temp_read_socket = client_socket[i];
-
-            if(sd >= 0){
-                /* (Socket-)Deskriptor gesetzt ... */   
-                if(FD_ISSET(temp_read_socket, &lese_sock)){
-                    /* ... dann die Daten lesen */
-                    if(readFromSocket(client_socket[i], client_addr[i])){
-                        printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
-                        close( temp_read_socket );
-                        client_socket[i] = -1;
-                    }
-
-                }
-
+        //add clients
+        addchilds();
+        
+        //wait for an activity on one of the sockets , timeout is NULL ,  
+        //so wait indefinitely
+        //printf("im in select\n");
+        struct timeval* t = {3,1};
+        activity = select( max_sd + 1 , &readfds , NULL , NULL , t);
+        //printf("i finished select\n");
+        if ((activity < 0) && (errno!=EINTR)){
+            //printf("select error \n");
             }
-
-        }
+        //printf("accepted something\n");
+        if(activity > 0){
+            acceptConnections();
+            
+            }
+        getMessages();
     }
 }
-
 
 

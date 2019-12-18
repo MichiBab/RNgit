@@ -7,6 +7,7 @@
 static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     //init_client( &package.serveraddress, &package.socketfd);
+    printf("Sending data to socket %d\n",package.socketfd);
     send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
     return 0;
     }
@@ -20,8 +21,10 @@ int cr_send_hello(struct datapack package){
     if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
         //if connected
         printf("package send\n");
-        add_socket_to_server_array(package.socketfd,package.serveraddress);
         send_routine(package);
+        add_socket_to_server_array(package.socketfd,package.serveraddress);
+        
+       // test_read();
         return 0;
     }
     printf("package not send\n");

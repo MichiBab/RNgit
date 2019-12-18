@@ -154,17 +154,26 @@ int add_contact(struct ccp_contact con){
 
 //method adds new contact to the first open spot and returns the index. -1 if its already in
 int add_contact_mutex_locked(struct ccp_contact con){
-
     int index = -1;
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
-    for(int i = 0; i < maxcontacts; i++){
-        if((check_if_not_null_contact(contactlist[i])==0)){
-            contactlist[i] = con;
-            index = i;
-            i = maxcontacts; //break
+    
+    struct ccp_contact our_tmp;
+    if(check_if_not_null_contact(con) != 0){//if its valid, compare
+        for(int y = 0; y<maxcontacts;y++){ //hier war noch ein 
+            our_tmp = contactlist[y];
+            if(check_if_not_null_contact(our_tmp) != 0){
+                if( compare_contact(con,our_tmp) == 0 ){
+                    //if we got it in our list
+                    y=maxcontacts; //break out
+                }
             }
-        }
+            if(y==(maxcontacts-1)){//means its not in our list //hier war auch -1
+                int spot = add_contact(con);
+                index = spot;
+                }
+        }   
+    }
     pthread_cleanup_pop(1);
     return index;
     }

@@ -12,7 +12,7 @@ int readFromSocket(int socket, struct sockaddr_in clientdata){
     int msgSize_in_bytes = recv(socket, buf, maxcharactersize, MSG_NOSIGNAL);
     //printf("msginbytes: %d\n",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
-        printf("ERROR reading from socket");
+        printf("ERROR reading from socket\n");
         //exit(1);
     }
     else if(msgSize_in_bytes == 0){

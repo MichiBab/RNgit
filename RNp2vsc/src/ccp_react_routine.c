@@ -35,7 +35,7 @@ static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct c
     }
     //now we mark him and his socket in our global socket_array
     add_entrys_to_socket_array(his_con_in_our_list_index, SOCKETFIELD, socket);
-    printf("added contact  with his socket on index %d",his_con_in_our_list_index);
+    printf("added contact  with his socket on index %d\n",his_con_in_our_list_index);
     //JUST UPDATE OUR CONTACT LIST. 
     merge_lists(ccp_contact_newlist);//we will ignore him, cause he got added already before.
     update_contact_list(ccp_contact_newlist); 
@@ -45,7 +45,7 @@ static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct c
 }
 
 int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket){
-    printf("I GOT A HELLO!\n");   
+    printf("I GOT A HELLO from socket %d\n",socket);   
     struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
     struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
     pthread_t helperclient;
@@ -53,7 +53,8 @@ int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int soc
 
     react_to_listdata(clientdata, socket, ccp_contact_newlist);
 
-    setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata, socket);
+    setup_datapackage(tmpdatapaket,ccp_data->senderAlias, clientdata, socket);
+
     put_contact_list_in_message_of_ccp(&tmpdatapaket->ccppackage); //send our new contactlist back
 
     pthread_create(&helperclient,NULL,clientSendHelloReply,(struct datapack*)tmpdatapaket);
