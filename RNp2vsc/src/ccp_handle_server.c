@@ -37,7 +37,7 @@ int react_to_package(struct ccp* ccp_data , struct sockaddr_in clientdata , int 
     char bufip[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
 
-    printf("CLIENT IP: %s\n",bufip);
+    DEBUG_MSG_STRING("CLIENT IP: %s\n",bufip);
     //printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port)); 
     
     switch(ccp_data->typeFlags){

@@ -23,14 +23,14 @@ static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct c
     int his_con_index = 
         return_client_contact_index_through_ip4(clientdata.sin_addr.s_addr, ccp_contact_newlist);
     if(his_con_index == -1){
-        printf("we did not find him in his own contact list\n");
+        DEBUG_MSG("we did not find him in his own contact list");
         return -1;
     }
     //now we add him to our list, so we dont send a hello to him
     int his_con_in_our_list_index = 
         add_contact_mutex_locked(ccp_contact_newlist[his_con_index]);
     if(his_con_in_our_list_index == -1){
-        printf("hes already in our list!\n");
+        DEBUG_MSG("hes already in our list!");
         return -1;
     }
     //now we mark him and his socket in our global socket_array
@@ -63,7 +63,7 @@ int react_to_hello(struct ccp* ccp_data , struct sockaddr_in clientdata, int soc
 }
 
 int react_to_hello_reply(struct ccp* ccp_data, struct sockaddr_in clientdata, int socket){
-    printf("I GOT A HELLO REPLY!\n");
+    DEBUG_MSG("I GOT A HELLO REPLY!");
     struct ccp_contact *ccp_contact_newlist = (struct ccp_contact *) malloc (sizeof(contactlist));
     memcpy(ccp_contact_newlist,ccp_data->message,sizeof(contactlist));
     react_to_listdata(clientdata, socket, ccp_contact_newlist);
@@ -71,7 +71,7 @@ int react_to_hello_reply(struct ccp* ccp_data, struct sockaddr_in clientdata, in
     }
     
 int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket){
-    printf("I GOT A ALIVE REQUEST!\n");
+    DEBUG_MSG("I GOT A ALIVE REQUEST!");
     struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
     pthread_t helperclient;
     setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata, socket);
@@ -80,19 +80,19 @@ int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int so
     }
     
 int react_to_update_reply(int socket){
-    printf("I GOT A ALIVE ACK!\n");
+    DEBUG_MSG("I GOT A ALIVE ACK!");
     set_up_flag();
     return 0;
     }
     
 int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket){
-    printf("I GOT A MESSAGE\n");
+    DEBUG_MSG("I GOT A MESSAGE");
     struct datapack* tmpdatapaket  = (struct datapack *) malloc (sizeof(struct datapack));
     pthread_t helperclient;
     char *tmpmsg = (char *) malloc (MAXCHARACTERS);
     memcpy(tmpmsg,ccp_data->message,MAXCHARACTERS);
     setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata, socket);
-    printf("MSG FROM CLIENT:\n%s",tmpmsg); 
+    printf("MSG FROM CLIENT:\n%s\n",tmpmsg); 
     pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
     return 0;
     }
@@ -103,7 +103,7 @@ int react_to_msg_reply( int socket){
     }
     
 int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata, int socket){
-    printf("I GOT A DISCONNECT!\n");
+    DEBUG_MSG("I GOT A DISCONNECT!\n");
     char bufip[INET_ADDRSTRLEN];//get ip
     inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
     struct in_addr addrtmp;

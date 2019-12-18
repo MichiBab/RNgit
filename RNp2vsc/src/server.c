@@ -120,7 +120,8 @@ int add_socket_to_server_array(int socket, struct sockaddr_in cli){
             FD_SET(socket,&readfds);
             
             pthread_cleanup_pop(1);
-            printf("Adding to list of sockets as index %d ---socket: %d \n" , i, socket);  
+            DEBUG_MSG_NUM("Adding to list of sockets as index: %d " , i); 
+            DEBUG_MSG_NUM("With the socket :",socket);
             send_pipe_signal();
             break;   
             }
@@ -135,7 +136,7 @@ static int acceptConnections(){
     if (FD_ISSET(parentfd, &readfds)){
         struct sockaddr_in temp;
         int templen = sizeof(struct sockaddr_in);
-        printf("trying to accept a socket\n");
+        DEBUG_MSG("trying to accept a socket\n");
         new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&templen);
         if (new_socket < 0){
             printf("error accept\n");
@@ -190,7 +191,7 @@ int send_pipe_signal(){
     pthread_mutex_lock(&socket_lock); 
     pthread_cleanup_push(cleanUpMutex,NULL);
     write(pipe_fd[1] , "a" ,2);
-    printf("send pipe signal\n");
+    DEBUG_MSG("send pipe signal\n");
     pthread_cleanup_pop(1);
     return 0;
 }
@@ -211,7 +212,7 @@ int init_server() {
     * main loop: wait for a connection request, read input line, 
     * then close connection.
     */
-    printf("server now in main loop\n");
+    DEBUG_MSG("server now in main loop\n");
 
     //selfpiping to wake up select
     if (pipe(pipe_fd) == -1){
@@ -254,9 +255,9 @@ int init_server() {
         
         //wait for an activity on one of the sockets , timeout is NULL ,  
         //so wait indefinitely
-        printf("im in select\n");
+        DEBUG_MSG("im in select\n");
         activity = pselect( max_sd + 1 , &readfds , &writefd , NULL , NULL, &oldset);
-        printf("i finished select\n");
+        DEBUG_MSG("i finished select\n");
         if ((activity < 0) && (errno!=EINTR)){
             printf("select error \n");
             }

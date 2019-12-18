@@ -7,39 +7,39 @@
 static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     //init_client( &package.serveraddress, &package.socketfd);
-    printf("Sending data to socket %d\n",package.socketfd);
+    DEBUG_MSG_NUM("Sending data to socket:",package.socketfd);
     send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
     return 0;
     }
 
 int cr_send_hello(struct datapack package){ 
-    printf("IM SENDING A HELLO\n"); 
+    DEBUG_MSG("IM SENDING A HELLO"); 
     set_ccp_hello(&package.ccppackage,package.receivername);
     //creats socket
     init_client( &package.serveraddress, &package.socketfd);
     
     if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
         //if connected
-        printf("package send\n");
+        DEBUG_MSG("package send");
         add_socket_to_server_array(package.socketfd,package.serveraddress);
         send_routine(package);
         
         return 0;
     }
-    printf("package not send\n");
+    DEBUG_MSG("package not send");
 
     return 0;
     }
     
 int cr_send_hello_reply(struct datapack package){
-    printf("I SEND A HELLO REPLY\n"); 
+    DEBUG_MSG("I SEND A HELLO REPLY"); 
     set_ccp_hello_reply(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
     }
     
 int cr_send_update(struct datapack package){
-    printf("I SEND A UPDATE\n"); 
+    DEBUG_MSG("I SEND A UPDATE"); 
     set_ccp_update(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;
@@ -47,20 +47,20 @@ int cr_send_update(struct datapack package){
     
 int cr_send_update_reply(struct datapack package){
     set_ccp_update_reply(&package.ccppackage, package.receivername);
-    printf("I SEND A UPDATE REPLY\n"); 
+    DEBUG_MSG("I SEND A UPDATE REPLY"); 
     send_routine(package);
     return 0;
     }
     
 int cr_sent_msg(struct datapack package){
-    printf("I SEND A MSG\n"); 
+    DEBUG_MSG("I SEND A MSG"); 
     set_ccp_message(&package.ccppackage, package.msg, package.receivername);
     send_routine(package);
     return 0;
     }
 
 int cr_sent_msg_reply(struct datapack package){
-    printf("I SEND A MSG REPLY\n"); 
+    DEBUG_MSG("I SEND A MSG REPLY"); 
     set_ccp_message_reply(&package.ccppackage, package.receivername);
     send_routine(package);
     return 0;

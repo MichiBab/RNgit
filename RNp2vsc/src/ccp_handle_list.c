@@ -84,13 +84,13 @@ int update_contact_list(){
     pthread_cleanup_push(cleanUpMutex,NULL);
     for(int i = 0; i<maxcontacts;i++){
         if(marker[i] == 1){
-            printf("im in marker with index %d\n",i);
+            DEBUG_MSG_NUM("im in marker with index %d",i);
             pthread_t helperthread;
 
             struct datapack* dpaket = (struct datapack*) malloc(sizeof (struct datapack));
             char tmpIP[16];
             uint16_t tmpP;
-            printf("new entry from clientlist, sending a hello\n");
+            DEBUG_MSG("new entry from clientlist, sending a hello\n");
             inet_ntop(AF_INET, &contactlist[i].contactIPv4, tmpIP, 16);
             put_string_in_sender_receiver(dpaket->address,tmpIP);
             dpaket->portnumber = PORT;
@@ -185,7 +185,7 @@ int remove_contact(struct ccp_contact con){
             if(check_if_not_null_contact(contactlist[i]) != 0){
                 if( compare_contact(con,contactlist[i]) == 0 ){
                         bzero( &contactlist[i],sizeof (struct ccp_contact));
-                        printf("deleted succsessfully\n");
+                        DEBUG_MSG("deleted succsessfully");
                         i=maxcontacts;//breakout
                     }
                 }
@@ -238,7 +238,7 @@ int setusername(char* username){
             our_username[i] = 0;
             }
         }
-    printf("our username is : %s\n",our_username);
+    DEBUG_MSG_STRING("our username is :",our_username);
     return 0;
     }
     

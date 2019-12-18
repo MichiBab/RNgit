@@ -64,7 +64,7 @@ int ccp_c_init_program(){
     setusername(usernamebuffer);
     bzero(ipbuffer,16);
     
-    printf("creating server\n");
+    DEBUG_MSG("creating server");
     pthread_create(&serverthread,NULL,init_server_thread,NULL);
 
     bzero(ipbuffer,sizeof ipbuffer);

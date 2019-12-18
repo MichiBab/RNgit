@@ -7,6 +7,10 @@
 #define WAITTIME 5
 #define UPDATE_RESET_TIMER 60
 extern int sctp_mode;
-#define SOCKET_TYPE (sctp_mode ? SOCK_STREAM : SOCK_STREAM ) // hier hatte ich SOCK_SEQPACKET. Ging dann aber nicht
+#define DEBUG_MSG(x) if(debugmode==1){ printf("---DBG: %s\n",x);}
+#define DEBUG_MSG_NUM(x,d) if(debugmode==1){ printf("---DBG: %s %d\n",x,d);}
+#define DEBUG_MSG_STRING(x,s) if(debugmode==1){ printf("---DBG: %s %s\n",x,s);}
+extern int debugmode;
+#define SOCKET_TYPE (sctp_mode ? SOCK_STREAM : SOCK_STREAM ) 
 #define SOCKET_ARG (sctp_mode ? IPPROTO_SCTP : 0)
 #endif

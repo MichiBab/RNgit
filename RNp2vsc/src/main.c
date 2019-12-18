@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include "ccp_controller_functions.h"
 #include <string.h>
+#include "generic.h"
 
+
+int debugmode = 0;
 
 #define buffersize 1024
 #define addrsize 16
 char buffer[buffersize];
+
 
 int main(int argc, char **argv){
 
