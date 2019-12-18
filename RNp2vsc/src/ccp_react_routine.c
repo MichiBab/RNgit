@@ -35,7 +35,7 @@ static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct c
     }
     //now we mark him and his socket in our global socket_array
     add_entrys_to_socket_array(his_con_in_our_list_index, SOCKETFIELD, socket);
-    printf("added contact  with his socket on index %d\n",his_con_in_our_list_index);
+    printf("We got a new Client on socket %d\n",his_con_in_our_list_index);
     //JUST UPDATE OUR CONTACT LIST. 
     merge_lists(ccp_contact_newlist);//we will ignore him, cause he got added already before.
     update_contact_list(ccp_contact_newlist); 
