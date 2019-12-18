@@ -4,7 +4,8 @@
 #include <unistd.h> 
 #include <sys/select.h>
 #include <pthread.h>
-
+#include <signal.h>
+#include <bits/sigaction.h>
 int pipe_fd[2];
 
 int parentfd; 
@@ -15,8 +16,15 @@ static int getMessages();
 //--select 
 int client_socket[MAXCLIENTS];
 int max_sd, activity, sd, new_socket;
-fd_set readfds; 
+fd_set readfds;
+fd_set writefd; 
 int addrlen = sizeof(serveraddr);
+#define PIPESIGNAL 10
+// Signal handler to catch SIGTERM.
+void sigterm(int signo) {
+    (void)signo;
+}
+
 
 static void cleanUpMutex(void* arg){
     pthread_mutex_unlock(&socket_lock);
@@ -180,6 +188,13 @@ static int getMessages(){
     
     }
 
+int send_pipe_signal(){
+    
+    write(pipe_fd[1] , "a" ,2);
+    printf("send pipe signal\n");
+    return 0;
+}
+
 int init_server() {
 
     init_clientfds();
@@ -204,13 +219,24 @@ int init_server() {
         return -1;
     }
 
+    // Install the signal handler for SIGTERM.
+    struct sigaction s;
+    s.sa_handler = sigterm;
+    sigemptyset(&s.sa_mask);
+    s.sa_flags = 0;
+    sigaction(SIGTERM, &s, NULL);
     
+    // Block SIGTERM.
+    sigset_t sigset, oldset;
+    sigemptyset(&sigset);
+    sigaddset(&sigset, SIGTERM);
+    sigprocmask(SIG_BLOCK, &sigset, &oldset);
 
     while (1) {
       
         //clear the socket set
         FD_ZERO(&readfds);
-      
+        //pipe_fd[1] = 0;
         //add master socket to set  
         FD_SET(parentfd, &readfds);
 
@@ -218,7 +244,7 @@ int init_server() {
         FD_SET(pipe_fd[0], &readfds);
         if(pipe_fd[0] > parentfd){
             max_sd = pipe_fd[0];
-        }
+        }   
         else{
             max_sd = parentfd;
         }
@@ -228,18 +254,21 @@ int init_server() {
         
         //wait for an activity on one of the sockets , timeout is NULL ,  
         //so wait indefinitely
-        //printf("im in select\n");
-        struct timeval* t = {3,1};
-        activity = select( max_sd + 1 , &readfds , NULL , NULL , t);
-        //printf("i finished select\n");
+        printf("im in select\n");
+        activity = pselect( max_sd + 1 , &readfds , &writefd , NULL , NULL, &oldset);
+        printf("i finished select\n");
         if ((activity < 0) && (errno!=EINTR)){
-            //printf("select error \n");
+            printf("select error \n");
             }
         //printf("accepted something\n");
-        if(activity > 0){
-            acceptConnections();
-            
-            }
+        if(FD_ISSET(pipe_fd[0],&readfds)){
+            //read to clear pipe
+            char buf[3];
+            int bytesread = read(pipe_fd[0],buf,2);
+            getMessages();
+        }
+        acceptConnections();
+
         getMessages();
     }
 }

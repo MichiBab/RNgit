@@ -12,7 +12,7 @@ static int send_routine(struct datapack package){
     return 0;
     }
 
-int cr_send_hello(struct datapack package){
+int cr_send_hello(struct datapack package){ 
     printf("IM SENDING A HELLO\n"); 
     set_ccp_hello(&package.ccppackage,package.receivername);
     //creats socket
@@ -21,10 +21,11 @@ int cr_send_hello(struct datapack package){
     if(connect_to_server(package.address, package.portnumber, &package.serveraddress, &package.socketfd) == 0){
         //if connected
         printf("package send\n");
-        send_routine(package);
         add_socket_to_server_array(package.socketfd,package.serveraddress);
+        send_routine(package);
+        send_pipe_signal();
         
-       // test_read();
+        test_read();
         return 0;
     }
     printf("package not send\n");
