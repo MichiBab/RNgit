@@ -11,3 +11,4 @@ Im socket array zuweisen, da ich ihn ja schon habe. Ich muss also
  Hello reply etwas ändern, das es guckt ob er schon im global socket array ist,
  Anstatt in unserer normalen Liste, und die global socket array
  Als Abbruchbedingung wählen. Da hier nur richtig verbundene kontakte sind.
+ For example: if added contact =-1, retrieve index und pack in global socket arrays
