@@ -5,4 +5,10 @@ quit
 update all
 update reply
 msg reply
-
+Hello relpy überdenken: wenn ich einen neuen kontakt durch einen anderen habe nach update list
+Und ihm dann ein hello schicke werde ich ihm nachdem er hello reply schickt kein listeneintrag
+Im socket array zuweisen, da ich ihn ja schon habe. Ich muss also
+ Hello reply etwas ändern, das es guckt ob er schon im global socket array ist,
+ Anstatt in unserer normalen Liste, und die global socket array
+ Als Abbruchbedingung wählen. Da hier nur richtig verbundene kontakte sind.
+ For example: if added contact =-1, retrieve index und pack in global socket arrays
