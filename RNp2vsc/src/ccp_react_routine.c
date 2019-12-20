@@ -100,8 +100,8 @@ int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata, int socke
     char *tmpmsg = (char *) malloc (MAXCHARACTERS);
     memcpy(tmpmsg,ccp_data->message,MAXCHARACTERS);
     setup_datapackage(tmpdatapaket,ccp_data->senderAlias,clientdata, socket);
-    printf("MSG FROM CLIENT ON SOCKET %d:--------------------------\n%s\n--------------------------\n"
-                                        ,socket,tmpmsg); 
+    printf("MSG FROM CLIENT %s:\n%s\n--------------------------\n"
+                                        ,ccp_data->senderAlias,tmpmsg); 
     pthread_create(&helperclient,NULL,clientSentMessageReply,(struct datapack*)tmpdatapaket);
     return 0;
     }

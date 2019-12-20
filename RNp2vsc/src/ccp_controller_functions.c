@@ -218,6 +218,7 @@ int ccp_c_messaging(){
     //starting message mode, cause we got alive request
     printf("U can now send messages. if u want to exit, write \"exit\"\n");
     pthread_t msgclient;
+    rm_msg_flag_indexed(index);
     do{
         //Setup again, because threads clear their memory when finished
         struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
@@ -230,10 +231,10 @@ int ccp_c_messaging(){
             strcpy(dpaket->msg, msgbuffer);
             pthread_create(&msgclient,NULL,clientSentMessage,(struct datapack*)dpaket);
             pthread_join(msgclient,0);
-            printf("waiting for msg reply (maximum wait time: %d)\n",WAITTIME);
+            DEBUG_MSG_NUM("waiting for msg reply (maximum wait time: ",WAITTIME);
             for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
                 if(contactlist_sockets[index][MSGFLAG]){
-                    break;
+                    i = WAITTIME;
                     }
                 else{
                     sleep(1);

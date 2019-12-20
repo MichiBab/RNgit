@@ -259,7 +259,8 @@ int init_server() {
         activity = pselect( max_sd + 1 , &readfds , &writefd , NULL , NULL, &oldset);
         DEBUG_MSG("i finished select\n");
         if ((activity < 0) && (errno!=EINTR)){
-            printf("select error \n");
+            DEBUG_MSG("select error");
+            continue;
             }
         //printf("accepted something\n");
         if(FD_ISSET(pipe_fd[0],&readfds)){
