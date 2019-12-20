@@ -1,7 +1,7 @@
 #include "ccp.h"
 
 static int put_generic_name_data(struct ccp* pack, char* receivername){
-    pack->versionnum = '1';
+    pack->versionnum = 1;
     put_string_in_sender_receiver(pack->receiverAlias,receivername);
     put_string_in_sender_receiver(pack->senderAlias,our_username);
     return 0;

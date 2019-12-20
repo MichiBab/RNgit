@@ -131,10 +131,12 @@ static void cleanUpMutex(void* arg){
         }
     
 int ccp_c_update_all(){
+    printf("updating all\n");
     for(int i = 1; i < maxcontacts; i++){//1 cause 0 is our contact
         //checks in method if viable contact
         update_contact_with_index(i);
     }
+    printf("update all finished\n");
     return 0;
     }
 
