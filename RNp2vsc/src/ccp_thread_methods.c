@@ -27,7 +27,7 @@ void* clientSentMessage(void* arg){
     
  void* clientSentBye(void* arg){
     struct datapack *data = (struct datapack*) arg;
-    cr_bye(data->ccppackage);
+    cr_bye(*data);
     free(data);
     return 0;
     }   

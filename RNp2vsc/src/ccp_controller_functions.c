@@ -2,7 +2,7 @@
 #include "generic.h"
 #include <stdio.h>
 #include "ccp_thread_methods.h"
-#include "msgflags.h"
+#include "ccp_socket_list.h"
 #include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
@@ -32,6 +32,41 @@ pthread_t serverthread;
 //its just a "got reply" flag, not specified from where.
 pthread_mutex_t updatemutex = PTHREAD_MUTEX_INITIALIZER;
 
+//checks if real contact and not a pending one with no connected socket
+static int update_contact_with_index(int index){
+    
+    if(check_if_not_null_contact(contactlist[index])  == 0 || contactlist_sockets[index][SOCKETFIELD] == -1){
+        DEBUG_MSG("ERROR IN UPDATE CONTACT WITH INDEX; FAULTY CONTACT") return -1;
+    }
+    //clear flag first
+    rm_up_flag_indexed(index);
+    struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
+    put_string_in_sender_receiver(dpaket->receivername,contactlist[index].contactalias);
+    dpaket->socketfd = contactlist_sockets[index][SOCKETFIELD];
+    pthread_t updateclient;
+    pthread_create(&updateclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
+    //now we send the update. if we dont receive a reply in WAITTIME, delete contact
+    int received_flag = 0;
+    for(int i = 0; i < WAITTIME;i++){
+        if(contactlist_sockets[index][UPDATEFLAG] == 1){
+            received_flag = 1;
+            break;
+        }
+        else{
+            sleep(1);
+        }
+    }
+    //finished waiting or we received it
+    if(received_flag == 0){
+        remove_contact(contactlist[index]);
+        remove_contact_in_socket_array_with_index(index);
+        return -1;
+    }
+    else{
+        return 0;
+    }
+
+}
 
 void* init_server_thread(void* arg){
      init_server();
@@ -49,6 +84,7 @@ void* init_timer_updater(void* arg){
     }
     
 int ccp_c_init_program(){
+    init_socket_list();
     printf("Type 1 to enter SCTP Mode\n");
     bzero(usernamebuffer,16);
     fgets(usernamebuffer,16+1,stdin);
@@ -56,17 +92,14 @@ int ccp_c_init_program(){
         printf("SCTP Mode enabled\n");
         sctp_mode = 1;
         }
-    
     bzero(contactlist,maxcontacts);
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
     bzero(usernamebuffer,16);
     fgets(usernamebuffer,16+1,stdin);
     setusername(usernamebuffer);
     bzero(ipbuffer,16);
-    
     DEBUG_MSG("creating server");
     pthread_create(&serverthread,NULL,init_server_thread,NULL);
-
     bzero(ipbuffer,sizeof ipbuffer);
     printf("geben sie eine ip addresse fuer ihren eigenen contact ein\n");
     fgets(ipbuffer,buffersize+1,stdin);
@@ -91,38 +124,10 @@ static void cleanUpMutex(void* arg){
         }
     
 int ccp_c_update_all(){
-    for(int i = 1; i<maxcontacts-1;i++){ // 0 is our contact
-        struct ccp_contact con = contactlist[i];        
-        if(check_if_not_null_contact(con)){
-            print_contact(&con);
-            sleep(2);
-            pthread_t halloclient;
-            struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-            //now we send a update to con and wait for him to reply to the update
-            dpaket->portnumber = PORT;
-            strcpy(dpaket->receivername,con.contactalias);
-            inet_ntop(AF_INET, &con.contactIPv4, dpaket->address, 16);
-            pthread_mutex_lock(&updatemutex); 
-            pthread_cleanup_push(cleanUpMutex,NULL);
-            pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
-            printf("waiting for update reply (maximum wait time: %d)\n",WAITTIME);
-            for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
-                if(msgflagarray[Update_Flag]){
-                    i = WAITTIME;
-                    }
-                else{
-                    sleep(1);
-                    }
-                }
-            if(msgflagarray[Update_Flag] != 1){
-                printf("failed to get the update reply. Removing this contact now:\n");
-                print_contact(&con);
-                remove_contact(con);
-                }
-            pthread_join(halloclient,0);
-            pthread_cleanup_pop(1);
-            } 
-        }  
+    for(int i = 0; i < maxcontacts; i++){
+        //checks in method if viable contact
+        update_contact_with_index(i);
+    }
     return 0;
     }
 
@@ -133,11 +138,12 @@ int ccp_c_delete(){
     int x;
     scanf("%d", &x);
     while ((getchar()) != '\n'); //clear space
-    if(x>=maxcontacts){
+    if(x>=maxcontacts || x<0){
         printf("wrong index\n");
         }
     else{
         remove_contact(contactlist[x]);
+        remove_contact_in_socket_array_with_index(x);
         }
     return 0;
     }
@@ -159,29 +165,30 @@ int ccp_c_send_hello(){
         *pos = '\0';
         }   
     put_string_in_sender_receiver(dpaket->address,ipbuffer);
-    printf("geben sie den port ein\n");
-    int x;
-    scanf("%d", &x);
-    dpaket->portnumber = x;
-    while ((getchar()) != '\n'); //clear space
+    dpaket->portnumber = PORT;
     pthread_create(&halloclient,NULL,clientSendHello,(struct datapack*)dpaket);
     return 0;
     }
     
 int ccp_c_quit(){
-    pthread_t halloclient;
+    printf("ending program, sending bye to every contact first\n");
+    pthread_t byeclient;
     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-    pthread_create(&halloclient,NULL,clientSentBye,(struct datapack*)dpaket);
-    pthread_join(halloclient,0);
+    pthread_create(&byeclient,NULL,clientSentBye,(struct datapack*)dpaket);
+    pthread_join(byeclient,0);
     pthread_cancel(serverthread);
     close_server();
     pthread_join(serverthread,0);
     destroy_list_mutex();
+    destroy_socket_mutex();
     pthread_mutex_destroy(&updatemutex);
     return 0;
     }
     
 int ccp_c_messaging(){
+
+    
+    /*
     printf("Schreiben sie einen Index, um dem Kontakt eine Nachricht zu senden\n");
     pthread_t halloclient;
     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
@@ -272,5 +279,5 @@ int ccp_c_messaging(){
                 }
             }while(strcmp(msgbuffer,"exit\n") != 0);   
         }
-    return 0;
+    return 0;*/
     }

@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include "ccp_thread_methods.h"
-#include "msgflags.h"
+#include "ccp_socket_list.h"
 
 int readFromSocket(int socket, struct sockaddr_in clientdata){
     char* buf = (char*) malloc(maxcharactersize);

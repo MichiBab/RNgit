@@ -10,7 +10,7 @@
 struct ccp_contact contactlist[maxcontacts];//GLOBAL
 char our_username[contactaliassize];//GLOBAL
 int marker[maxcontacts];//marking new contacts
-int contactlist_sockets[maxcontacts][2];
+
 
 pthread_mutex_t listmutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -168,7 +168,7 @@ int add_contact_mutex_locked(struct ccp_contact con){
                     y=maxcontacts; //break out
                 }
             }
-            if(y==(maxcontacts-1)){//means its not in our list //hier war auch -1
+            if(y==(maxcontacts-1)){//means its not in our list 
                 int spot = add_contact(con);
                 index = spot;
                 }
@@ -211,6 +211,18 @@ int create_our_contact(char* ipstring){
     return 0;
     }
 
+int print_connected_contacts(){
+    for(int i = 0; i<maxcontacts;i++){
+        if(check_if_not_null_contact(contactlist[i])==1 && contactlist_sockets[i][SOCKETFIELD] != -1){
+            printf("----------------------\n");
+            printf("index: %d\n",i);
+            print_contact(&contactlist[i]);
+            printf("\n");
+            }
+        }
+    return 0;
+}
+
 int print_my_contactlist(){
     pthread_mutex_lock(&listmutex); 
     pthread_cleanup_push(cleanUpMutex,NULL);
@@ -225,6 +237,9 @@ int print_a_contactlist(struct ccp_contact list[maxcontacts]){
             printf("----------------------\n");
             printf("index: %d\n",i);
             print_contact(&list[i]);
+            if(contactlist_sockets[i][SOCKETFIELD] == -1 && i >0){
+                printf("NO CONNECTED SOCKET; CONNECTION STILL PENDING.\n");
+            }
             printf("\n");
             }
         }

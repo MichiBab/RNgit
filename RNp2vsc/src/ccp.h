@@ -49,21 +49,22 @@ struct ccp_contact{
 
 
 #define SOCKETFIELD 0
-#define FLAGFIELD 1
+#define UPDATEFLAG 1
+#define MSGFLAG 2
 extern struct ccp_contact contactlist[maxcontacts];
-extern int contactlist_sockets[maxcontacts][2];
+extern int contactlist_sockets[maxcontacts][3];
 extern char our_username[16];
 
 
 
 //CLIENT ROUTINES
-int cr_send_hello(struct datapack package); //defined in client
-int cr_send_hello_reply(struct datapack package); //defined in client
-int cr_send_update(struct datapack package); //defined in client
-int cr_send_update_reply(struct datapack package); //defined in client
-int cr_sent_msg(struct datapack package); //defined in client
-int cr_sent_msg_reply(struct datapack package); //defined in client
-int cr_bye(struct ccp ccp_pack); //defined in client
+int cr_send_hello(struct datapack package); 
+int cr_send_hello_reply(struct datapack package); 
+int cr_send_update(struct datapack package); 
+int cr_send_update_reply(struct datapack package); 
+int cr_sent_msg(struct datapack package); 
+int cr_sent_msg_reply(struct datapack package); 
+int cr_bye(struct datapack package); 
 
 //CCP PAKET SET
 int set_ccp_hello(struct ccp* hellopack, char* receivername);
@@ -72,6 +73,7 @@ int set_ccp_update(struct ccp* updatepack, char* receivername);
 int set_ccp_update_reply(struct ccp* updatepack, char* receivername);
 int set_ccp_message(struct ccp* msgpack, char* message, char* receivername);
 int set_ccp_message_reply(struct ccp* msgpack, char* receivername);
+int set_ccp_bye(struct ccp* msgpack, char* receivername);
 
 //CCP LIST HANDLING
 int print_a_contactlist(struct ccp_contact list[maxcontacts]);
@@ -92,6 +94,7 @@ int get_ipstring_from_contact(struct ccp_contact con, char* erg);
 int add_contact_mutex_locked(struct ccp_contact con);
 int add_entrys_to_socket_array(int listindex, int MODE, int data);
 int destroy_list_mutex();
+int print_connected_contacts();
 
 //servermethods
 int react_to_package(struct ccp* pack , struct sockaddr_in clientdata, int socket);

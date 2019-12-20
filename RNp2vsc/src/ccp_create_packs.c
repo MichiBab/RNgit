@@ -48,3 +48,10 @@ int set_ccp_message_reply(struct ccp* msgpack, char* receivername){
     
     }
 
+int set_ccp_bye(struct ccp* msgpack, char* receivername){
+    put_generic_name_data(msgpack,receivername);
+    msgpack->typeFlags = PEER_DISCONNECTED;
+    return 0;
+    
+    }
+

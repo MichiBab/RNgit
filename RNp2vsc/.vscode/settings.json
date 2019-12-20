@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "errno.h": "c",
-        "signal.h": "c"
+        "signal.h": "c",
+        "ccp_msg_flags.h": "c",
+        "ccp_socket_list.h": "c"
     }
 }
