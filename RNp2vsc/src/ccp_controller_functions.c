@@ -22,7 +22,7 @@ char *pos;
 int sctp_mode = 0;
 
 pthread_t serverthread;
-
+pthread_t time_updater;
 //only one update at a time is allowed.
 //else the reply flag could get problems.
 //for example: the background task sends an update all
@@ -48,11 +48,11 @@ static int update_contact_with_index(int index){
     pthread_create(&updateclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
     //now we send the update. if we dont receive a reply in WAITTIME, delete contact
     int received_flag = 0;
-    printf("trying to get update reply on socket %d\n",contactlist_sockets[index][SOCKETFIELD]);
+    DEBUG_MSG_NUM("trying to get update reply on socket:",contactlist_sockets[index][SOCKETFIELD]);
     for(int i = 0; i < WAITTIME;i++){
         if(contactlist_sockets[index][UPDATEFLAG] == 1){
             received_flag = 1;
-            printf("WE RECEIVED THE UPDATE REPLY !!!\n");
+            DEBUG_MSG("WE RECEIVED THE UPDATE REPLY !!!\n");
             break;
         }
         else{
@@ -61,17 +61,15 @@ static int update_contact_with_index(int index){
     }
     //finished waiting or we received it
     if(received_flag == 0){
-
-        printf("DBG: SOCKET: %d\n",contactlist_sockets[index][SOCKETFIELD]);
-        printf("DBG: UPDATE REPLY STATUS: %d\n",contactlist_sockets[index][UPDATEFLAG]);
-
-        printf("we did not receive an update reply from index %d, now deleting him\n",index);
+        DEBUG_MSG_NUM("SOCKET: ",contactlist_sockets[index][SOCKETFIELD]);
+        DEBUG_MSG_NUM("UPDATE REPLY STATUS: ",contactlist_sockets[index][UPDATEFLAG]);
+        printf("we did not receive an update reply from index: %d, deleting him now",index);
         remove_contact(contactlist[index]);
         remove_contact_in_socket_array_with_index(index);
         return -1;
     }
     else{
-        printf("received update reply from index %d\n",index);
+        DEBUG_MSG_NUM("received update reply from index: ",index);
         return 0;
     }
 
@@ -88,7 +86,8 @@ void* init_timer_updater(void* arg){
         for(int i = 0; i < UPDATE_RESET_TIMER;i++){
             sleep(1);
             }
-       // ccp_c_update_all(); TODO
+        DEBUG_MSG("TIME UPDATER IS UPDATING ALL NOW");
+        ccp_c_update_all(); 
         }
     }
     
@@ -117,8 +116,7 @@ int ccp_c_init_program(){
         *pos = '\0';
     }
     create_our_contact(ipbuffer);
-    pthread_t updateclient;
-    pthread_create(&updateclient,NULL,init_timer_updater,NULL);
+    pthread_create(&time_updater,NULL,init_timer_updater,NULL);
     
     return 0;
     }
@@ -184,6 +182,8 @@ int ccp_c_quit(){
     pthread_t byeclient;
     struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     pthread_create(&byeclient,NULL,clientSentBye,(struct datapack*)dpaket);
+    pthread_cancel(time_updater);
+    pthread_join(time_updater,0);
     pthread_join(byeclient,0);
     pthread_cancel(serverthread);
     close_server();
