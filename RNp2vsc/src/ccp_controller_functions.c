@@ -48,9 +48,11 @@ static int update_contact_with_index(int index){
     pthread_create(&updateclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
     //now we send the update. if we dont receive a reply in WAITTIME, delete contact
     int received_flag = 0;
+    printf("trying to get update reply on socket %d\n",contactlist_sockets[index][SOCKETFIELD]);
     for(int i = 0; i < WAITTIME;i++){
         if(contactlist_sockets[index][UPDATEFLAG] == 1){
             received_flag = 1;
+            printf("WE RECEIVED THE UPDATE REPLY !!!\n");
             break;
         }
         else{
@@ -59,6 +61,10 @@ static int update_contact_with_index(int index){
     }
     //finished waiting or we received it
     if(received_flag == 0){
+
+        printf("DBG: SOCKET: %d\n",contactlist_sockets[index][SOCKETFIELD]);
+        printf("DBG: UPDATE REPLY STATUS: %d\n",contactlist_sockets[index][UPDATEFLAG]);
+
         printf("we did not receive an update reply from index %d, now deleting him\n",index);
         remove_contact(contactlist[index]);
         remove_contact_in_socket_array_with_index(index);

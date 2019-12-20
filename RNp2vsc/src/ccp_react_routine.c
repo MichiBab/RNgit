@@ -38,9 +38,9 @@ static int react_to_listdata(struct sockaddr_in clientdata, int socket, struct c
         if(his_con_in_our_list_index == -1){DEBUG_MSG("error in react to listdata") return -1;}
     }
 
-    //now we mark him and his socket in our global socket_array
+    //now we add his socket to the server
     add_entrys_to_socket_array(his_con_in_our_list_index, SOCKETFIELD, socket);
-    
+
     printf("We got a new Client on socket %d\n",his_con_in_our_list_index);
     //JUST UPDATE OUR CONTACT LIST. 
     merge_lists(ccp_contact_newlist);//we will ignore him here now, cause he got already added before.
@@ -88,7 +88,7 @@ int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int so
     }
     
 int react_to_update_reply(int socket){
-    DEBUG_MSG("I GOT AN ALIVE ACK!");
+    DEBUG_MSG_NUM("I GOT AN ALIVE ACK! on socket:",socket);
     set_up_flag(socket);
     return 0;
     }

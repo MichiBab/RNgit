@@ -22,7 +22,7 @@ int init_socket_list(){
 //return -1, if not in our list. else his index
 int retrieve_index_through_socket(int socket){
     for(int i = 0; i < maxcontacts; i++){
-        if(contactlist_sockets[i][SOCKETFIELD] = socket){
+        if(contactlist_sockets[i][SOCKETFIELD] == socket){
             return i;
         }    
     }
@@ -84,10 +84,11 @@ int set_up_flag(int socket){
     pthread_cleanup_push(cleanUpMutex,NULL);
     int index = retrieve_index_through_socket(socket);
     if(index == -1){
-        DEBUG_MSG("ccp msg flags: socket not found");
+        DEBUG_MSG("ccp up flags: socket not found");
     }
     else{
         contactlist_sockets[index][UPDATEFLAG] = 1;
+        printf("REACT ROUTINE: SET SOCKET %d 's UPDATE FLAG TO 1. ON INDEX: %d STATUS OF IT: %d\n",socket,index,contactlist_sockets[index][UPDATEFLAG]);
         ret = index;
     }
     pthread_cleanup_pop(1);
