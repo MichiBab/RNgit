@@ -195,98 +195,60 @@ int ccp_c_quit(){
     }
     
 int ccp_c_messaging(){
-
-
-    /*
     printf("Schreiben sie einen Index, um dem Kontakt eine Nachricht zu senden\n");
-    pthread_t halloclient;
-    struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
     print_my_contactlist();
-    msgflagarray[Update_Flag] = 0;
-    msgflagarray[MSG_Flag] = 0;
-    int x;
-    int exitflag = 0;
-    scanf("%d", &x);
+    int index;
+    scanf("%d", &index);
     while ((getchar()) != '\n'); //clear space
-    if(x>=maxcontacts){
-        printf("wrong index\n");
+    if(index>=maxcontacts || index < 0){
+        printf("wrong index, returning now\n");
+        return -1;
         }
-    else{
-        struct ccp_contact con = contactlist[x];
-        if(check_if_not_null_contact(con) == 0){
-            printf("wrong index\n");
-            return 0;
-            }
-        //now we send a update to con and wait for him to reply to the update
-        dpaket->portnumber = PORT;
-        strcpy(dpaket->receivername,con.contactalias);
-        get_ipstring_from_contact(con,dpaket->address);
-        pthread_mutex_lock(&updatemutex); 
-        pthread_cleanup_push(cleanUpMutex,NULL);
-        pthread_create(&halloclient,NULL,clientSendUpdate,(struct datapack*)dpaket);
-        printf("waiting for update reply (maximum wait time: %d)\n",WAITTIME);
-        for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
-            if(msgflagarray[Update_Flag]){
-                i = WAITTIME;
-                }
-            else{
-                sleep(1);
-                }
-            }
-        if(msgflagarray[Update_Flag] != 1){ 
-            exitflag = 1;
-        }
-        pthread_cleanup_pop(1);
-        if(exitflag){
-            printf("failed to get the update reply. Removing this contact now:\n");
-            print_contact(&con);
-            remove_contact(con);
-            return 0;
-            }
-        printf("i got an update reply and thread is stopped, trying to msg now\n");
-        rm_up_flag();
-        pthread_t msgclient;
-            //NOW U CAN COMMUNICATE
+    struct ccp_contact con = contactlist[index];
+    if(check_if_not_null_contact(con) == 0){
+        printf("no contact found on this index\n");
+        return -1;
+    }
+    DEBUG_MSG("SENDING AN UPDATE NOW BEFORE MESSAGING IS ALOWED");
+    if(update_contact_with_index(index) == -1){
+        printf("no udpate reply, returning now\n");
+        return -1;
+    }
+
+    //starting message mode, cause we got alive request
+    printf("U can now send messages. if u want to exit, write \"exit\"\n");
+    pthread_t msgclient;
+    do{
+        //Setup again, because threads clear their memory when finished
         struct datapack* dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-            //now we send a update to con and wait for him to reply to the update
-        dpaket->portnumber = PORT;
-        strcpy(dpaket->receivername,con.contactalias);
-        get_ipstring_from_contact(con,dpaket->address);
-        printf("MESSAGE MODE, TERMINATE WITH exit\n");
-        do{
-                //Setup again, because threads clear their memory when finished
-            dpaket = (struct datapack*) malloc (sizeof(struct datapack));
-            strcpy(dpaket->receivername,con.contactalias); 
-            get_ipstring_from_contact(con,dpaket->address);
-            bzero(msgbuffer,sizeof msgbuffer);
-            printf("geben sie eine nachricht zum versenden ein:\n");
-            fgets(msgbuffer,buffersize+1,stdin);
-            if(strcmp(msgbuffer,"exit\n") != 0){
-                strcpy(dpaket->msg, msgbuffer);
-                dpaket->portnumber = PORT;
-                pthread_create(&msgclient,NULL,clientSentMessage,(struct datapack*)dpaket);
-                pthread_join(halloclient,0);
-                printf("waiting for msg reply (maximum wait time: %d)\n",WAITTIME);
-                for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
-                    if(msgflagarray[MSG_Flag]){
-                        i = WAITTIME;
-                        }
-                    else{
-                        sleep(1);
-                        printf(".");
-                        }
-                    }
-                if(msgflagarray[MSG_Flag] != 1){
-                    //end of communication, he left.
-                    strcpy(msgbuffer,"exit\n");
-                    return 0;
+        strcpy(dpaket->receivername,con.contactalias); 
+        bzero(msgbuffer,sizeof msgbuffer);
+        printf("geben sie eine nachricht zum versenden ein:\n");
+        fgets(msgbuffer,buffersize+1,stdin);
+        if(strcmp(msgbuffer,"exit\n") != 0){
+            strcpy(dpaket->msg, msgbuffer);
+            dpaket->socketfd = contactlist_sockets[index][SOCKETFIELD];
+            pthread_create(&msgclient,NULL,clientSentMessage,(struct datapack*)dpaket);
+            pthread_join(msgclient,0);
+            printf("waiting for msg reply (maximum wait time: %d)\n",WAITTIME);
+            for(int i = 0; i < WAITTIME;i++){//waiting for package update reply
+                if(contactlist_sockets[index][MSGFLAG]){
+                    break;
                     }
                 else{
-                    rm_msg_flag();
-                    //we can continue to talk
+                    sleep(1);
                     }
                 }
-            }while(strcmp(msgbuffer,"exit\n") != 0);   
-        }
-    return 0;*/
+            if(contactlist_sockets[index][MSGFLAG] != 1){
+                //end of communication, he left.
+                strcpy(msgbuffer,"exit\n");
+                return 0;
+                }
+            else{
+                rm_msg_flag_indexed(index);
+                //we can continue to talk
+                }
+            }
+            }while(strcmp(msgbuffer,"exit\n") != 0);  
+
     }

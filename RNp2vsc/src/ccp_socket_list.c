@@ -88,7 +88,6 @@ int set_up_flag(int socket){
     }
     else{
         contactlist_sockets[index][UPDATEFLAG] = 1;
-        printf("REACT ROUTINE: SET SOCKET %d 's UPDATE FLAG TO 1. ON INDEX: %d STATUS OF IT: %d\n",socket,index,contactlist_sockets[index][UPDATEFLAG]);
         ret = index;
     }
     pthread_cleanup_pop(1);
