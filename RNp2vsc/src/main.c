@@ -15,7 +15,7 @@ int main(int argc, char **argv){
     int exitbool = 1;
     ccp_c_init_program();
 
-    char* helpmsg = "c for the hello pack, h for help, q for exit, p for print contacts, d for delete contact, u for update all, d for toggling debug mode\n";
+    char* helpmsg = "c for the hello pack, h for help, q for exit, p for print contacts, d for delete contact, u for update all, dbg for toggling debug mode\n";
     printf("%s",helpmsg);
     
     while(exitbool){
@@ -51,7 +51,7 @@ int main(int argc, char **argv){
             printf("%s",helpmsg);
         }
         
-        if(strcmp(buffer,"d\n") == 0){
+        if(strcmp(buffer,"dbg\n") == 0){
             if(debugmode){
                 printf("turning off debug mode\n");
                 debugmode=0;
