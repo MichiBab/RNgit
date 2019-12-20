@@ -30,9 +30,9 @@ int readFromSocket(int socket, struct sockaddr_in clientdata){
     
 
 int react_to_package(struct ccp* ccp_data , struct sockaddr_in clientdata , int socket){
-    if(ccp_data->versionnum != '1'){
-       // printf("Wrong version from paket detected!\n");
-       // return 1;
+    if(ccp_data->versionnum != 1){
+        printf("Wrong version from paket detected!\n");
+        return 1;
         }
     char bufip[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
