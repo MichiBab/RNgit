@@ -225,8 +225,9 @@ int ccp_c_messaging(){
         printf("geben sie eine nachricht zum versenden ein:\n");
         fgets(msgbuffer,buffersize+1,stdin);
         if(strcmp(msgbuffer,"exit\n") != 0){
+            put_string_in_sender_receiver(dpaket->receivername,contactlist[index].contactalias);
             dpaket->socketfd = contactlist_sockets[index][SOCKETFIELD];
-            set_ccp_message(&dpaket->ccppackage, msgbuffer, dpaket->receivername);
+            strcpy(dpaket->msg, msgbuffer);
             pthread_create(&msgclient,NULL,clientSentMessage,(struct datapack*)dpaket);
             pthread_join(msgclient,0);
             printf("waiting for msg reply (maximum wait time: %d)\n",WAITTIME);
