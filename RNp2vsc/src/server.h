@@ -13,4 +13,5 @@ int init_server();
 int close_server();
 int add_socket_to_server_array(int socket, struct sockaddr_in cli);
 int send_pipe_signal();
+int remove_socket_from_server(int socket);
 #endif

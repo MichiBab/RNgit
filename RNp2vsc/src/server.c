@@ -87,6 +87,14 @@ static int init_clientfds(){
     return 0;
     }
 
+int remove_socket_from_server(int socket){
+    pthread_mutex_lock(&socket_lock); 
+    pthread_cleanup_push(cleanUpMutex,NULL);
+
+    FD_CLR(socket,&readfds);
+
+    pthread_cleanup_pop(1);
+}
 
 static int addchilds(){
     //add child sockets to set  

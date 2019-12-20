@@ -7,6 +7,7 @@
 #include <string.h>
 #include "ccp_socket_list.h"
 #include <unistd.h> 
+#include "server.h"
 
 static int setup_datapackage(struct datapack* tmpdatapaket, char* alias, struct sockaddr_in clientdata, int socket){
     // not needed, cause we work on running sockets in the react routine
@@ -121,6 +122,7 @@ int react_to_bye(struct ccp* ccp_data , struct sockaddr_in clientdata, int socke
     remove_contact(contactlist[index]);
     //remove from socket list
     remove_contact_in_socket_array_with_index(index);
+    remove_socket_from_server(socket);
     //free socket
     close(socket);
 
