@@ -92,6 +92,13 @@ int remove_socket_from_server(int socket){
     pthread_cleanup_push(cleanUpMutex,NULL);
 
     FD_CLR(socket,&readfds);
+    for(int i = 0; i < MAXCLIENTS; i++){
+        if(client_socket[i] == socket){
+            client_socket[i] = 0;
+            bzero(&client_addr[i], sizeof (client_addr[i]));
+        }
+    }
+
 
     pthread_cleanup_pop(1);
 }
