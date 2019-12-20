@@ -36,7 +36,8 @@ pthread_mutex_t updatemutex = PTHREAD_MUTEX_INITIALIZER;
 static int update_contact_with_index(int index){
     
     if(check_if_not_null_contact(contactlist[index])  == 0 || contactlist_sockets[index][SOCKETFIELD] == -1){
-        DEBUG_MSG("ERROR IN UPDATE CONTACT WITH INDEX; FAULTY CONTACT") return -1;
+        //DEBUG_MSG("ERROR IN UPDATE CONTACT WITH INDEX; FAULTY CONTACT") 
+        return -1;
     }
     //clear flag first
     rm_up_flag_indexed(index);
@@ -58,11 +59,13 @@ static int update_contact_with_index(int index){
     }
     //finished waiting or we received it
     if(received_flag == 0){
+        printf("we did not receive an update reply from index %d, now deleting him\n",index);
         remove_contact(contactlist[index]);
         remove_contact_in_socket_array_with_index(index);
         return -1;
     }
     else{
+        printf("received update reply from index %d\n",index);
         return 0;
     }
 
@@ -79,7 +82,7 @@ void* init_timer_updater(void* arg){
         for(int i = 0; i < UPDATE_RESET_TIMER;i++){
             sleep(1);
             }
-        ccp_c_update_all();
+       // ccp_c_update_all(); TODO
         }
     }
     
@@ -124,7 +127,7 @@ static void cleanUpMutex(void* arg){
         }
     
 int ccp_c_update_all(){
-    for(int i = 0; i < maxcontacts; i++){
+    for(int i = 1; i < maxcontacts; i++){//1 cause 0 is our contact
         //checks in method if viable contact
         update_contact_with_index(i);
     }
@@ -187,7 +190,7 @@ int ccp_c_quit(){
     
 int ccp_c_messaging(){
 
-    
+
     /*
     printf("Schreiben sie einen Index, um dem Kontakt eine Nachricht zu senden\n");
     pthread_t halloclient;

@@ -89,10 +89,7 @@ int react_to_update(struct ccp* ccp_data , struct sockaddr_in clientdata, int so
     
 int react_to_update_reply(int socket){
     DEBUG_MSG("I GOT AN ALIVE ACK!");
-    int index = 
-        retrieve_index_through_socket(socket);
-    if(index == -1){DEBUG_MSG("error in react to update reply getting the index of the socket")return -1;}
-    set_up_flag(index);
+    set_up_flag(socket);
     return 0;
     }
     
@@ -110,12 +107,8 @@ int react_to_msg(struct ccp* ccp_data , struct sockaddr_in clientdata, int socke
     }
     
 int react_to_msg_reply( int socket){
-    DEBUG_MSG("I GOT A ALIVE ACK");
-    int index = 
-        retrieve_index_through_socket(socket);
-    if(index == -1){DEBUG_MSG("error in react to msg reply getting the index of the socket")return -1;}
-    set_msg_flag(index);
-
+    DEBUG_MSG("I GOT A MSG REPLY");
+    set_msg_flag(socket);
     return 0;
     }
     
