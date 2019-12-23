@@ -8,6 +8,8 @@ static int send_routine(struct datapack package){
     struct ccp ccp_data = package.ccppackage;
     DEBUG_MSG_NUM("Sending data to socket:",package.socketfd);
     send(package.socketfd, &ccp_data, sizeof(ccp_data), MSG_NOSIGNAL); 
+    send_pipe_signal();//for loopback race condition
+
     return 0;
     }
 

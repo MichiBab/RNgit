@@ -16,16 +16,17 @@ struct ccp{
     };
 #pragma pack(pop)
 
-
+// maybe with c++: change all to <> type, so everyone has a specific one.
+//for example: class datapack: ccp serveraddr socket. class msg extends datapack with msg, and hello extens datapack with address
 #pragma pack(push, 1)
-struct datapack{
-    char address[16];
-    struct ccp ccppackage;
-    uint16_t portnumber;
+struct datapack{ 
+    char address[16]; //for send hello
+    struct ccp ccppackage; //for all
+    uint16_t portnumber; //for send hello
     char receivername[16]; //for send update
     char msg[1024]; //for send msg
-    struct sockaddr_in serveraddress;
-    int socketfd; 
+    struct sockaddr_in serveraddress; //for client data
+    int socketfd; //for client data
     };
 #pragma pack(pop)
 
@@ -45,8 +46,6 @@ struct ccp_contact{
 #define ACKNOWLEDGE_RECEIVING_MESSAGE 0b00001100
 #define REQUEST_IF_PEER_IS_ALIVE 0b00010000
 #define ACKNOWLEDGE_PEER_IS_STILL_ALIVE 0b00010100
-
-
 
 #define SOCKETFIELD 0
 #define UPDATEFLAG 1

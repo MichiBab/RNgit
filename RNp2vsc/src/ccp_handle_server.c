@@ -10,7 +10,7 @@ int readFromSocket(int socket, struct sockaddr_in clientdata){
     char* buf = (char*) malloc(maxcharactersize);
     bzero(buf, maxcharactersize);
     int msgSize_in_bytes = recv(socket, buf, maxcharactersize, MSG_NOSIGNAL);
-    //printf("msginbytes: %d\n",msgSize_in_bytes);
+    DEBUG_MSG_NUM("msginbytes: %d\n",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
         printf("ERROR reading from socket\n");
         //exit(1);
@@ -38,7 +38,6 @@ int react_to_package(struct ccp* ccp_data , struct sockaddr_in clientdata , int 
     inet_ntop(AF_INET, &clientdata.sin_addr, bufip, sizeof bufip);
 
     DEBUG_MSG_STRING("CLIENT IP: %s\n",bufip);
-    //printf("CLIENT PORT: %d\n", ntohs(clientdata.sin_port)); 
     
     switch(ccp_data->typeFlags){
         case REQUEST_TO_OPEN_CONNECTION:
