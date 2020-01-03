@@ -11,10 +11,14 @@ int debugmode = 0;
 char buffer[buffersize];
 
 
+
 int main(int argc, char **argv){
     int exitbool = 1;
+    if(read_arg(argc,argv) == -1){
+        return 0;
+    }
     ccp_c_init_program();
-
+    
     char* helpmsg = "c for the hello pack, h for help, q for exit, m for messaging a contact, \np for print contacts, d for delete contact, u for update all, \ndbg for toggling debug mode\n";
     printf("%s",helpmsg);
     

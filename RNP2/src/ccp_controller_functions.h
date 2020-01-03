@@ -8,5 +8,6 @@ int ccp_c_send_hello();
 int ccp_c_quit();
 int ccp_c_messaging();
 int ccp_c_update_all();
+int read_arg(int argc, char **argv);
 
 #endif

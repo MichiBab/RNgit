@@ -32,6 +32,26 @@ pthread_t time_updater;
 //its just a "got reply" flag, not specified from where.
 pthread_mutex_t updatemutex = PTHREAD_MUTEX_INITIALIZER;
 
+//reading arg if sctp or tcp
+int read_arg(int argc, char **argv){
+    char* errormsg = "Error: wrong / no Args. Use s for stcp, t for tcp";
+    if(argc < 2){
+        printf("%s\n",errormsg);
+        return -1;
+    }
+    if( strcmp( "s", argv[1] ) == 0 ){
+        sctp_mode = 1;
+        printf("Server running in SCTP\n");
+        return 0;
+    }
+    if( strcmp ("t", argv[1] ) == 0 ){
+        printf("Server running in TCP\n");
+        return 0;
+    }
+    printf("%s\n",errormsg);
+    return -1;
+}
+
 //checks if real contact and not a pending one with no connected socket
 static int update_contact_with_index(int index){
     
@@ -93,13 +113,6 @@ void* init_timer_updater(void* arg){
     
 int ccp_c_init_program(){
     init_socket_list();
-    printf("Type 1 to enter SCTP Mode\n");
-    bzero(usernamebuffer,16);
-    fgets(usernamebuffer,16+1,stdin);
-    if(strcmp(usernamebuffer,"1\n") == 0){
-        printf("SCTP Mode enabled\n");
-        sctp_mode = 1;
-        }
     bzero(contactlist,maxcontacts);
     printf("enter a username for your chat client, the first 16 chars will be accepted\n");
     bzero(usernamebuffer,16);

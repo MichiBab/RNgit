@@ -53,9 +53,23 @@ clean:
 	@$(rm) $(OBJDIR)/*
 	@echo "Cleanup complete!"
 
+.PHONEY: tcp
+tcp:
+	clear
+	$(INSTALLDIR)/$(TARGET) t
+	#gnome-terminal -x sh -c "$(INSTALLDIR)/$(TARGET)"
+
+.PHONEY: sctp
+sctp:
+	clear
+	$(INSTALLDIR)/$(TARGET) s
+	#gnome-terminal -x sh -c "$(INSTALLDIR)/$(TARGET)"
+
 .PHONEY: run
 run:
-	gnome-terminal -x sh -c "$(INSTALLDIR)/$(TARGET)"
+	clear
+	$(INSTALLDIR)/$(TARGET)
+	#gnome-terminal -x sh -c "$(INSTALLDIR)/$(TARGET)"
 
 .PHONEY: remove
 remove: clean
