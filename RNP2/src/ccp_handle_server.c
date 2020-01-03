@@ -7,6 +7,7 @@
 #include "ccp_socket_list.h"
 
 int readFromSocket(int socket, struct sockaddr_in clientdata){
+    
     char* buf = (char*) malloc(maxcharactersize);
     bzero(buf, maxcharactersize);
     int msgSize_in_bytes = recv(socket, buf, maxcharactersize, MSG_NOSIGNAL);

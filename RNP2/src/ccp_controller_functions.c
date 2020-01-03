@@ -9,6 +9,8 @@
 #include <unistd.h>
 #include "server.h"
 #include "ccp_controller_functions.h"
+#include <netinet/sctp.h>
+#include <limits.h>
 #define buffersize 1024
 #define addrsize 16
 
@@ -20,7 +22,7 @@ char ipbuffer[addrsize];
 char msgbuffer[buffersize];
 char *pos;
 int sctp_mode = 0;
-
+int heartbeat_param;
 pthread_t serverthread;
 pthread_t time_updater;
 //only one update at a time is allowed.
@@ -34,10 +36,26 @@ pthread_mutex_t updatemutex = PTHREAD_MUTEX_INITIALIZER;
 
 //reading arg if sctp or tcp
 int read_arg(int argc, char **argv){
-    char* errormsg = "Error: wrong / no Args. Use s for stcp, t for tcp";
+    char* errormsg = "Error: wrong / no Args. Use s for stcp, t for tcp, 2nd arg as an INT to set heartbeat";
+    heartbeat_param = 0;
     if(argc < 2){
         printf("%s\n",errormsg);
         return -1;
+    }
+    if(argc > 2){
+        char* pointer;
+        int conv = strtol(argv[2], &pointer, 10);
+        if (*pointer != '\0' || conv > INT_MAX) {
+        printf("ERROR IN HEARTBEAT ARG\n");
+        printf("%s\n",errormsg);
+        return -1;
+        } 
+        else {
+            // No error
+            heartbeat_param = conv;    
+            printf("Heartbeat changed to: %d\n", heartbeat_param);
+        }
+
     }
     if( strcmp( "s", argv[1] ) == 0 ){
         sctp_mode = 1;
@@ -48,6 +66,7 @@ int read_arg(int argc, char **argv){
         printf("Server running in TCP\n");
         return 0;
     }
+    
     printf("%s\n",errormsg);
     return -1;
 }
@@ -268,3 +287,16 @@ int ccp_c_messaging(){
             }while(strcmp(msgbuffer,"exit\n") != 0);  
 
     }
+
+int set_heartbeat(int *socket){
+    struct sctp_paddrparams heartbeat;
+    memset(&heartbeat,  0, sizeof(struct sctp_paddrparams));
+    heartbeat.spp_flags = SPP_HB_ENABLE;
+    heartbeat.spp_hbinterval = heartbeat_param;
+    heartbeat.spp_pathmaxrxt = 1;
+    if((setsockopt(*socket, SOL_SCTP, SCTP_PEER_ADDR_PARAMS , &heartbeat, sizeof(heartbeat))) != 0){
+        printf("ERROR SETTING HEARTBEAT");
+        return -1;        
+    }
+    return 0;
+}

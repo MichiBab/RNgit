@@ -21,6 +21,9 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
      //   printf("Socket successfully created..\n"); 
     //fill the struct serveraddress with 0's
     bzero(serveraddress, sizeof(*serveraddress)); 
+    if(sctp_mode && heartbeat_param > 0){
+        set_heartbeat(socketfd);
+    }
     return 0;
     }
     

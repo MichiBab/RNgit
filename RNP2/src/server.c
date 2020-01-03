@@ -6,6 +6,9 @@
 #include <pthread.h>
 #include <signal.h>
 #include <bits/sigaction.h>
+
+
+
 int pipe_fd[2];
 
 int parentfd; 
@@ -43,6 +46,9 @@ static int create_socket(){
     }
 
     bzero((char *) &serveraddr, sizeof(serveraddr));
+    if(sctp_mode && heartbeat_param > 0){
+        set_heartbeat(&parentfd);
+    }
     return 0;
     }
     

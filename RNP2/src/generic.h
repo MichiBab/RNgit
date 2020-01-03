@@ -13,4 +13,9 @@ extern int sctp_mode;
 extern int debugmode;
 #define SOCKET_TYPE (sctp_mode ? SOCK_STREAM : SOCK_STREAM ) 
 #define SOCKET_ARG (sctp_mode ? IPPROTO_SCTP : 0)
+
+//defined in controller function
+extern int heartbeat_param;
+int set_heartbeat(int *socket);
+
 #endif
