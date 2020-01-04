@@ -1,6 +1,7 @@
 #include "client.h"
 #include "generic.h"
 #include <unistd.h> 
+#include <sys/time.h>
 //#include <signal.h>
 
 /*void interrupt_handler(int sig){
@@ -8,11 +9,15 @@
     return;
 }*/
 
-
+#define CLIENTSOCKWAIT 3
 static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy, here IPv4; SOCK STREAM Means TCP connection
     //TODO last input means Protocoll type, 0 means automatically choosen?
-    *socketfd = socket(AF_INET, SOCKET_TYPE | SOCK_NONBLOCK, SOCKET_ARG); //returns a socket file descriptor
+    struct timeval tv;
+    tv.tv_sec = CLIENTSOCKWAIT;
+    tv.tv_usec = 0;
+    
+    *socketfd = socket(AF_INET, SOCKET_TYPE , SOCKET_ARG); //returns a socket file descriptor
     if (*socketfd == -1) { 
         printf("socket creation failed...\n"); 
         //exit(0); 
@@ -21,6 +26,7 @@ static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
      //   printf("Socket successfully created..\n"); 
     //fill the struct serveraddress with 0's
     bzero(serveraddress, sizeof(*serveraddress)); 
+    setsockopt(*socketfd , SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
     if(sctp_mode && heartbeat_param > 0){
         set_heartbeat(socketfd);
     }

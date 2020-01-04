@@ -39,7 +39,7 @@ int close_server(){
     }
 
 static int create_socket(){
-    parentfd = socket(AF_INET, SOCKET_TYPE | SOCK_NONBLOCK, SOCKET_ARG);
+    parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
     if (parentfd < 0) {
         printf("ERROR opening socket");
        // exit(1);
