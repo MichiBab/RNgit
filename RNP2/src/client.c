@@ -12,7 +12,7 @@
 static int createSocket(struct sockaddr_in* serveraddress, int* socketfd ){
     //AF_INET = Address familiy, here IPv4; SOCK STREAM Means TCP connection
     //TODO last input means Protocoll type, 0 means automatically choosen?
-    *socketfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG); //returns a socket file descriptor
+    *socketfd = socket(AF_INET, SOCKET_TYPE | SOCK_NONBLOCK, SOCKET_ARG); //returns a socket file descriptor
     if (*socketfd == -1) { 
         printf("socket creation failed...\n"); 
         //exit(0); 

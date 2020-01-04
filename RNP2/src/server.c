@@ -39,7 +39,7 @@ int close_server(){
     }
 
 static int create_socket(){
-    parentfd = socket(AF_INET, SOCKET_TYPE, SOCKET_ARG);
+    parentfd = socket(AF_INET, SOCKET_TYPE | SOCK_NONBLOCK, SOCKET_ARG);
     if (parentfd < 0) {
         printf("ERROR opening socket");
        // exit(1);
@@ -159,6 +159,7 @@ static int acceptConnections(){
         int templen = sizeof(struct sockaddr_in);
         DEBUG_MSG("trying to accept a socket\n");
         new_socket = accept(parentfd, (struct sockaddr *)&temp, (socklen_t*)&templen);
+        DEBUG_MSG("accepted a socket\n");
         if (new_socket < 0){
             printf("error accept\n");
             //exit(1);
@@ -174,7 +175,8 @@ static int acceptConnections(){
                 client_socket[i] = new_socket;  
 
                 pthread_cleanup_pop(1);
-                //printf("Adding to list of sockets as %d\n" , i);   
+                //send_pipe_signal();
+                DEBUG_MSG("ADDED SOCKET");   
                 break;   
                 }
             }
@@ -184,12 +186,12 @@ static int acceptConnections(){
     
 static int getMessages(){
     //GET MESSAGES
-    //printf("server tries to read messages now\n");
+    DEBUG_MSG("server tries to read messages now");
     for (int i = 0; i < MAXCLIENTS; i++){
         sd = client_socket[i];    
         //if there is a valid socket
         if (FD_ISSET( sd , &readfds)){
-           //printf("server got a valid socket\n");
+            DEBUG_MSG_NUM("reading form socket: ",sd);
                 if(readFromSocket(client_socket[i], client_addr[i])){
                    // printf("client number %d is disconnected (read gave 0 bytes back)\n",i);
                     close( sd );
@@ -211,6 +213,7 @@ static int getMessages(){
 int send_pipe_signal(){
     pthread_mutex_lock(&socket_lock); 
     pthread_cleanup_push(cleanUpMutex,NULL);
+    fflush(stdout);
     write(pipe_fd[1] , "a" ,2);
     DEBUG_MSG("send pipe signal\n");
     pthread_cleanup_pop(1);
@@ -283,16 +286,25 @@ int init_server() {
             DEBUG_MSG("select error");
             continue;
             }
+        if (activity == 0){
+            continue;
+        }
+        pthread_mutex_lock(&socket_lock); 
+        pthread_cleanup_push(cleanUpMutex,NULL);
         //printf("accepted something\n");
         if(FD_ISSET(pipe_fd[0],&readfds)){
             //read to clear pipe
-            char buf[3];
-            int bytesread = read(pipe_fd[0],buf,2);
-            //getMessages();
+            char buf[sizeof(stdin)];
+            
+            int bytesread = read(pipe_fd[0],buf,sizeof(buf));
         }
+        pthread_cleanup_pop(1);
+
         acceptConnections();
 
         getMessages();
+
+        
     }
 }
 

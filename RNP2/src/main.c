@@ -3,6 +3,7 @@
 #include <string.h>
 #include "generic.h"
 
+#include "server.h"
 
 int debugmode = 0;
 
@@ -53,6 +54,10 @@ int main(int argc, char **argv){
             
         if(strcmp(buffer,"h\n") == 0){
             printf("%s",helpmsg);
+        }
+
+        if(strcmp(buffer,"s\n") == 0){
+            send_pipe_signal();
         }
         
         if(strcmp(buffer,"dbg\n") == 0){

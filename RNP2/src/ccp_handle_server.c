@@ -10,6 +10,7 @@ int readFromSocket(int socket, struct sockaddr_in clientdata){
     
     char* buf = (char*) malloc(maxcharactersize);
     bzero(buf, maxcharactersize);
+    DEBUG_MSG("IN RECEIVE NOW");
     int msgSize_in_bytes = recv(socket, buf, maxcharactersize, MSG_NOSIGNAL);
     DEBUG_MSG_NUM("msginbytes: %d\n",msgSize_in_bytes);
     if (msgSize_in_bytes < 0) {
